@@ -9,3 +9,31 @@ services:
     volumes:
       - ./web:/app
 
+  database:
+    image: mysql:8.0
+    container_name: mysql_db
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: flask_app
+    volumes:
+      - mysql-storage:/var/lib/mysql
+      - ./mysql/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana_app
+    ports:
+      - "3000:3000"
+    volumes:
+      - grafana-storage:/var/lib/grafana
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin # Vous pouvez changer cela pour une meilleure sécurité
+
+volumes:
+  grafana-storage:
+  mysql-storage:
+
+
