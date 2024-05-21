@@ -1,14 +1,10 @@
-version: '3'
+version: '3.8'
+
 services:
   web:
-    build: ./web_front
-    ports:
-      - "5000:5000"
-  nginx:
-    image: nginx:latest
+    build: ./web
+    container_name: flask_app
     ports:
       - "80:80"
     volumes:
-      - ./nginx.conf:/etc/nginx/nginx.conf
-    depends_on:
-      - web
+      - .:/var/www
