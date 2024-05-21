@@ -7,4 +7,5 @@ services:
     ports:
       - "80:80"
     volumes:
-      - .:/var/www
+      - ./web:/app
+

@@ -3,8 +3,6 @@ from flask import render_template
 
 @app.route('/')
 def home():
-    return "hello world!"
+    return render_template('index.html')
 
-@app.route('/template')
-def template():
-    return render_template('home.html')
+
