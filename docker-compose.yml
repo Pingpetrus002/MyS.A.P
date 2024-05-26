@@ -7,7 +7,7 @@ services:
     ports:
       - "80:80"
     volumes:
-      - ./web/*:/app
+      - ./web:/app
     networks:
       sap_network:
         ipv4_address: 172.20.0.2
@@ -20,7 +20,7 @@ services:
       MYSQL_DATABASE: flask_app
     volumes:
       - mysql-storage:/var/lib/mysql
-      - ./mysql/*:/docker-entrypoint-initdb.d/init.sql:ro
+      - ./mysql/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
     networks:
       sap_network:
         ipv4_address: 172.20.0.3
