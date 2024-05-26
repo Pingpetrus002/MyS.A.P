@@ -31,7 +31,8 @@ services:
     ports:
       - "3000:3000"
     volumes:
-      - grafana-storage:/var/lib/grafana
+      - grafana-data:/var/lib/grafana
+      - grafana-conf:/etc/grafana
     environment:
       - GF_SECURITY_ADMIN_PASSWORD=admin  # Vous pouvez changer cela pour une meilleure sécurité
       - GF_SECURITY_ALLOW_EMBEDDING=true
@@ -40,7 +41,8 @@ services:
         ipv4_address: 172.20.0.4
 
 volumes:
-  grafana-storage:
+  grafana-conf:
+  grafana-data:
   mysql-storage:
 
 networks:
