@@ -1,4 +1,4 @@
-version: '3.8'
+version: "3.8"
 
 services:
   web:
@@ -8,19 +8,22 @@ services:
       - "80:80"
     volumes:
       - ./web:/app
+    networks:
+      sap_network:
+        ipv4_address: 172.20.0.2
 
   database:
     image: mysql:8.0
     container_name: mysql_db
-    ports:
-      - "3306:3306"
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: flask_app
     volumes:
       - mysql-storage:/var/lib/mysql
       - ./mysql/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
-
+    networks:
+      sap_network:
+        ipv4_address: 172.20.0.3
 
   grafana:
     image: grafana/grafana:latest
@@ -30,10 +33,19 @@ services:
     volumes:
       - grafana-storage:/var/lib/grafana
     environment:
-      - GF_SECURITY_ADMIN_PASSWORD=admin # Vous pouvez changer cela pour une meilleure sécurité
+      - GF_SECURITY_ADMIN_PASSWORD=admin  # Vous pouvez changer cela pour une meilleure sécurité
+    networks:
+      sap_network:
+        ipv4_address: 172.20.0.4
 
 volumes:
   grafana-storage:
   mysql-storage:
 
-
+networks:
+  sap_network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
+          gateway: 172.20.0.1
