@@ -1,6 +1,6 @@
 from app import app
 from flask import render_template
-from prometheus_client import generate_latest, CollectorRegistry, Counter, Gauge
+from prometheus_client import generate_latest, CollectorRegistry, Counter, Gauge, Response
 
 
 REQUEST_COUNT = Counter('flask_app_request_count', 'Total HTTP requests')
