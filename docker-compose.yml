@@ -56,7 +56,7 @@ services:
     image: phpmyadmin/phpmyadmin:latest
     container_name: phpmyadmin
     environment:
-      PMA_HOST: database
+      PMA_HOST: 172.20.0.3
       MYSQL_ROOT_PASSWORD: root
     ports:
       - "8080:80"
