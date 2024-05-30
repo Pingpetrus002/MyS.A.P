@@ -47,7 +47,7 @@ services:
       - "9090:9090"
     volumes:
       - prometheus-data:/prometheus
-      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
     networks:
       sap_network:
         ipv4_address: 172.20.0.5
@@ -56,13 +56,22 @@ services:
     image: phpmyadmin/phpmyadmin:latest
     container_name: phpmyadmin
     environment:
-      PMA_HOST: 172.20.0.3
+      PMA_HOST: database
       MYSQL_ROOT_PASSWORD: root
     ports:
       - "8080:80"
     networks:
       sap_network:
         ipv4_address: 172.20.0.6
+
+  node_exporter:
+    image: prom/node-exporter:latest
+    container_name: node_exporter
+    ports:
+      - "9100:9100"
+    networks:
+      sap_network:
+        ipv4_address: 172.20.0.7
 
 volumes:
   grafana-conf:
@@ -76,4 +85,4 @@ networks:
     ipam:
       config:
         - subnet: 172.20.0.0/16
-          gateway: 172.20.0.1
+          gateway: 172.20
