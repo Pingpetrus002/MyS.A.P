@@ -52,6 +52,18 @@ services:
       sap_network:
         ipv4_address: 172.20.0.5
 
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:latest
+    container_name: phpmyadmin
+    environment:
+      PMA_HOST: database
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - "8080:80"
+    networks:
+      sap_network:
+        ipv4_address: 172.20.0.6
+
 volumes:
   grafana-conf:
   grafana-data:
