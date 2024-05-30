@@ -14,8 +14,6 @@ def home():
 
 @app.route('/metrics')
 def metrics():
-    registry = CollectorRegistry()
-    REQUEST_COUNT.collect(registry)
-    REQUEST_LATENCY.collect(registry)
-    return Response(generate_latest(registry), mimetype='text/plain')
+
+    return Response(generate_latest(), mimetype='text/plain')
 
