@@ -1,7 +1,25 @@
 global:
-  scrape_interval: 10s
+  scrape_interval: 10s  # Intervalle de scrape par défaut pour tous les jobs
+  evaluation_interval: 10s  # Intervalle par défaut pour les évaluations des règles
+
 scrape_configs:
   - job_name: 'prometheus'
     static_configs:
-      - targets:
-          - 'prometheus:9090'
+      - targets: ['prometheus:9090']
+
+  - job_name: 'node_exporter'
+    static_configs:
+      - targets: ['node_exporter:9100']
+
+  - job_name: 'flask_app'
+    metrics_path: '/metrics'
+    static_configs:
+      - targets: ['flask_app:80']
+
+  - job_name: 'mysql'
+    static_configs:
+      - targets: ['mysql_db:3306']  # Remplacez par le port d'exportation MySQL si configuré
+
+  - job_name: 'grafana'
+    static_configs:
+      - targets: ['grafana_app:3000']
