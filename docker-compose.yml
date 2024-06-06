@@ -1,7 +1,7 @@
 version: "3.8"
 
 services:
-  web:
+  backend:
     build: ./web
     container_name: flask_app
     ports:
@@ -11,6 +11,14 @@ services:
     networks:
       sap_network:
         ipv4_address: 172.20.0.2
+
+  frontend:
+    build: ./frontend
+    container_name: react_app
+    ports:
+      - "3001:3000"
+    volumes:
+        - ./frontend:/app
 
   database:
     image: mysql:8.0
