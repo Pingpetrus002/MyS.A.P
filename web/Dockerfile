@@ -1,36 +1,18 @@
-# Use the tiangolo/uwsgi-nginx-flask image with Python 3.11
-FROM tiangolo/uwsgi-nginx-flask:python3.11
-
-# Install curl to download Node.js setup script
-RUN apt-get update && apt-get install -y curl
-
-# Install Node.js 18.x and npm from NodeSource
-RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - && \
-    apt-get install -y nodejs
-
-# Set the working directory to /app
+# Use a Node.js image to build the React app
+FROM node:20 as build-stage
 WORKDIR /app
-
-# Copy the requirements.txt file into the container
-COPY ./requirements.txt /app/requirements.txt
-
-# Install Python dependencies
-RUN pip install -r requirements.txt
-
-# Copy the entire project into the container
-COPY . /app
-
-# Remove existing node_modules and package-lock.json if they exist
-RUN rm -rf node_modules package-lock.json
-
-# Install Node.js dependencies for Vite.js
+COPY frontend/package*.json ./
 RUN npm install
-
-# Build the Vite.js project
+COPY frontend ./
 RUN npm run build
 
-# Expose the necessary port
-EXPOSE 80
+# Use a Python image to run the Flask app
+FROM tiangolo/uwsgi-nginx-flask:python3.11
+WORKDIR /app
+COPY ./requirements.txt /var/www/requirements.txt
+RUN pip install -r /var/www/requirements.txt
 
-# Run the Flask application using uWSGI
-CMD ["uwsgi", "--ini", "/app/uwsgi.ini"]
+COPY . .
+
+# Copy the built React app to the static directory
+COPY --from=build-stage /app/dist /app/static
