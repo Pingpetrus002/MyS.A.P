@@ -1,13 +1,14 @@
-<!doctype html>
-<html lang="fr">
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <link rel="stylesheet" href="../../static/example.css">
-  <title>Welcome home HHH</title>
-  </head>
-  <body>
-    <h1>Home Page</h1>
-    <p>This is the home page of our application.</p>
-  </body>
+<!-- web/app/templates/index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flask and React</title>
+</head>
+<body>
+<a href="/about">About</a>
+<div id="root"></div>
+<script type="module" src="{{ url_for('static', filename='dist/assets/index.js') }}"></script>
+</body>
 </html>
