@@ -12,14 +12,6 @@ services:
       sap_network:
         ipv4_address: 172.20.0.2
 
-  vite:
-    build: ./vite
-    container_name: react_app
-    ports:
-      - "90:90"
-    volumes:
-      - ./vite:/app
-
   database:
     image: mysql:8.0
     container_name: mysql_db

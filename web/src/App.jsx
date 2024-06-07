@@ -8,7 +8,7 @@ function App() {
   const [count, setCount] = useState(0)
 
   const fetchData = async () => {
-      const response = await axios.get("https://localhost:80/api/test")
+      const response = await axios.get("https://localhost/api/test")
       console.log(response.data)
   }
 
