@@ -4,7 +4,7 @@ function App() {
     const [data, setData] = useState(null);
 
     useEffect(() => {
-        fetch('/api/data')
+        fetch('http://localhost:80/data')
             .then(response => response.json())
             .then(data => setData(data.message))
             .catch(error => console.error('Error fetching data:', error));
@@ -12,8 +12,8 @@ function App() {
 
     return (
         <div>
-            <h1>React with Flask Backend</h1>
-            {data ? <p>{data}</p> : <p>Loading...</p>}
+            <h1>Hello, World!</h1>
+            <p>{data}</p>
         </div>
     );
 }
