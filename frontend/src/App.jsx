@@ -10,6 +10,8 @@ function App() {
             .catch(error => console.error('Error fetching data:', error));
     }, []);
 
+    console.log(data);
+
     return (
         <div>
             <h1>Hello, World!</h1>

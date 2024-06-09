@@ -17,8 +17,5 @@ def index():
 def get_time():
     # Returning an api for showing in  reactjs
     return jsonify({
-        'Name':"geek",
-        "Age":"22",
-        "Date":x,
-        "programming":"python"
+        "message": "The current time is " + datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     })

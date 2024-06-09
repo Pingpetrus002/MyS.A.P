@@ -17,8 +17,8 @@ services:
     container_name: vite-project
     ports:
       - "5000:5000"
-    volumes:
-      - ./frontend:/app
+    #volumes:
+    #  - ./frontend:/app
     networks:
       sap_network:
         ipv4_address: 172.20.0.8
