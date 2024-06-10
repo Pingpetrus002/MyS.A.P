@@ -4,7 +4,7 @@ function App() {
     const [data, setData] = useState(null);
 
     useEffect(() => {
-        fetch('http://localhost:80/data')
+        fetch('http://flask_app:80/data')
             .then(response => response.json())
             .then(data => setData(data.message))
             .catch(error => console.error('Error fetching data:', error));
