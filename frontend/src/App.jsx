@@ -4,7 +4,7 @@ function App() {
     const [data, setData] = useState(null);
 
     useEffect(() => {
-        fetch('http://127.0.0.1:80/data')
+        fetch('http://10.1.1.89:80/data')
             .then(response => response.json())
             .then(data => setData(data.message))
             .catch(error => console.error('Error fetching data:', error));
