@@ -20,6 +20,10 @@ export default defineConfig({
             },
         },
     },
+    watch: {
+        usePolling: true,
+        interval: 500,
+    },
     server: {
         port: 5000,
         proxy: {

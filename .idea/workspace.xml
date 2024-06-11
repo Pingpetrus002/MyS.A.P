@@ -5,59 +5,16 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9615a97c-2444-4472-8fa0-f51bb0b75613" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/backend/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/Dockerfile" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/app.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/app/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/app/templates/assets/css/index.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/app/templates/assets/js/index.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/app/templates/index.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/app/templates/vite.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/app/views.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/requirements.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/uwsgi.ini" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/.dockerignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/.eslintrc.cjs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/Dockerfile" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/README.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/index.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/package-lock.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/package.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/public/vite.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/App.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/App.jsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/assets/react.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/index.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/main.jsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/templates/assets/css/index.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/templates/assets/js/index.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/templates/index.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/templates/vite.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/vite.config.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/jsLibraryMappings.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/src/Navbar.jsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/src/assets/logo.svg" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docker-compose.yml" beforeDir="false" afterPath="$PROJECT_DIR$/docker-compose.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/Dockerfile" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/app.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/app/__init__.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/app/templates/index.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/app/views.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/frontend/.eslintrc.cjs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/frontend/README.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/frontend/index.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/frontend/package-lock.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/frontend/package.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/frontend/public/vite.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/frontend/src/App.css" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/frontend/src/App.jsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/frontend/src/assets/react.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/frontend/src/index.css" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/frontend/src/main.jsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/frontend/vite.config.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/requirements.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/static/example.css" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/uwsgi.ini" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/main.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/main.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/vite.config.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/vite.config.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -68,6 +25,7 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="Dockerfile" />
+        <option value="JSX File" />
       </list>
     </option>
   </component>
@@ -85,6 +43,21 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;SuperBananeMan&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/Pingpetrus002/S.A.P&quot;,
+    &quot;accountId&quot;: &quot;0416c997-f196-4ed7-a838-5ccffde08eca&quot;
+  }
+}</component>
+  <component name="PackageJsonUpdateNotifier">
+    <dismissed value="$PROJECT_DIR$/frontend/package.json" />
+  </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 7
 }</component>
@@ -96,19 +69,31 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;ASKED_ADD_EXTERNAL_FILES&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;flask-react-docker&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ASKED_ADD_EXTERNAL_FILES": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "git-widget-placeholder": "component-Navbar",
+    "last_opened_file_path": "C:/Users/damie/Documents/Cours/b2/S2/projet_annuel/projet/S.A.P",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "preferences.pluginManager",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
+  <component name="ReactDesignerToolWindowState">
+    <option name="myId2Visible">
+      <map>
+        <entry key="com.intellij.reactbuddy.reactComponents" value="false" />
+        <entry key="com.intellij.reactbuddy.reactInspector" value="false" />
+        <entry key="com.intellij.reactbuddy.storybook" value="false" />
+      </map>
+    </option>
+  </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\Users\damie\Documents\Cours\b2\S2\projet_annuel\projet\S.A.P\frontend" />
@@ -126,8 +111,7 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-js-predefined-1d06a55b98c1-0b3e54e931b4-JavaScript-PY-241.17011.127" />
-        <option value="bundled-python-sdk-48aec45f0201-7e9c3bbb6e34-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-241.17011.127" />
+        <option value="bundled-js-predefined-1d06a55b98c1-0b3e54e931b4-JavaScript-WS-241.17890.13" />
       </set>
     </attachedChunks>
   </component>
@@ -147,11 +131,68 @@
       <workItem from="1717740869894" duration="19451000" />
       <workItem from="1717844924182" duration="56000" />
       <workItem from="1717845054992" duration="20084000" />
+      <workItem from="1717948883716" duration="629000" />
+      <workItem from="1718052281863" duration="3129000" />
+      <workItem from="1718105155254" duration="1617000" />
+      <workItem from="1718107114169" duration="255000" />
+      <workItem from="1718107978457" duration="937000" />
+      <workItem from="1718109056378" duration="748000" />
+      <workItem from="1718134396514" duration="1336000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="OPEN_GENERIC_TABS">
+      <map>
+        <entry key="2951eec0-ea26-4aee-94dc-5fe8e8804145" value="TOOL_WINDOW" />
+      </map>
+    </option>
+    <option name="TAB_STATES">
+      <map>
+        <entry key="2951eec0-ea26-4aee-94dc-5fe8e8804145">
+          <value>
+            <State>
+              <option name="CUSTOM_BOOLEAN_PROPERTIES">
+                <map>
+                  <entry key="Show.Git.Branches" value="true" />
+                </map>
+              </option>
+              <option name="FILTERS">
+                <map>
+                  <entry key="branch">
+                    <value>
+                      <list>
+                        <option value="flask-react-docker" />
+                      </list>
+                    </value>
+                  </entry>
+                </map>
+              </option>
+            </State>
+          </value>
+        </entry>
+        <entry key="MAIN">
+          <value>
+            <State>
+              <option name="FILTERS">
+                <map>
+                  <entry key="branch">
+                    <value>
+                      <list>
+                        <option value="flask-react-docker" />
+                      </list>
+                    </value>
+                  </entry>
+                </map>
+              </option>
+            </State>
+          </value>
+        </entry>
+      </map>
+    </option>
   </component>
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
