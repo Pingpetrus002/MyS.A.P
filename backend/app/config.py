@@ -1,6 +1,10 @@
 from dotenv import load_dotenv
 import os
 
+load_dotenv('/app/app/.env')
+
+
+
 class Config:
     DEBUG = True
     TESTING = False
