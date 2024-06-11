@@ -11,7 +11,7 @@ CREATE TABLE IF NOT EXISTS utilisateur(
    mail VARCHAR(50),
    date_naissance DATE,
    statut BOOLEAN,
-   password VARCHAR(128),
+   password VARCHAR(256),
    PRIMARY KEY(id_user)
 );
 
