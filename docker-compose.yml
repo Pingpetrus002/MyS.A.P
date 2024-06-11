@@ -5,7 +5,7 @@ services:
     build: ./backend
     container_name: flask_app
     ports:
-      - "80:80"
+      - "5000:80"
     volumes:
       - ./backend:/app
     networks:
@@ -14,9 +14,9 @@ services:
 
   frontend:
     build: ./frontend
-    container_name: vite-project
+    container_name: react_app
     ports:
-      - "5000:5000"
+      - "80:5000"
     #volumes:
     #  - ./frontend:/app
     networks:
@@ -36,32 +36,32 @@ services:
       sap_network:
         ipv4_address: 172.20.0.3
 
-  grafana:
-    image: grafana/grafana:latest
-    container_name: grafana_app
-    ports:
-      - "3000:3000"
-    volumes:
-      - grafana-data:/var/lib/grafana
-      - grafana-conf:/etc/grafana
-    environment:
-      - GF_SECURITY_ADMIN_PASSWORD=admin # Vous pouvez changer cela pour une meilleure sécurité
-      - GF_SECURITY_ALLOW_EMBEDDING=true
-    networks:
-      sap_network:
-        ipv4_address: 172.20.0.4
+  # grafana:
+  #   image: grafana/grafana:latest
+  #   container_name: grafana_app
+  #   ports:
+  #     - "3000:3000"
+  #   volumes:
+  #     - grafana-data:/var/lib/grafana
+  #     - grafana-conf:/etc/grafana
+  #   environment:
+  #     - GF_SECURITY_ADMIN_PASSWORD=admin # Vous pouvez changer cela pour une meilleure sécurité
+  #     - GF_SECURITY_ALLOW_EMBEDDING=true
+  #   networks:
+  #     sap_network:
+  #       ipv4_address: 172.20.0.4
 
-  prometheus:
-    image: prom/prometheus:latest
-    container_name: prometheus_app
-    ports:
-      - "9090:9090"
-    volumes:
-      - prometheus-data:/prometheus
-      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
-    networks:
-      sap_network:
-        ipv4_address: 172.20.0.5
+  # prometheus:
+  #   image: prom/prometheus:latest
+  #   container_name: prometheus_app
+  #   ports:
+  #     - "9090:9090"
+  #   volumes:
+  #     - prometheus-data:/prometheus
+  #     - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+  #   networks:
+  #     sap_network:
+  #       ipv4_address: 172.20.0.5
 
   phpmyadmin:
     image: phpmyadmin/phpmyadmin:latest
@@ -75,14 +75,14 @@ services:
       sap_network:
         ipv4_address: 172.20.0.6
 
-  node_exporter:
-    image: prom/node-exporter:latest
-    container_name: node_exporter
-    ports:
-      - "9100:9100"
-    networks:
-      sap_network:
-        ipv4_address: 172.20.0.7
+  # node_exporter:
+  #   image: prom/node-exporter:latest
+  #   container_name: node_exporter
+  #   ports:
+  #     - "9100:9100"
+  #   networks:
+  #     sap_network:
+  #       ipv4_address: 172.20.0.7
 
 volumes:
   grafana-conf:
