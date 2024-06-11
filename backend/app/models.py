@@ -2,29 +2,6 @@ from flask_sqlalchemy import SQLAlchemy
 
 db = SQLAlchemy()
 
-class Utilisateur(db.Model):
-    __tablename__ = 'utilisateur'
-    id_user = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    nom = db.Column(db.String(50))
-    prenom = db.Column(db.String(50))
-    mail = db.Column(db.String(50))
-    date_naissance = db.Column(db.Date)
-    statut = db.Column(db.Boolean)
-    password = db.Column(db.String(256))
-
-class Suiveur(db.Model):
-    __tablename__ = 'suiveur'
-    id_user = db.Column(db.Integer, db.ForeignKey('utilisateur.id_user'), primary_key=True)
-
-class Rre(db.Model):
-    __tablename__ = 'rre'
-    id_user = db.Column(db.Integer, db.ForeignKey('utilisateur.id_user'), primary_key=True)
-
-class Cre(db.Model):
-    __tablename__ = 'cre'
-    id_user_1 = db.Column(db.Integer, db.ForeignKey('utilisateur.id_user'), primary_key=True)
-    id_user = db.Column(db.Integer, db.ForeignKey('rre.id_user'), nullable=False)
-
 class Planning(db.Model):
     __tablename__ = 'planning'
     id_planning = db.Column(db.Integer, primary_key=True, autoincrement=True)
@@ -38,60 +15,37 @@ class Ecole(db.Model):
     raison_sociale = db.Column(db.String(200))
     adresse = db.Column(db.String(200))
 
-class Contrat(db.Model):
-    __tablename__ = 'contrat'
-    id_contrat = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    libelle = db.Column(db.String(50))
-    datecreation = db.Column(db.String(50))
-    datesuppression = db.Column(db.String(50))
-    id_user = db.Column(db.Integer, db.ForeignKey('cre.id_user_1'), nullable=False)
-
-class Conflit(db.Model):
-    __tablename__ = 'conflit'
-    id_conflit = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    libelle = db.Column(db.String(50))
-    datecreation = db.Column(db.Date)
-    datesuppression = db.Column(db.Date)
-    id_user = db.Column(db.Integer, db.ForeignKey('cre.id_user_1'), nullable=False)
-
-class Rp(db.Model):
-    __tablename__ = 'rp'
-    id_user_3 = db.Column(db.Integer, db.ForeignKey('utilisateur.id_user'), primary_key=True)
-    id_user = db.Column(db.Integer, db.ForeignKey('cre.id_user_1'), unique=True)
-    id_user_1 = db.Column(db.Integer, db.ForeignKey('rre.id_user'), unique=True)
-    id_user_2 = db.Column(db.Integer, db.ForeignKey('suiveur.id_user'), unique=True)
-    id_ecole = db.Column(db.Integer, db.ForeignKey('ecole.id_ecole'))
+class Role(db.Model):
+    __tablename__ = 'role'
+    id_role = db.Column(db.Integer, primary_key=True)
+    nom = db.Column(db.String(50))
 
 class Entreprise(db.Model):
     __tablename__ = 'entreprise'
     id_entreprise = db.Column(db.Integer, primary_key=True, autoincrement=True)
     raison_sociale = db.Column(db.String(200))
     adresse = db.Column(db.String(200))
-    id_ecole = db.Column(db.Integer, db.ForeignKey('ecole.id_ecole'), nullable=False)
+    id_ecole = db.Column(db.Integer, db.ForeignKey('ecole.id_ecole'))
 
-class Programme(db.Model):
-    __tablename__ = 'programme'
-    id_programme = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    diplome = db.Column(db.String(50))
-    annee = db.Column(db.String(50))
-    id_user = db.Column(db.Integer, db.ForeignKey('rp.id_user_3'), nullable=False)
-
-class TuteurEntreprise(db.Model):
-    __tablename__ = 'tuteur_entreprise'
-    id_user_2 = db.Column(db.Integer, db.ForeignKey('utilisateur.id_user'), primary_key=True)
-    id_entreprise = db.Column(db.Integer, db.ForeignKey('entreprise.id_entreprise'), nullable=False)
-    id_ecole = db.Column(db.Integer, db.ForeignKey('ecole.id_ecole'), nullable=False)
-    id_user = db.Column(db.Integer, db.ForeignKey('suiveur.id_user'), nullable=False)
-    id_user_1 = db.Column(db.Integer, db.ForeignKey('rp.id_user_3'), nullable=False)
-
-class Alternant(db.Model):
-    __tablename__ = 'alternant'
-    id_user_1 = db.Column(db.Integer, db.ForeignKey('utilisateur.id_user'), primary_key=True)
-    promotion = db.Column(db.String(50))
-    id_planning = db.Column(db.Integer, db.ForeignKey('planning.id_planning'), nullable=False)
-    id_user = db.Column(db.Integer, db.ForeignKey('tuteur_entreprise.id_user_2'), nullable=False)
+class Utilisateur(db.Model):
+    __tablename__ = 'utilisateur'
+    id_user = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    nom = db.Column(db.String(50))
+    prenom = db.Column(db.String(50))
+    mail = db.Column(db.String(50))
+    date_naissance = db.Column(db.Date)
+    statut = db.Column(db.Boolean)
+    password = db.Column(db.String(256))
+    id_user_1 = db.Column(db.Integer, db.ForeignKey('utilisateur.id_user'))
+    id_user_2 = db.Column(db.Integer, db.ForeignKey('utilisateur.id_user'))
+    id_ecole = db.Column(db.Integer, db.ForeignKey('ecole.id_ecole'))
+    id_ecole_1 = db.Column(db.Integer, db.ForeignKey('ecole.id_ecole'))
+    id_ecole_2 = db.Column(db.Integer, db.ForeignKey('ecole.id_ecole'))
     id_entreprise = db.Column(db.Integer, db.ForeignKey('entreprise.id_entreprise'))
-    id_ecole = db.Column(db.Integer, db.ForeignKey('ecole.id_ecole'), nullable=False)
+    id_entreprise_1 = db.Column(db.Integer, db.ForeignKey('entreprise.id_entreprise'))
+    id_role = db.Column(db.Integer, db.ForeignKey('role.id_role'))
+    id_user_3 = db.Column(db.Integer, db.ForeignKey('utilisateur.id_user'))
+    id_planning = db.Column(db.Integer, db.ForeignKey('planning.id_planning'))
 
 class Mission(db.Model):
     __tablename__ = 'mission'
@@ -100,21 +54,44 @@ class Mission(db.Model):
     description = db.Column(db.String(50))
     datedebut = db.Column(db.Date)
     datefin = db.Column(db.Date)
-    id_user = db.Column(db.Integer, db.ForeignKey('alternant.id_user_1'))
+    id_user = db.Column(db.Integer, db.ForeignKey('utilisateur.id_user'))
 
 class Evaluation(db.Model):
     __tablename__ = 'evaluation'
     id_evaluation = db.Column(db.Integer, primary_key=True, autoincrement=True)
     dateevaluation = db.Column(db.Date)
-    id_user = db.Column(db.Integer, db.ForeignKey('alternant.id_user_1'), nullable=False)
+    id_user = db.Column(db.Integer, db.ForeignKey('utilisateur.id_user'))
 
 class Document(db.Model):
-    __tablename__ = 'document'
+    __tablename__ = 'document_'
     id_doc = db.Column(db.Integer, primary_key=True, autoincrement=True)
     nom = db.Column(db.String(50))
     md5 = db.Column(db.String(50))
     type = db.Column(db.String(50))
     datecreation = db.Column(db.Date)
     datesuppression = db.Column(db.Date)
-    id_user = db.Column(db.Integer, db.ForeignKey('suiveur.id_user'), nullable=False)
-    id_user_1 = db.Column(db.Integer, db.ForeignKey('alternant.id_user_1'), nullable=False)
+    id_user = db.Column(db.Integer, db.ForeignKey('utilisateur.id_user'))
+    id_user_1 = db.Column(db.Integer, db.ForeignKey('utilisateur.id_user'))
+
+class Contrat(db.Model):
+    __tablename__ = 'contrat'
+    id_contrat = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    libelle = db.Column(db.String(50))
+    datecreation = db.Column(db.String(50))
+    datesuppression = db.Column(db.String(50))
+    id_user = db.Column(db.Integer, db.ForeignKey('utilisateur.id_user'))
+
+class Conflit(db.Model):
+    __tablename__ = 'conflit'
+    id_conflit = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    libelle = db.Column(db.String(50))
+    datecreation = db.Column(db.Date)
+    datesuppression = db.Column(db.Date)
+    id_user = db.Column(db.Integer, db.ForeignKey('utilisateur.id_user'))
+
+class Programme(db.Model):
+    __tablename__ = 'programme'
+    id_programme = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    diplome = db.Column(db.String(50))
+    annee = db.Column(db.String(50))
+    id_user = db.Column(db.Integer, db.ForeignKey('utilisateur.id_user'))
