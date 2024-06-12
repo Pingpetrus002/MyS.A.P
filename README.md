@@ -7,6 +7,9 @@ Cette documentation couvre les points principaux de l'API MySAP implémentée av
 
 ## Routes
 
+> [!IMPORTANT]
+> Toutes les routes doivent être précédée de `/auth`
+
 ### 1. Inscription d'un utilisateur (`/register`)
 
 - **URL** : `/register`
