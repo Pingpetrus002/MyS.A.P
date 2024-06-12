@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bienvenue sur MySAP !</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .header {
+            text-align: center;
+            padding: 10px;
+            background-color: #FFC039;
+            color: 525252;
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+        }
+        .content {
+            padding: 20px;
+            text-align: center;
+        }
+        .footer {
+            text-align: center;
+            padding: 10px;
+            background-color: #FFC039;
+            color: 525252;
+            border-bottom-left-radius: 10px;
+            border-bottom-right-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Bienvenue sur MySAP</h1>
+        </div>
+        <div class="content">
+            <p>Bonjour {{ username }}</p>
+            <p>Votre compte a été créé avec succès.</p>
+            <p>Votre mot de passe est <strong>{{ password }}</strong></p>
+            <p>Veuillez changer votre mot de passe lors de votre première connexion.</p>
+        </div>
+        <div class="footer">
+            <p>Merci pour votre inscription !</p>
+        </div>
+    </div>
+</body>
+</html>
