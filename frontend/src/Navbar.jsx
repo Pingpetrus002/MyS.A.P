@@ -5,7 +5,7 @@ import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 
 function SimplePopover() {
-    const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(null);
+    const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>null;
 
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget);

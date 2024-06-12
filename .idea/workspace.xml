@@ -4,64 +4,41 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9615a97c-2444-4472-8fa0-f51bb0b75613" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/jsLibraryMappings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/Navbar.jsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/assets/logo.svg" afterDir="false" />
+    <list default="true" id="29954712-167e-4863-adda-eada601be9fe" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/S.A.P.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/S.A.P.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/profiles_settings.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/jsLibraryMappings.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docker-compose.yml" beforeDir="false" afterPath="$PROJECT_DIR$/docker-compose.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/main.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/main.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/vite.config.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/vite.config.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/Navbar.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/Navbar.jsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
-  <component name="FileTemplateManagerImpl">
-    <option name="RECENT_TEMPLATES">
-      <list>
-        <option value="Dockerfile" />
-        <option value="JSX File" />
-      </list>
-    </option>
-  </component>
-  <component name="FlaskConsoleOptions" custom-start-script="import sys&#10;sys.path.extend([WORKING_DIR_AND_PYTHON_PATHS])&#10;from flask.cli import ScriptInfo&#10;locals().update(ScriptInfo(create_app=None).load_app().make_shell_context())&#10;print(&quot;Python %s on %s\nApp: %s [%s]\nInstance: %s&quot; % (sys.version, sys.platform, app.import_name, app.env, app.instance_path))">
-    <envs>
-      <env key="FLASK_APP" value="app" />
-    </envs>
-    <option name="myCustomStartScript" value="import sys&#10;sys.path.extend([WORKING_DIR_AND_PYTHON_PATHS])&#10;from flask.cli import ScriptInfo&#10;locals().update(ScriptInfo(create_app=None).load_app().make_shell_context())&#10;print(&quot;Python %s on %s\nApp: %s [%s]\nInstance: %s&quot; % (sys.version, sys.platform, app.import_name, app.env, app.instance_path))" />
-    <option name="myEnvs">
-      <map>
-        <entry key="FLASK_APP" value="app" />
-      </map>
-    </option>
-  </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="GitHubPullRequestSearchHistory">{
-  &quot;lastFilter&quot;: {
-    &quot;state&quot;: &quot;OPEN&quot;,
-    &quot;assignee&quot;: &quot;SuperBananeMan&quot;
+  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
+  "lastFilter": {
+    "state": "OPEN",
+    "assignee": "SuperBananeMan"
   }
-}</component>
-  <component name="GithubPullRequestsUISettings">{
-  &quot;selectedUrlAndAccountId&quot;: {
-    &quot;url&quot;: &quot;https://github.com/Pingpetrus002/S.A.P&quot;,
-    &quot;accountId&quot;: &quot;0416c997-f196-4ed7-a838-5ccffde08eca&quot;
+}]]></component>
+  <component name="GithubPullRequestsUISettings"><![CDATA[{
+  "selectedUrlAndAccountId": {
+    "url": "https://github.com/Pingpetrus002/S.A.P",
+    "accountId": "0416c997-f196-4ed7-a838-5ccffde08eca"
   }
-}</component>
-  <component name="PackageJsonUpdateNotifier">
-    <dismissed value="$PROJECT_DIR$/frontend/package.json" />
-  </component>
-  <component name="ProjectColorInfo">{
-  &quot;associatedIndex&quot;: 7
-}</component>
-  <component name="ProjectId" id="2hUwDSmogxB2Sr3bKmPncaolqSv" />
+}]]></component>
+  <component name="ProjectColorInfo"><![CDATA[{
+  "customColor": "",
+  "associatedIndex": 7
+}]]></component>
+  <component name="ProjectId" id="2hnBfsyWThTT1UuwTOkFzXroAGE" />
   <component name="ProjectLevelVcsManager">
     <ConfirmationsSetting value="2" id="Add" />
   </component>
@@ -73,15 +50,12 @@
   "keyToString": {
     "ASKED_ADD_EXTERNAL_FILES": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
-    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "git-widget-placeholder": "component-Navbar",
-    "last_opened_file_path": "C:/Users/damie/Documents/Cours/b2/S2/projet_annuel/projet/S.A.P",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "preferences.pluginManager",
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
@@ -90,109 +64,23 @@
       <map>
         <entry key="com.intellij.reactbuddy.reactComponents" value="false" />
         <entry key="com.intellij.reactbuddy.reactInspector" value="false" />
-        <entry key="com.intellij.reactbuddy.storybook" value="false" />
       </map>
     </option>
-  </component>
-  <component name="RecentsManager">
-    <key name="MoveFile.RECENT_KEYS">
-      <recent name="C:\Users\damie\Documents\Cours\b2\S2\projet_annuel\projet\S.A.P\frontend" />
-      <recent name="C:\Users\damie\Documents\Cours\b2\S2\projet_annuel\projet\S.A.P" />
-    </key>
-  </component>
-  <component name="RunManager">
-    <configuration default="true" type="docker-deploy" factoryName="dockerfile" temporary="true">
-      <deployment type="dockerfile">
-        <settings />
-      </deployment>
-      <method v="2" />
-    </configuration>
-  </component>
-  <component name="SharedIndexes">
-    <attachedChunks>
-      <set>
-        <option value="bundled-js-predefined-1d06a55b98c1-0b3e54e931b4-JavaScript-WS-241.17890.13" />
-      </set>
-    </attachedChunks>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="9615a97c-2444-4472-8fa0-f51bb0b75613" name="Changes" comment="" />
-      <created>1717661846455</created>
+      <changelist id="29954712-167e-4863-adda-eada601be9fe" name="Changes" comment="" />
+      <created>1718220068655</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
-      <updated>1717661846455</updated>
-      <workItem from="1717661848367" duration="1049000" />
-      <workItem from="1717682321291" duration="4137000" />
-      <workItem from="1717703298471" duration="198000" />
-      <workItem from="1717704685388" duration="5389000" />
-      <workItem from="1717734047202" duration="359000" />
-      <workItem from="1717740869894" duration="19451000" />
-      <workItem from="1717844924182" duration="56000" />
-      <workItem from="1717845054992" duration="20084000" />
-      <workItem from="1717948883716" duration="629000" />
-      <workItem from="1718052281863" duration="3129000" />
-      <workItem from="1718105155254" duration="1617000" />
-      <workItem from="1718107114169" duration="255000" />
-      <workItem from="1718107978457" duration="937000" />
-      <workItem from="1718109056378" duration="748000" />
-      <workItem from="1718134396514" duration="1336000" />
+      <updated>1718220068655</updated>
+      <workItem from="1718220070613" duration="317000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
-  </component>
-  <component name="Vcs.Log.Tabs.Properties">
-    <option name="OPEN_GENERIC_TABS">
-      <map>
-        <entry key="2951eec0-ea26-4aee-94dc-5fe8e8804145" value="TOOL_WINDOW" />
-      </map>
-    </option>
-    <option name="TAB_STATES">
-      <map>
-        <entry key="2951eec0-ea26-4aee-94dc-5fe8e8804145">
-          <value>
-            <State>
-              <option name="CUSTOM_BOOLEAN_PROPERTIES">
-                <map>
-                  <entry key="Show.Git.Branches" value="true" />
-                </map>
-              </option>
-              <option name="FILTERS">
-                <map>
-                  <entry key="branch">
-                    <value>
-                      <list>
-                        <option value="flask-react-docker" />
-                      </list>
-                    </value>
-                  </entry>
-                </map>
-              </option>
-            </State>
-          </value>
-        </entry>
-        <entry key="MAIN">
-          <value>
-            <State>
-              <option name="FILTERS">
-                <map>
-                  <entry key="branch">
-                    <value>
-                      <list>
-                        <option value="flask-react-docker" />
-                      </list>
-                    </value>
-                  </entry>
-                </map>
-              </option>
-            </State>
-          </value>
-        </entry>
-      </map>
-    </option>
   </component>
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
