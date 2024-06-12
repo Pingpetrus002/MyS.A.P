@@ -128,6 +128,8 @@ CREATE TABLE IF NOT EXISTS programme(
 );
 
 
+
+
 CREATE USER root@root IDENTIFIED BY 'root';
 GRANT ALL PRIVILEGES ON flask_app.* TO root@root;
 FLUSH PRIVILEGES;
