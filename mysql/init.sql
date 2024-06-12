@@ -41,7 +41,7 @@ CREATE TABLE IF NOT EXISTS utilisateur(
    mail VARCHAR(50),
    date_naissance DATE,
    statut BOOLEAN,
-   password VARCHAR(128),
+   password VARCHAR(256),
    id_user_1 INT,
    id_user_2 INT,
    id_ecole INT,
@@ -133,4 +133,3 @@ CREATE TABLE IF NOT EXISTS programme(
 CREATE USER root@root IDENTIFIED BY 'root';
 GRANT ALL PRIVILEGES ON flask_app.* TO root@root;
 FLUSH PRIVILEGES;
-
