@@ -1,3 +1,5 @@
+.env
+.env.dev
 .DS_Store
 backend/.DS_Store
 frontend/node_modules

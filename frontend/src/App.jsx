@@ -1,23 +1,27 @@
 import { useEffect, useState } from 'react';
+import { GetUrlArgs } from './utils/Utilities';
+import PageComposer from './pages/PageComposer';
+import './App.css';
 
 function App() {
-    const [data, setData] = useState(null);
+
+    const [page, setPage] = useState("DefaultPage");
+
 
     useEffect(() => {
-        fetch('http://10.1.1.89:80/data')
-            .then(response => response.json())
-            .then(data => setData(data.message))
-            .catch(error => console.error('Error fetching data:', error));
+        const args = GetUrlArgs();
+        if ("page" in args) {
+            //console.log(args);
+            setPage(args["page"]);
+        }
     }, []);
 
-    console.log(data);
-
     return (
-        <div>
-            <h1>Hello, World!</h1>
-            <p>{data}</p>
+        <div className="App">
+            <PageComposer page={page} />
         </div>
     );
+    
 }
 
 export default App;
