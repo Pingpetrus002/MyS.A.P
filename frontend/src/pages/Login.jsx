@@ -33,7 +33,7 @@ async function SubmitLogin() {
 async function SubmitLogout() {
     let fetchWraper = new FetchWraper();
     fetchWraper.url = "http://localhost:5000/auth/logout";
-    fetchWraper.method = "POST";
+    fetchWraper.method = "GET";
     fetchWraper.headers.append("Content-Type", "application/json");
     fetchWraper.headers.append("Accept", "application/json");
     fetchWraper.headers.append("Access-Control-Allow-Origin", "*");
