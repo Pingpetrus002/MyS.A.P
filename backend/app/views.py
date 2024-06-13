@@ -1,13 +1,16 @@
 # Import des modules nécessaires
+import base64
 from flask import Blueprint, request, jsonify, render_template
 from flask_mail import Message, Mail
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity, set_access_cookies, unset_jwt_cookies
 from werkzeug.security import generate_password_hash, check_password_hash
-from .models import Utilisateur, db 
+from .models import Utilisateur, db, Document
 
 import re 
 import random  
 import string 
+import datetime
+import hashlib
 
 # Création d'un blueprint pour les routes d'authentification
 auth = Blueprint('auth', __name__)
@@ -152,3 +155,41 @@ def get_profil():
         'id_planning': user.id_planning
     }}), 200
 
+#Route pour set un rapport
+@auth.route('/set_rapport', methods=['POST'])
+@jwt_required()
+def set_rapport():
+    current_user = get_jwt_identity()
+    data: dict = request.get_json()
+
+    fields = ['id_user', 'id_suiveur', 'rapport']
+    if check_fields(data, fields) != 0:
+        return check_fields(data, fields)
+    
+    id_user = data.get('id_user')
+    id_suiveur = data.get('id_suiveur')
+    rapport = data.get('rapport')
+    date = datetime.datetime.now()
+    
+    #Recup de hash MD5 du rapport
+    # Décodage du rapport encodé en base64
+    rapport = base64.b64decode(rapport)
+
+    # Calcul de la somme de contrôle MD5
+    MD5 = hashlib.md5(rapport).hexdigest()
+
+
+    #Verification des roles
+    user = Utilisateur.query.get(current_user)
+
+    if not check_role(user, 1) and not check_role(user, 2) and not check_role(user, 3):
+        return jsonify({'message': 'Unauthorized'}), 403
+    
+    #Ajout du rapport
+
+    new_rapport = Document(id_user=id_user, id_user_1=id_suiveur, rapport=rapport, datecreation=date, md5=MD5)
+    db.session.add(new_rapport)
+
+    db.session.commit()
+
+    return jsonify({'message': 'Rapport set'}), 200
