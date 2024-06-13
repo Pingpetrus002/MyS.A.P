@@ -7,7 +7,7 @@ from .models import db
 def create_app():
     app = Flask(__name__)
     app.config.from_object('app.config.Config')
-    CORS(app)
+    CORS(app, resources={r"/auth/*": {"origins": "http://localhost", "supports_credentials": True}})
     db.init_app(app)
     JWTManager(app)
     Mail(app)
