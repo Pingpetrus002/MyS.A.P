@@ -1,12 +1,14 @@
 import { DataGrid } from '@mui/x-data-grid';
+import { alpha, styled } from '@mui/material/styles';
+import Button from '@mui/material/Button';
 
 
 
 function onButtonClick(cell) {
-  
+
   // get the row data
   console.log(cell.row);
-  
+
 }
 
 
@@ -25,19 +27,15 @@ function getColumns(type) {
       width: 120,
       type: 'button', // This column uses a button element for the cell
       renderCell: (params) => (
-        <button
+        <CustomButton
+          variant="contained"
           onClick={() => onButtonClick(params)}
-          style={{
-            cursor: 'pointer',
-            fontSize: 16,
-            padding: 8,
-            color: 'white',
-            backgroundColor: '#1976d2',
-            borderRadius: 4,
+          sx={{
+            backgroundColor: '#FDD47C',
           }}
         >
           Modifier
-        </button>
+        </CustomButton>
       ),
 
 
@@ -54,7 +52,7 @@ function getColumns(type) {
       width: 120,
       type: 'button', // This column uses a button element for the cell
       renderCell: (params) => (
-        <button
+        <CustomButton
           onClick={() => onButtonClick(params)}
           style={{
             cursor: 'pointer',
@@ -66,7 +64,7 @@ function getColumns(type) {
           }}
         >
           Voir
-        </button>
+        </CustomButton>
       ),
 
 
@@ -77,15 +75,15 @@ function getColumns(type) {
     { field: 'nom_prenom', headerName: 'Nom Prénom', width: 180 },
     { field: 'classe', headerName: 'Classe', width: 220 },
     { field: 'status', headerName: 'Status', width: 180 },
-    { field: 'duree', headerName: 'Durée', width: 180},
-    { field: 'contract', headerName: 'Contract', width: 180},
+    { field: 'duree', headerName: 'Durée', width: 180 },
+    { field: 'contract', headerName: 'Contract', width: 180 },
     {
       field: 'voir',
       headerName: 'Voir',
       width: 120,
       type: 'button', // This column uses a button element for the cell
       renderCell: (params) => (
-        <button
+        <CustomButton
           onClick={() => onButtonClick(params)}
           style={{
             cursor: 'pointer',
@@ -97,7 +95,7 @@ function getColumns(type) {
           }}
         >
           Voir
-        </button>
+        </CustomButton>
       ),
     },
   ];
@@ -125,22 +123,47 @@ function getColumns(type) {
   }
 }
 
+const CustomButton = styled(Button)(({ theme }) => ({
+  backgroundColor: '#FDD47C',
+  '&:hover': {
+    backgroundColor: `${alpha('#FDD47C', 1)}`,
+  },
 
+}));
+
+const CustomDataGrid = styled(DataGrid)(({ theme }) => ({
+  '& .MuiDataGrid-filler': {
+    backgroundColor: '#FDD47C',
+  },
+  '& .MuiDataGrid-columnHeader': {
+    backgroundColor: '#FDD47C',
+    '&:hover': {
+      backgroundColor: '#FFC039',
+    },
+  },
+  '& .MuiDataGrid-row': {
+    borderBottom: `1px solid ${theme.palette.divider}`,    
+    '&:nth-of-type(odd)': {
+      backgroundColor: theme.palette.action.hover,
+    },
+    '&:last-child td, &:last-child th': {
+      border: 0,
+    },
+  },
+}));
 
 export default function DataTable(args) {
   return (
-    <div style={{ height: '100%', width: '100%' }}>
-      <DataGrid
-        rows={args.rows}
-        columns={getColumns(args.type)}
-        initialState={{
-          pagination: {
-            paginationModel: { page: 0, pageSize: 5 },
-          },
-        }}
-        pageSizeOptions={[5, 10]}
-        disableMultipleRowSelection
-      />
-    </div>
+    <CustomDataGrid
+      rows={args.rows}
+      columns={getColumns(args.type)}
+      initialState={{
+        pagination: {
+          paginationModel: { page: 0, pageSize: 5 },
+        },
+      }}
+      pageSizeOptions={[5, 10]}
+      disableMultipleRowSelection
+    />
   );
 }
