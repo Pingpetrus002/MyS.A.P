@@ -20,6 +20,9 @@ def send_welcome_email(username, password):
     msg.html = render_template('welcome_email.html', username=username, password=password)
     mail.send(msg)
 
+def check_role(user, role):
+    return user.id_role == role
+
 @auth.route('/register', methods=['POST'])
 @jwt_required()
 def register():
@@ -33,6 +36,10 @@ def register():
     data = request.get_json()
     username = data.get('username')
     password = generate_random_password()
+
+    #Check role of the user
+    if not check_role(Utilisateur.query.get(current_identity), 1) and not check_role(Utilisateur.query.get(current_identity), 2):
+        return jsonify({'message': 'Unauthorized'}), 403
 
     if not re.match(r"[^@]+@[^@]+\.[^@]+", username):
         return jsonify({'message': 'Invalid email address'}), 400
