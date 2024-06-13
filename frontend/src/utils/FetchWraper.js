@@ -16,6 +16,7 @@ export default class FetchWraper {
             method: this.method,
             headers: this.headers,
             redirect: "follow",
+            credentials: "include"
         };
         if (this.method != "GET" && this.method != "HEAD") {
             requestOptions.body = this.body;
