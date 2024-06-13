@@ -1,9 +1,11 @@
 import Login from "./Login";
+import Profil from "./Profil";
 import FetchWraper from "../utils/FetchWraper";
 import { useEffect, useState } from 'react';
 
 const Pages = {
     "login": Login,
+    "profil":Profil,
     "DefaultPage": Login
 };
 
@@ -23,8 +25,7 @@ async function IsConnected() {
 }
 
 function PageComposer(args) {
-    
-    const [isConnected, setIsConnected] = useState(false);
+    const [isConnected, setIsConnected] = useState(null);
 
     useEffect(() => {
         async function fetchData() {
@@ -33,6 +34,11 @@ function PageComposer(args) {
         }
         fetchData();
     }, []);
+
+    // Ne pas rendre le composant tant que isConnected est null
+    if (isConnected === null) {
+        return null;
+    }
 
     let Page = Pages[args.page] || Pages.DefaultPage;
     
