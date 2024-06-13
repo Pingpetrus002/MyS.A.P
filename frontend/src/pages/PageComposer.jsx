@@ -13,7 +13,8 @@ async function IsConnected() {
     fetchWraper.method = "GET";
     fetchWraper.headers.append("Content-Type", "application/json");
     fetchWraper.headers.append("Accept", "application/json");
-    fetchWraper.headers.append("Access-Control-Allow-Origin", "*");
+    fetchWraper.headers.append("Access-Control-Allow-Origin", window.location.origin);
+    fetchWraper.headers.append("Access-Control-Allow-Credentials", "true");
     let result = await fetchWraper.fetchw();
     
     let data = await result.json();
