@@ -52,7 +52,7 @@ const Navbar = () => {
 
     return (
         <AppBar position="static">
-            <Container maxWidth="false" style={{height: 150, background: '#FDD47C', border: '5px black solid'}}>
+            <Container maxWidth="false" style={{ height: 100, background: '#FDD47C', borderBottom: '5px black solid', paddingLeft: '2rem', paddingRight: '2rem' }}>
                 <Toolbar disableGutters>
                     <Typography
                         variant="h6"
@@ -61,7 +61,7 @@ const Navbar = () => {
                         href="/"
                         sx={{
                             mr: 2,
-                            display: {xs: 'none', md: 'flex'},
+                            display: { xs: 'none', md: 'flex' },
                             fontFamily: 'monospace',
                             fontWeight: 700,
                             letterSpacing: '.3rem',
@@ -69,11 +69,10 @@ const Navbar = () => {
                             textDecoration: 'none',
                         }}
                     >
-                        <img style={{width: '4.5rem', borderRadius: 210.07}}
-                             src={logo} alt={'logo'}/>
+                        <img style={{ width: '3rem', borderRadius: 210.07, marginRight: '1rem' }} src={logo} alt="logo" />
                     </Typography>
 
-                    <Box sx={{flexGrow: 1, display: {xs: 'flex', md: 'none'}}}>
+                    <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
                         <IconButton
                             size="large"
                             aria-label="account of current user"
@@ -82,34 +81,34 @@ const Navbar = () => {
                             onClick={handleOpenNavMenu}
                             color="inherit"
                         >
-                            <MenuIcon/>
+                            <MenuIcon />
                         </IconButton>
                         <Menu
                             id="menu-appbar"
                             anchorEl={anchorElNav}
                             anchorOrigin={{
-                                vertical: 'bottom',
-                                horizontal: 'left',
+                                vertical: 'top',
+                                horizontal: 'center',
                             }}
                             keepMounted
                             transformOrigin={{
                                 vertical: 'top',
-                                horizontal: 'left',
+                                horizontal: 'center',
                             }}
                             open={Boolean(anchorElNav)}
                             onClose={handleCloseNavMenu}
                             sx={{
-                                display: {xs: 'block', md: 'none'},
+                                display: { xs: 'block', md: 'none' },
                             }}
                         >
                             {pages.map((page) => (
-                                <MenuItem key={page} onClick={handleCloseNavMenu}>
+                                <MenuItem key={page} onClick={handleCloseNavMenu} color="black">
                                     <Typography textAlign="center">{page}</Typography>
                                 </MenuItem>
                             ))}
                         </Menu>
                     </Box>
-                    <AdbIcon sx={{display: {xs: 'flex', md: 'none'}, mr: 1}}/>
+                    <AdbIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
                     <Typography
                         variant="h5"
                         noWrap
@@ -117,7 +116,7 @@ const Navbar = () => {
                         href="#app-bar-with-responsive-menu"
                         sx={{
                             mr: 2,
-                            display: {xs: 'flex', md: 'none'},
+                            display: { xs: 'flex', md: 'none' },
                             flexGrow: 1,
                             fontFamily: 'monospace',
                             fontWeight: 700,
@@ -128,38 +127,38 @@ const Navbar = () => {
                     >
                         LOGO
                     </Typography>
-                    <Box sx={{flexGrow: 1, display: {xs: 'none', md: 'flex'}}}>
+                    <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'center', marginLeft: '2rem', marginRight: '2rem' }}>
                         {pages.map((page) => (
                             <Button
                                 key={page}
                                 onClick={handleCloseNavMenu}
-                                sx={{my: 2, color: 'white', display: 'block'}}
+                                sx={{ my: 2, color: 'black', display: 'block', mx: 3 }}  // Increased spacing here
                             >
                                 {page}
                             </Button>
                         ))}
                     </Box>
 
-                    <Box sx={{flexGrow: 0, p: 0, mr: 5 }} onClick={handleOpenUserMenuNotif}>
+                    <Box sx={{ flexGrow: 0, p: 0, mr: 5, marginRight: '2rem' }} onClick={handleOpenUserMenuNotif}>
                         <IconButton
                             size="large"
                             aria-label="show 17 new notifications"
-                            color="inherit"
+                            color="black"
                         >
                             <Badge badgeContent={17} color="error">
-                                <NotificationsIcon/>
+                                <NotificationsIcon />
                             </Badge>
                         </IconButton>
                     </Box>
 
-                    <Box sx={{flexGrow: 0}}>
+                    <Box sx={{ flexGrow: 0 }}>
                         <Tooltip title="Open settings">
-                            <IconButton onClick={handleOpenUserMenuProfil} sx={{p: 0}}>
-                                <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg"/>
+                            <IconButton onClick={handleOpenUserMenuProfil} sx={{ p: 0 }}>
+                                <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
                             </IconButton>
                         </Tooltip>
                         <Menu
-                            sx={{mt: '45px'}}
+                            sx={{ mt: '45px' }}
                             id="menu-appbar"
                             anchorEl={anchorElUser}
                             anchorOrigin={{
