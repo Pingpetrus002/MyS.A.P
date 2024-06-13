@@ -25,6 +25,7 @@ async function SubmitLogin() {
 
     let data = await result.json();
     console.log(data);
+    window.location.href = "/?page=profil";
 
 
 

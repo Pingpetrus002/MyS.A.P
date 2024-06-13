@@ -11,7 +11,7 @@ Il permet également de gérer la connexion de l'utilisateur:
 #### Ajouter une page
 1. Créer la page `jsx` dans le dossier `src/pages/` en suivant le modèle des autres pages.
 2. ajouter `import NomDeLaPage from './NomDeLaPage';` dans `src/page/PageComposer`.
-3. Ajouter le composant `NomDeLaPage` dans le `switch` de `src/page/PageComposer`, en l'associant à un `argument`.
+3. Ajouter le composant `NomDeLaPage` dans le `dictionaire` de `src/page/PageComposer`, en l'associant à un `argument`.
   - example : `NomDeLaPage` pour `/?page=NomDeLaPage`
   ```jsx
   const Pages = {
