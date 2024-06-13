@@ -24,6 +24,18 @@ def send_welcome_email(username, password):
     msg.html = render_template('welcome_email.html', username=username, password=password)
     mail.send(msg)
 
+# Fonction verifiant les champs du formulaire
+def check_fields(data, fields):
+    if not request.is_json:
+        return jsonify({'message': 'Missing JSON in request'}), 400
+    for field in fields:
+        if field not in data:
+            print('Field Manquant ')
+            return jsonify({'message': f'Missing {field} in JSON request'}), 400
+    else:
+        return 0
+    
+
 # Fonction pour vérifier le rôle d'un utilisateur
 def check_role(user, role):
     return user.id_role == role
@@ -33,9 +45,14 @@ def check_role(user, role):
 @jwt_required()
 def register():
     current_identity = get_jwt_identity()  # Récupération de l'identité actuelle depuis le token JWT
-
-    # Récupération des données du formulaire
     data = request.get_json()
+
+    # Verification des champs du formulaire
+    fields = ['username', 'firstname', 'lastname', 'date_naissance', 'role']
+    if check_fields(data, fields) != 0:
+        return check_fields(data, fields)
+
+    # Récupération dfes données du formulaire
     username = data.get('username')
     firstname = data.get('firstname')
     lastname = data.get('lastname')
@@ -71,6 +88,12 @@ def register():
 @auth.route('/login', methods=['POST'])
 def login():
     data = request.get_json()
+    
+    # Verification des champs du formulaire
+    fields = ['username', 'password']
+    if check_fields(data, fields) != 0:
+        return check_fields(data, fields)
+    
     username = data.get('username')
     password = data.get('password')
 
