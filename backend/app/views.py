@@ -66,7 +66,7 @@ def login():
     return response, 200
 
 
-@auth.route('/logout', methods=['POST'])
+@auth.route('/logout', methods=['GET'])
 @jwt_required()
 def logout():
     response = jsonify({'message': 'Logout successful'})
