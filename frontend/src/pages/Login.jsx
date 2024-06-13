@@ -30,6 +30,23 @@ async function SubmitLogin() {
 
 }
 
+async function SubmitLogout() {
+    let fetchWraper = new FetchWraper();
+    fetchWraper.url = "http://localhost:5000/auth/logout";
+    fetchWraper.method = "POST";
+    fetchWraper.headers.append("Content-Type", "application/json");
+    fetchWraper.headers.append("Accept", "application/json");
+    fetchWraper.headers.append("Access-Control-Allow-Origin", "*");
+    let result = await fetchWraper.fetchw();
+
+    if (result.status !== 200) {
+        console.error("Logout failed");
+    }
+
+    let data = await result.json();
+    console.log(data);
+}
+
 function Login() {
     return (
         <div>
@@ -51,6 +68,7 @@ function Login() {
                 />
                 <br />
                 <Button type="button" onClick={SubmitLogin}>Submit</Button>
+                <Button type="button" onClick={SubmitLogout}>Logout</Button>
             </form>
         </div>
     );
