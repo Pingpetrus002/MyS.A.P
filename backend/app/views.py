@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify, render_template
 from flask_mail import Message, Mail
-from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
+from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity, set_access_cookies, unset_jwt_cookies
 from werkzeug.security import generate_password_hash, check_password_hash
 from .models import Utilisateur, db
 
@@ -60,8 +60,19 @@ def login():
         return jsonify({'message': 'Invalid credentials'}), 401
 
     access_token = create_access_token(identity=user.id_user)
+    response = jsonify({'message': 'Login successful'})
+    set_access_cookies(response, access_token)
+    
+    return response, 200
 
-    return jsonify({'access_token': access_token}), 200
+
+@auth.route('/logout', methods=['POST'])
+@jwt_required()
+def logout():
+    response = jsonify({'message': 'Logout successful'})
+    unset_jwt_cookies(response)
+    return response, 200
+
 
 @auth.route('/protected', methods=['GET'])
 @jwt_required()
