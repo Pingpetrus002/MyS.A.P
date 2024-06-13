@@ -12,7 +12,7 @@ Cette documentation couvre les points principaux de l'API MySAP implémentée av
 - **URL** : `/register`
 - **Méthode** : `POST`
 - **Description** : Permet à un utilisateur invité de s'inscrire.
-- **Autentification** : Requiert un token JWT.
+- **Autentification** : Requiert un token JWT comprenant un compte role RRE 
 - **Données de la requête** :
   - `username` (string) : Adresse email de l'utilisateur.
 - **Réponse** :
