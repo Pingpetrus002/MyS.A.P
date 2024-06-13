@@ -14,6 +14,7 @@ class Config:
     JWT_REFRESH_COOKIE_PATH = '/token/refresh'
     JWT_COOKIE_CSRF_PROTECT = False
     JWT_COOKIE_SECURE = True
+    JWT_COOKIE_SAMESITE = 'Lax' 
     JWT_ACCESS_TOKEN_EXPIRES = 3600
     SQLALCHEMY_DATABASE_URI= os.getenv('SQLALCHEMY_DATABASE_URI')
     SQLALCHEMY_TRACK_MODIFICATIONS = False  # Ajout pour désactiver les notifications de modification
