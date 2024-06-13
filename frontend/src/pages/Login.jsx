@@ -1,4 +1,4 @@
-import { TextField } from '@mui/material';
+import { TextField, Button } from '@mui/material';
 import JObject from '../utils/JObject';
 import FetchWraper from '../utils/FetchWraper';
 
@@ -50,7 +50,7 @@ function Login() {
                     name='password'
                 />
                 <br />
-                <button type="button" onClick={SubmitLogin}>Submit</button>
+                <Button type="button" onClick={SubmitLogin}>Submit</Button>
             </form>
         </div>
     );
