@@ -55,6 +55,33 @@ Cette documentation couvre les points principaux de l'API MySAP implémentée av
   }
   ```
 
+### 2. Reset le MDP (`/change_password`)
+
+- **URL** : `/login`
+- **Méthode** : `POST`
+- **Description** : Permet à un utilisateur de changer son MDP.
+- **Autentification** : Token JWT.
+- **Données de la requête** :
+  - `old_password` (string) : Ancien MDP.
+  - `new_password` (string) : Nouveau MDP.
+- **Réponse** :
+  - `200 OK` : Retourne un token d'accès.
+  - `401 Unauthorized` : Ancien MDP invalide.
+- **Exemple de requête** :
+  ```json
+  {
+    "old_password": "a",
+    "new_password": "aa"
+    
+  }
+  ```
+- **Exemple de réponse** :
+  ```json
+  {
+    "message": "Password changed"
+  }
+  ```
+
 ### 3. Route protégée (`/protected`)
 
 - **URL** : `/protected`
