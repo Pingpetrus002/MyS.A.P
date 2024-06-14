@@ -27,6 +27,19 @@ def send_welcome_email(username, password):
     msg.html = render_template('welcome_email.html', username=username, password=password)
     mail.send(msg)
 
+def document_to_dict(doc):
+    return {
+        #'id_doc': doc.id_doc,
+        'nom': doc.nom,
+        #'rapport': base64.b64encode(doc.rapport).decode('utf-8'),  # Convertir en base64 pour l'affichage
+        'md5': doc.md5,
+        'type': doc.type,
+        'datecreation': doc.datecreation.isoformat() if doc.datecreation else None,
+        'datesuppression': doc.datesuppression.isoformat() if doc.datesuppression else None,
+        'id_user': doc.id_user,
+        'id_user_1': doc.id_user_1
+    }
+
 # Fonction verifiant les champs du formulaire
 def check_fields(data, fields):
     if not request.is_json:
@@ -193,3 +206,38 @@ def set_rapport():
     db.session.commit()
 
     return jsonify({'message': 'Rapport set'}), 200
+
+#Route pour get un rapport
+@auth.route('/get_rapport_info', methods=['GET'])
+@jwt_required()
+def get_rapport():
+    current_user = get_jwt_identity()
+    data = request.get_json()
+    user = Utilisateur.query.get(current_user)
+
+    
+    # Cas Admin et RRE - Recupération de tous les rapports
+    if check_role(user, 1) or check_role(user, 2):
+        #Recupération des rapports
+        rapports = Document.query.all()
+        rapports_dict = [document_to_dict(rapport) for rapport in rapports]
+
+
+        return jsonify({'rapports': rapports_dict}), 200
+
+    # Cas Suiveur - Recupération des rapports de ses étudiants
+    elif check_role(user, 3):
+        #Recupération des rapports
+        rapports = Document.query.filter_by(id_user_1=current_user).all()
+        rapports_dict = [document_to_dict(rapport) for rapport in rapports]
+
+        return jsonify({'rapports': rapports_dict}), 200
+    
+    # Cas Etudiant - Recupération des rapports de l'étudiant
+    elif check_role(user, 4):
+        #Recupération des rapports
+        rapports = Document.query.filter_by(id_user=current_user).all()
+        rapports_dict = [document_to_dict(rapport) for rapport in rapports]        
+        return jsonify({'rapports': rapports_dict}), 200
+
+
