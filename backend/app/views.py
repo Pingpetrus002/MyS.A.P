@@ -1,13 +1,16 @@
 # Import des modules nécessaires
-from flask import Blueprint, request, jsonify, render_template
+import base64
+from flask import Blueprint, request, jsonify, render_template, make_response
 from flask_mail import Message, Mail
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity, set_access_cookies, unset_jwt_cookies
 from werkzeug.security import generate_password_hash, check_password_hash
-from .models import Utilisateur, db 
+from .models import Utilisateur, db, Document
 
 import re 
 import random  
 import string 
+import datetime
+import hashlib
 
 # Création d'un blueprint pour les routes d'authentification
 auth = Blueprint('auth', __name__)
@@ -23,6 +26,19 @@ def send_welcome_email(username, password):
     msg = Message('Bienvenue sur MySAP !', recipients=[username])
     msg.html = render_template('welcome_email.html', username=username, password=password)
     mail.send(msg)
+
+def document_to_dict(doc):
+    return {
+        #'id_doc': doc.id_doc,
+        'nom': doc.nom,
+        #'rapport': base64.b64encode(doc.rapport).decode('utf-8'),  # Convertir en base64 pour l'affichage
+        'md5': doc.md5,
+        'type': doc.type,
+        'datecreation': doc.datecreation.isoformat() if doc.datecreation else None,
+        'datesuppression': doc.datesuppression.isoformat() if doc.datesuppression else None,
+        'id_user': doc.id_user,
+        'id_user_1': doc.id_user_1
+    }
 
 # Fonction verifiant les champs du formulaire
 def check_fields(data, fields):
@@ -152,3 +168,109 @@ def get_profil():
         'id_planning': user.id_planning
     }}), 200
 
+#Route pour set un rapport
+@auth.route('/set_rapport', methods=['POST'])
+@jwt_required()
+def set_rapport():
+    current_user = get_jwt_identity()
+    data: dict = request.get_json()
+
+    fields = ['id_user', 'id_suiveur', 'rapport']
+    if check_fields(data, fields) != 0:
+        return check_fields(data, fields)
+    
+    id_user = data.get('id_user')
+    id_suiveur = data.get('id_suiveur')
+    rapport = data.get('rapport')
+    date = datetime.datetime.now()
+    
+    #Recup de hash MD5 du rapport
+    # Décodage du rapport encodé en base64
+    rapport = base64.b64decode(rapport)
+
+    # Calcul de la somme de contrôle MD5
+    MD5 = hashlib.md5(rapport).hexdigest()
+
+
+    #Verification des roles
+    user = Utilisateur.query.get(current_user)
+
+    if not check_role(user, 1) and not check_role(user, 2) and not check_role(user, 3):
+        return jsonify({'message': 'Unauthorized'}), 403
+    
+    #Ajout du rapport
+
+    new_rapport = Document(id_user=id_user, id_user_1=id_suiveur, rapport=rapport, datecreation=date, md5=MD5)
+    db.session.add(new_rapport)
+
+    db.session.commit()
+
+    return jsonify({'message': 'Rapport set'}), 200
+
+#Route pour get les infos des rapports
+@auth.route('/get_rapport_info', methods=['GET'])
+@jwt_required()
+def get_rapport_info():
+    current_user = get_jwt_identity()
+    data = request.get_json()
+    user = Utilisateur.query.get(current_user)
+
+    
+    # Cas Admin et RRE - Recupération de tous les rapports
+    if check_role(user, 1) or check_role(user, 2):
+        #Recupération des rapports
+        rapports = Document.query.all()
+        rapports_dict = [document_to_dict(rapport) for rapport in rapports]
+
+
+        return jsonify({'rapports': rapports_dict}), 200
+
+    # Cas Suiveur - Recupération des rapports de ses étudiants
+    elif check_role(user, 3):
+        #Recupération des rapports
+        rapports = Document.query.filter_by(id_user_1=current_user).all()
+        rapports_dict = [document_to_dict(rapport) for rapport in rapports]
+
+        return jsonify({'rapports': rapports_dict}), 200
+    
+    # Cas Etudiant - Recupération des rapports de l'étudiant
+    elif check_role(user, 4):
+        #Recupération des rapports
+        rapports = Document.query.filter_by(id_user=current_user).all()
+        rapports_dict = [document_to_dict(rapport) for rapport in rapports]        
+        return jsonify({'rapports': rapports_dict}), 200
+
+
+# Route pour download un rapport
+@auth.route('/get_rapport/<string:md5>', methods=['GET'])
+@jwt_required()
+def get_rapport(md5):
+    current_user = get_jwt_identity()
+    data = request.get_json()
+    user = Utilisateur.query.get(current_user)
+
+    print(md5)
+    rapport = Document.query.filter_by(md5=md5).first()
+
+    if not rapport:
+        return jsonify({'message': 'Report not found'}), 404
+    
+    rapport = rapport.rapport
+    rapport = base64.b64decode(rapport)
+
+    # Vérifiez les droits d'accès selon le rôle de l'utilisateur
+    if check_role(user, 1) or check_role(user, 2):  # Admin ou RRE
+        pass
+    elif check_role(user, 3) and rapport.id_user_1 == current_user:  # Suiveur
+        pass
+    elif check_role(user, 4) and rapport.id_user == current_user:  # Étudiant
+        pass
+    else:
+        return jsonify({'message': 'Unauthorized'}), 403
+
+    response = make_response(rapport)
+    response.headers['Content-Type'] = 'application/json'
+    response.headers['Accept'] = 'application/pdf'
+    response.headers['Content-Disposition'] = f'attachment; filename=report_{md5}.pdf'
+
+    return response
