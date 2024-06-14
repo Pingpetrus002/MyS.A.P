@@ -1,6 +1,6 @@
 # Import des modules nécessaires
 import base64
-from flask import Blueprint, request, jsonify, render_template
+from flask import Blueprint, request, jsonify, render_template, make_response
 from flask_mail import Message, Mail
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity, set_access_cookies, unset_jwt_cookies
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -207,10 +207,10 @@ def set_rapport():
 
     return jsonify({'message': 'Rapport set'}), 200
 
-#Route pour get un rapport
+#Route pour get les infos des rapports
 @auth.route('/get_rapport_info', methods=['GET'])
 @jwt_required()
-def get_rapport():
+def get_rapport_info():
     current_user = get_jwt_identity()
     data = request.get_json()
     user = Utilisateur.query.get(current_user)
@@ -241,3 +241,36 @@ def get_rapport():
         return jsonify({'rapports': rapports_dict}), 200
 
 
+# Route pour download un rapport
+@auth.route('/get_rapport/<string:md5>', methods=['GET'])
+@jwt_required()
+def get_rapport(md5):
+    current_user = get_jwt_identity()
+    data = request.get_json()
+    user = Utilisateur.query.get(current_user)
+
+    print(md5)
+    rapport = Document.query.filter_by(md5=md5).first()
+
+    if not rapport:
+        return jsonify({'message': 'Report not found'}), 404
+    
+    rapport = rapport.rapport
+    rapport = base64.b64decode(rapport)
+
+    # Vérifiez les droits d'accès selon le rôle de l'utilisateur
+    if check_role(user, 1) or check_role(user, 2):  # Admin ou RRE
+        pass
+    elif check_role(user, 3) and rapport.id_user_1 == current_user:  # Suiveur
+        pass
+    elif check_role(user, 4) and rapport.id_user == current_user:  # Étudiant
+        pass
+    else:
+        return jsonify({'message': 'Unauthorized'}), 403
+
+    response = make_response(rapport)
+    response.headers['Content-Type'] = 'application/json'
+    response.headers['Accept'] = 'application/pdf'
+    response.headers['Content-Disposition'] = f'attachment; filename=report_{md5}.pdf'
+
+    return response
