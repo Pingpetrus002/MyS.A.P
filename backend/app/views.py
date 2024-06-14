@@ -127,6 +127,34 @@ def login():
     
     return response, 200
 
+# Route pour changer le mot de passe d'un utilisateur
+@auth.route('/change_password', methods=['POST'])
+@jwt_required()
+def change_password():
+    current_user = get_jwt_identity()
+    data = request.get_json()
+
+    # Verification des champs du formulaire
+    fields = ['old_password', 'new_password']
+    if check_fields(data, fields) != 0:
+        return check_fields(data, fields)
+    
+    old_password = data.get('old_password')
+    new_password = data.get('new_password')
+
+    user = Utilisateur.query.get(current_user)
+    # Vérification de la correspondance du mot de passe actuel
+    if not check_password_hash(user.password, old_password):
+        return jsonify({'message': 'Invalid password'}), 401
+
+    # Hachage du nouveau mot de passe
+    user.password = generate_password_hash(new_password)
+    db.session.commit()
+
+    return jsonify({'message': 'Password changed'}), 200
+
+
+
 # Route pour la déconnexion d'un utilisateur
 @auth.route('/logout', methods=['GET'])
 @jwt_required()
