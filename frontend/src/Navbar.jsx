@@ -1,19 +1,20 @@
 import React, {useEffect, useState} from 'react';
-import logo from './assets/logo.svg';
+import logoSelect from './assets/LogoSelect.svg';
+import student from './assets/images/Student.svg';
+import calendar from './assets/images/Calendar.svg';
+import profil from './assets/images/Profil.svg';
+import rapport from './assets/images/Rapport.svg';
+import logo from './assets/Logo.svg';
+import calendarSelect from './assets/images/CalendarSelect.svg';
+import profilSelect from './assets/images/ProfilSelect.svg';
+import rapportSelect from './assets/images/RapportSelect.svg';
+import studentSelect from './assets/images/StudentSelect.svg';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
-import {Badge, Box} from "@mui/material";
-import AppBar from '@mui/material/AppBar';
-import Toolbar from '@mui/material/Toolbar';
-import IconButton from '@mui/material/IconButton';
-import Menu from '@mui/material/Menu';
+import {Badge, Box, Container, AppBar, Toolbar, IconButton, Menu, Avatar, Tooltip, MenuItem} from "@mui/material";
 import MenuIcon from '@mui/icons-material/Menu';
-import Container from '@mui/material/Container';
-import Avatar from '@mui/material/Avatar';
-import Tooltip from '@mui/material/Tooltip';
-import MenuItem from '@mui/material/MenuItem';
-import AdbIcon from '@mui/icons-material/Adb';
-import NotificationsIcon from '@mui/icons-material/Notifications';
+import * as Icons from '@mui/icons-material';
+import {useMediaQuery, useTheme} from '@mui/material';
 
 const pages = ['Rapports', 'Étudiants', 'Rendez-vous'];
 const settings = ['Paramètre', 'Profil', 'Déconnexion'];
@@ -22,167 +23,260 @@ const Navbar = () => {
     const [data, setData] = useState(null);
 
     useEffect(() => {
-        fetch('http://localhost:80/navbar')
+        fetch('http://localhost:80')
             .then(response => response.json())
             .then(data => setData(data.message))
             .catch(error => console.error('Error fetching data:', error));
     }, []);
 
-    const [anchorElNav, setAnchorElNav] = React.useState(null);
-    const [anchorElUser, setAnchorElUser] = React.useState(null);
+    const [anchorElNav, setAnchorElNav] = useState(null);
+    const [anchorElProfile, setAnchorElProfile] = useState(null);
+    const [anchorElNotification, setAnchorElNotification] = useState(null);
+    const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
     const handleOpenNavMenu = (event) => {
         setAnchorElNav(event.currentTarget);
     };
-    const handleOpenUserMenuProfil = (event) => {
-        setAnchorElUser(event.currentTarget);
+
+    const handleOpenProfileMenu = (event) => {
+        setAnchorElProfile(event.currentTarget);
     };
 
-    const handleOpenUserMenuNotif = (event) => {
-        setAnchorElUser(event.currentTarget);
+    const handleOpenNotificationMenu = (event) => {
+        setAnchorElNotification(event.currentTarget);
     };
 
     const handleCloseNavMenu = () => {
         setAnchorElNav(null);
     };
 
-    const handleCloseUserMenu = () => {
-        setAnchorElUser(null);
+    const handleCloseProfileMenu = () => {
+        setAnchorElProfile(null);
     };
 
+    const handleCloseNotificationMenu = () => {
+        setAnchorElNotification(null);
+    };
+
+    const handleMobileMenuOpen = () => {
+        setMobileMenuOpen(true);
+    };
+
+    const handleMobileMenuClose = () => {
+        setMobileMenuOpen(false);
+    };
+
+    const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+    const isMedium = useMediaQuery(theme.breakpoints.between('sm', 'md'));
+    const isDesktop = useMediaQuery(theme.breakpoints.up('md'));
+
+    const NavMenuDesktop = () => (
+        <Container maxWidth="false" style={{
+            height: 80,
+            background: '#FDD47C',
+            paddingLeft: '2rem',
+            paddingRight: '2rem',
+            display: 'grid'
+        }}>
+            <Toolbar disableGutters>
+                <Typography variant="h6" noWrap component="a" href="/" sx={{
+                    mr: 2,
+                    display: {xs: 'none', md: 'flex'},
+                    fontFamily: 'monospace',
+                    fontWeight: 700,
+                    letterSpacing: '.3rem',
+                    color: 'inherit',
+                    textDecoration: 'none'
+                }}>
+                    <img style={{width: '6rem', borderRadius: 210.07, marginRight: '1rem'}} src={logoSelect}
+                         alt="logo"/>
+                </Typography>
+                <Box sx={{
+                    flexGrow: 1,
+                    display: 'flex',
+                    justifyContent: 'center',
+                    marginLeft: '2rem',
+                    marginRight: '2rem'
+                }}>
+                    {pages.map((page) => (
+                        <Button key={page} onClick={handleCloseNavMenu}
+                                sx={{
+                                    my: 2,
+                                    color: 'black',
+                                    display: 'block',
+                                    mx: 5,
+                                    fontWeight: 'bold',
+                                    fontSize: 15
+                                }}>
+                            {page}
+                        </Button>
+                    ))}
+                </Box>
+                <NotificationIcon/>
+                <ProfileIcon/>
+            </Toolbar>
+        </Container>
+    );
+
+    const NavMenuMedium = () => (
+        <Container maxWidth="false" style={{
+            height: 80,
+            background: '#FDD47C',
+            paddingLeft: '1rem',
+            paddingRight: '1rem',
+            display: 'grid'
+        }}>
+            <Toolbar disableGutters>
+                <IconButton size="large" aria-label="account of current user" aria-controls="menu-appbar"
+                            aria-haspopup="true" onClick={handleOpenNavMenu} color="black"
+                            sx={{display: {xs: 'block', md: 'none'}}}>
+                    <MenuIcon/>
+                </IconButton>
+                <Box sx={{
+                    flexGrow: 1,
+                    display: 'flex',
+                    justifyContent: 'flex-end',
+                    marginLeft: '2rem',
+                    marginRight: '2rem'
+                }}>
+                    <NotificationIcon/>
+                    <ProfileIcon/>
+                </Box>
+            </Toolbar>
+        </Container>
+    );
+
+    const NotificationIcon = () => (
+        <Box sx={{ justifyContent: 'end' }}>
+            <IconButton size='large' aria-label="show new notifications" color="black"
+                        onClick={handleOpenNotificationMenu}>
+                <Badge badgeContent={50} color="error">
+                    <Icons.Notifications />
+                </Badge>
+            </IconButton>
+            <Menu
+                sx={{ mt: '45px' }}
+                id="menu-appbar-notification"
+                anchorEl={anchorElNotification}
+                keepMounted
+                open={Boolean(anchorElNotification)}
+                onClose={handleCloseNotificationMenu}
+                anchorOrigin={{
+                    vertical: 'bottom',
+                    horizontal: 'right',  // Changed from 'left' to 'right'
+                }}
+                transformOrigin={{
+                    vertical: 'top',
+                    horizontal: 'right',  // Changed from 'left' to 'right'
+                }}
+            >
+                <MenuItem key="notification" onClick={handleCloseNotificationMenu}>
+                    <Typography textAlign="center">Notification</Typography>
+                </MenuItem>
+            </Menu>
+        </Box>
+    );
+
+
+    const ProfileIcon = () => (
+        <Box sx={{ flexGrow: 0, marginLeft: 2 }}>
+            <Tooltip title="Open settings">
+                <IconButton onClick={handleOpenProfileMenu} sx={{ p: 0 }}>
+                    <img src={profil} alt="profile"
+                         style={{ width: '2.5rem', borderRadius: 210.07, border: "3px solid black" }} />
+                </IconButton>
+            </Tooltip>
+            <Menu
+                sx={{ mt: '45px' }}
+                id="menu-appbar-profile"
+                anchorEl={anchorElProfile}
+                keepMounted
+                open={Boolean(anchorElProfile)}
+                onClose={handleCloseProfileMenu}
+                anchorOrigin={{
+                    vertical: 'bottom',
+                    horizontal: 'right',  // Changed from 'left' to 'right'
+                }}
+                transformOrigin={{
+                    vertical: 'top',
+                    horizontal: 'right',  // Changed from 'left' to 'right'
+                }}
+            >
+                {settings.map((setting) => (
+                    <MenuItem key={setting} onClick={handleCloseProfileMenu}>
+                        <Typography textAlign="center">{setting}</Typography>
+                    </MenuItem>
+                ))}
+            </Menu>
+        </Box>
+    );
+
+    const NavMenuMobile = () => (
+        <Container maxWidth="false" style={{
+            height: 50,
+            background: '#FDD47C',
+            paddingLeft: '2rem',
+            paddingRight: '2rem',
+        }}>
+            <Toolbar disableGutters>
+                <Box sx={{flexGrow: 1, display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+                    <Typography variant="h6" align="center" color="black">
+                        Page
+                    </Typography>
+                </Box>
+                <NotificationIcon/>
+            </Toolbar>
+        </Container>
+    );
+
     return (
-        <AppBar position="static">
-            <Container maxWidth="false" style={{ height: 100, background: '#FDD47C', borderBottom: '5px black solid', paddingLeft: '2rem', paddingRight: '2rem' }}>
-                <Toolbar disableGutters>
-                    <Typography
-                        variant="h6"
-                        noWrap
-                        component="a"
-                        href="/"
-                        sx={{
-                            mr: 2,
-                            display: { xs: 'none', md: 'flex' },
-                            fontFamily: 'monospace',
-                            fontWeight: 700,
-                            letterSpacing: '.3rem',
-                            color: 'inherit',
-                            textDecoration: 'none',
-                        }}
-                    >
-                        <img style={{ width: '3rem', borderRadius: 210.07, marginRight: '1rem' }} src={logo} alt="logo" />
-                    </Typography>
+        <>
+            <AppBar position="static">
+                {isMobile ? (
+                    <NavMenuMobile/>
+                ) : (isMedium ? (
+                    <NavMenuMedium/>
+                ) : (isDesktop && (
+                    <NavMenuDesktop/>
+                )))}
+            </AppBar>
 
-                    <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
-                        <IconButton
-                            size="large"
-                            aria-label="account of current user"
-                            aria-controls="menu-appbar"
-                            aria-haspopup="true"
-                            onClick={handleOpenNavMenu}
-                            color="inherit"
-                        >
-                            <MenuIcon />
-                        </IconButton>
-                        <Menu
-                            id="menu-appbar"
-                            anchorEl={anchorElNav}
-                            anchorOrigin={{
-                                vertical: 'top',
-                                horizontal: 'center',
-                            }}
-                            keepMounted
-                            transformOrigin={{
-                                vertical: 'top',
-                                horizontal: 'center',
-                            }}
-                            open={Boolean(anchorElNav)}
-                            onClose={handleCloseNavMenu}
-                            sx={{
-                                display: { xs: 'block', md: 'none' },
-                            }}
-                        >
-                            {pages.map((page) => (
-                                <MenuItem key={page} onClick={handleCloseNavMenu} color="black">
-                                    <Typography textAlign="center">{page}</Typography>
-                                </MenuItem>
-                            ))}
-                        </Menu>
-                    </Box>
-                    <AdbIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
-                    <Typography
-                        variant="h5"
-                        noWrap
-                        component="a"
-                        href="#app-bar-with-responsive-menu"
-                        sx={{
-                            mr: 2,
-                            display: { xs: 'flex', md: 'none' },
-                            flexGrow: 1,
-                            fontFamily: 'monospace',
-                            fontWeight: 700,
-                            letterSpacing: '.3rem',
-                            color: 'inherit',
-                            textDecoration: 'none',
-                        }}
-                    >
-                        LOGO
-                    </Typography>
-                    <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'center', marginLeft: '2rem', marginRight: '2rem' }}>
-                        {pages.map((page) => (
-                            <Button
-                                key={page}
-                                onClick={handleCloseNavMenu}
-                                sx={{ my: 2, color: 'black', display: 'block', mx: 3 }}  // Increased spacing here
-                            >
-                                {page}
-                            </Button>
-                        ))}
-                    </Box>
+            {/* Footer for Mobile */}
+            {isMobile && (
+                <Box component="footer" sx={{
+                    background: '#FDD47C',
+                    height: 50,
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    position: 'fixed',
+                    bottom: 0,
+                    width: '100%'
+                }}>
+                    <IconButton onClick={handleOpenProfileMenu} sx={{p: 0, marginRight: '2rem'}}>
+                        <img style={{width: '2.5rem', borderRadius: 210.07, opacity: 0.6}} src={logo}
+                             alt="logo"/>
+                    </IconButton>
+                    <IconButton onClick={handleOpenProfileMenu} sx={{p: 0, marginRight: '2rem'}}>
+                        <img style={{width: '2.5rem', borderRadius: 210.07, opacity: 0.6}} src={rapport}
+                             alt="rapport"/>
+                    </IconButton>
+                    <IconButton onClick={handleOpenProfileMenu} sx={{p: 0, marginRight: '2rem'}}>
+                        <img style={{width: '2.5rem', borderRadius: 210.07, opacity: 0.6}} src={student}
+                             alt="student"/>
+                    </IconButton>
+                    <IconButton onClick={handleOpenProfileMenu} sx={{p: 0, marginRight: '2rem'}}>
+                        <img style={{width: '2.5rem', borderRadius: 210.07, opacity: 0.6}} src={calendar}
+                             alt="calendar"/>
+                    </IconButton>
+                    <IconButton onClick={handleOpenProfileMenu} sx={{p: 0, marginRight: '2rem'}}>
+                        <img style={{width: '2.5rem', borderRadius: 210.07, opacity: 0.6}} src={profil} alt="profile"/>
+                    </IconButton>
+                </Box>
 
-                    <Box sx={{ flexGrow: 0, p: 0, mr: 5, marginRight: '2rem' }} onClick={handleOpenUserMenuNotif}>
-                        <IconButton
-                            size="large"
-                            aria-label="show 17 new notifications"
-                            color="black"
-                        >
-                            <Badge badgeContent={17} color="error">
-                                <NotificationsIcon />
-                            </Badge>
-                        </IconButton>
-                    </Box>
-
-                    <Box sx={{ flexGrow: 0 }}>
-                        <Tooltip title="Open settings">
-                            <IconButton onClick={handleOpenUserMenuProfil} sx={{ p: 0 }}>
-                                <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
-                            </IconButton>
-                        </Tooltip>
-                        <Menu
-                            sx={{ mt: '45px' }}
-                            id="menu-appbar"
-                            anchorEl={anchorElUser}
-                            anchorOrigin={{
-                                vertical: 'top',
-                                horizontal: 'right',
-                            }}
-                            keepMounted
-                            transformOrigin={{
-                                vertical: 'top',
-                                horizontal: 'right',
-                            }}
-                            open={Boolean(anchorElUser)}
-                            onClose={handleCloseUserMenu}
-                        >
-                            {settings.map((setting) => (
-                                <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                                    <Typography textAlign="center">{setting}</Typography>
-                                </MenuItem>
-                            ))}
-                        </Menu>
-                    </Box>
-                </Toolbar>
-            </Container>
-        </AppBar>
+            )}
+        </>
     );
 };
 
