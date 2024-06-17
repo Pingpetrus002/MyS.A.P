@@ -33,6 +33,9 @@ function RendezVous() {
     if (!userData) {
         return <div>Chargement...</div>;
     }
+    if (!userData.url_calendly) {
+        return <h1>Erreur lors de la récupération des données du Calendly</h1>;
+    }
 
     return (
         <div>
