@@ -4,7 +4,7 @@ import student from '../assets/images/Student.svg';
 import calendar from '../assets/images/Calendar.svg';
 import profil from '../assets/images/Profil.svg';
 import rapport from '../assets/images/Rapport.svg';
-import logo from '../assets/Logo.svg';
+import logo from '../assets/logo.svg';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import {Badge, Box, Container, AppBar, Toolbar, IconButton, Menu, Avatar, Tooltip, MenuItem} from "@mui/material";
