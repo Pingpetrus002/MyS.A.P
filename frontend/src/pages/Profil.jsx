@@ -1,6 +1,6 @@
 import FetchWraper from '../utils/FetchWraper';
 import { useEffect, useState } from 'react';
-import {LinearProgress} from '@mui/material';
+import { LinearProgress } from '@mui/material';
 
 
 async function getDatas() {
@@ -12,7 +12,7 @@ async function getDatas() {
     fetchWraper.headers.append("Access-Control-Allow-Origin", window.location.origin);
     fetchWraper.headers.append("Access-Control-Allow-Credentials", "true");
     let result = await fetchWraper.fetchw();
-    
+
     let data = await result.json();
 
     return data.user;
@@ -32,11 +32,18 @@ export default function Profil() {
     }, []);
 
     return (
-        <div>
-            <h1>Profil</h1>
-            <p>Email: {user ? user.mail : <LinearProgress />}</p>
-            <p>Nom: {user ? user.nom : <LinearProgress />}</p>
-            <p>Prénom: {user ? user.prenom : <LinearProgress />}</p>
-        </div>
+        <>
+            <header>
+                <h1>Navbar</h1>
+            </header>
+            <body>
+                <div>
+                    <h1>Profil</h1>
+                    <p>Email: {user ? user.mail : <LinearProgress />}</p>
+                    <p>Nom: {user ? user.nom : <LinearProgress />}</p>
+                    <p>Prénom: {user ? user.prenom : <LinearProgress />}</p>
+                </div>
+            </body>
+        </>
     );
 }
