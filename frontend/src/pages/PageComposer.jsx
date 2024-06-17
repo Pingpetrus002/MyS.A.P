@@ -1,11 +1,13 @@
 import Login from "./Login";
 import Profil from "./Profil";
+import RendezVous from "./RendezVous";
 import FetchWraper from "../utils/FetchWraper";
 import { useEffect, useState } from 'react';
 
 const Pages = {
     "login": Login,
     "profil":Profil,
+    "rendez-vous": RendezVous,
     "DefaultPage": Login
 };
 
