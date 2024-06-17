@@ -29,5 +29,9 @@ export default defineConfig({
         proxy: {
             '/api': 'http://localhost:80',  // Proxy API requests to Flask
         },
+        watch: {
+            usePolling: true,
+            interval: 500,
+        },
     },
 });
