@@ -274,3 +274,25 @@ def get_rapport(md5):
     response.headers['Content-Disposition'] = f'attachment; filename=report_{md5}.pdf'
 
     return response
+
+
+# Route pour get l'url Calendly
+@auth.route('/get_calendly', methods=['GET'])
+@jwt_required()
+def get_calendly():
+    current_user = get_jwt_identity()
+    user = Utilisateur.query.get(current_user)
+    if not user:
+        return jsonify({'message': 'User not found'}), 404
+
+    # Vérification du rôle de l'utilisateur RRE ou Suiveur
+    if not check_role(user, 1) and not check_role(user, 2)  and not check_role(user, 3):
+        # Récupération de l'URL Calendly de l'utilisateur
+        url_calendly = user.url_calendly
+        return jsonify({'url_calendly': url_calendly}), 200
+    
+    if not check_role(user, 4):
+        # Récupération de l'URL Calendly de son suiveur
+        suiveur = Utilisateur.query.get(user.id_user_1)
+        url_calendly = suiveur.url_calendly
+        return jsonify({'url_calendly': url_calendly}), 200
