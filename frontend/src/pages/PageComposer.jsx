@@ -7,7 +7,7 @@ import { useEffect, useState } from 'react';
 const Pages = {
     "login": Login,
     "profil":Profil,
-    "rdv": RendezVous,
+    "rendez-vous": RendezVous,
     "DefaultPage": Login
 };
 
