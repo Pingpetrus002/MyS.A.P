@@ -15,7 +15,7 @@ Cette documentation couvre les points principaux de l'API MySAP implémentée av
 - **URL** : `/register`
 - **Méthode** : `POST`
 - **Description** : Permet à un utilisateur invité de s'inscrire.
-- **Autentification** : Requiert un token JWT.
+- **Autentification** : Requiert un token JWT comprenant un compte role RRE 
 - **Données de la requête** :
   - `username` (string) : Adresse email de l'utilisateur.
 - **Réponse** :
@@ -101,6 +101,105 @@ Cette documentation couvre les points principaux de l'API MySAP implémentée av
     }
   }
   ```
+
+### 1. Définir un rapport (`/set_rapport`)
+
+- **URL** : `/set_rapport`
+- **Méthode** : `POST`
+- **Description** : Ajoute un nouveau rapport pour un utilisateur.
+- **Authentification** : Requiert un token JWT.
+- **Paramètres** :
+  - **Corps de la requête** (JSON) :
+    ```json
+    {
+      "id_user": 1,
+      "id_suiveur": 2,
+      "rapport": "base64_encoded_pdf_content"
+    }
+    ```
+- **Réponses** :
+  - `200 OK` : Rapport ajouté avec succès.
+  - `403 Forbidden` : L'utilisateur n'est pas autorisé à ajouter un rapport.
+  - `415 Unsupported Media Type` : Le type de contenu de la requête doit être `application/json`.
+
+### 2. Récupérer les informations des rapports (`/get_rapport_info`)
+
+- **URL** : `/get_rapport_info`
+- **Méthode** : `GET`
+- **Description** : Retourne les informations des rapports en fonction du rôle de l'utilisateur.
+- **Authentification** : Requiert un token JWT.
+- **Réponses** :
+  - `200 OK` : Informations des rapports récupérées avec succès.
+    - **Admin ou RRE** :
+      ```json
+      {
+        "rapports": [
+          {
+            "id": 1,
+            "nom": "Report Name",
+            "md5": "md5_checksum",
+            "type": "application/pdf",
+            "datecreation": "2024-06-13T14:16:24.630010",
+            "datesuppression": null,
+            "id_user": 1,
+            "id_user_1": 2
+          }
+        ]
+      }
+      ```
+    - **Suiveur** :
+      ```json
+      {
+        "rapports": [
+          {
+            "id": 1,
+            "nom": "Report Name",
+            "md5": "md5_checksum",
+            "type": "application/pdf",
+            "datecreation": "2024-06-13T14:16:24.630010",
+            "datesuppression": null,
+            "id_user": 1,
+            "id_user_1": 2
+          }
+        ]
+      }
+      ```
+    - **Étudiant** :
+      ```json
+      {
+        "rapports": [
+          {
+            "id": 1,
+            "nom": "Report Name",
+            "md5": "md5_checksum",
+            "type": "application/pdf",
+            "datecreation": "2024-06-13T14:16:24.630010",
+            "datesuppression": null,
+            "id_user": 1,
+            "id_user_1": 2
+          }
+        ]
+      }
+      ```
+  - `403 Forbidden` : L'utilisateur n'est pas autorisé à accéder à ces informations.
+
+### 3. Télécharger un rapport (`/get_rapport/<string:md5>`)
+
+- **URL** : `/get_rapport/<string:md5>`
+- **Méthode** : `GET`
+- **Description** : Télécharge un rapport en fonction du hash MD5.
+- **Authentification** : Requiert un token JWT.
+- **Paramètres** :
+  - **URL** :
+    - `md5` : Le hash MD5 du rapport à télécharger.
+- **Réponses** :
+  - `200 OK` : Le rapport est téléchargé avec succès.
+    - **En-têtes** :
+      - `Content-Type: application/pdf`
+      - `Content-Disposition: attachment; filename=report_<md5>.pdf`
+  - `403 Forbidden` : L'utilisateur n'est pas autorisé à télécharger ce rapport.
+  - `404 Not Found` : Rapport non trouvé.
+
 
 ## Fonctions Utilitaires
 

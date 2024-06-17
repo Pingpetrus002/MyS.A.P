@@ -66,6 +66,7 @@ class Document(db.Model):
     __tablename__ = 'document_'
     id_doc = db.Column(db.Integer, primary_key=True, autoincrement=True)
     nom = db.Column(db.String(50))
+    rapport = db.Column(db.LargeBinary)
     md5 = db.Column(db.String(50))
     type = db.Column(db.String(50))
     datecreation = db.Column(db.Date)
