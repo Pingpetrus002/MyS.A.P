@@ -1,6 +1,7 @@
 import FetchWraper from '../utils/FetchWraper';
 import { useEffect, useState } from 'react';
 import {LinearProgress} from '@mui/material';
+import UploadRapport from '../components/UploadRapport';
 
 
 async function getDatas() {
@@ -37,6 +38,7 @@ export default function Profil() {
             <p>Email: {user ? user.mail : <LinearProgress />}</p>
             <p>Nom: {user ? user.nom : <LinearProgress />}</p>
             <p>Prénom: {user ? user.prenom : <LinearProgress />}</p>
+            <UploadRapport />
         </div>
     );
 }
