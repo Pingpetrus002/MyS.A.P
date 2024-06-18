@@ -13,7 +13,7 @@ import * as Icons from '@mui/icons-material';
 import {useMediaQuery, useTheme} from '@mui/material';
 
 const pages = ['Rapports', 'Étudiants', 'Rendez-vous'];
-const settings = ['Paramètre', 'Profil', 'Déconnexion'];
+const settings = ['Profil', 'Déconnexion'];
 
 const Navbar = () => {
     const [data, setData] = useState(null);
@@ -89,7 +89,7 @@ const Navbar = () => {
                 }}>
                     {pages.map((page) => (
                         <Button key={page} onClick={handleCloseNavMenu}
-                                href={`/?page=${page.toLowerCase().replace(' ', '-')}`}
+                                href={`/?page=${page.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase()}`.replace(/\s/g, '')}
                                 sx={{
                                     my: 2,
                                     color: 'black',
