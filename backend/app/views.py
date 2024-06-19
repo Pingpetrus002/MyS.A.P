@@ -156,6 +156,7 @@ def get_profil():
         'mail': user.mail,
         'date_naissance': user.date_naissance,
         'statut': user.statut,
+        'classe': user.classe,
         'id_user_1': user.id_user_1,
         'id_user_2': user.id_user_2,
         'id_ecole': user.id_ecole,

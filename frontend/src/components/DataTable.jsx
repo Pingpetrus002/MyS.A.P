@@ -40,26 +40,6 @@ function DataTable({ rows, type, onRowButtonClick }) {
       { field: 'sujet', headerName: 'Sujet', width: 180 },
       { field: 'concernes', headerName: 'Concernés', width: 220 },
       { field: 'suiveur', headerName: 'Suiveur', width: 180 },
-      {
-        field: 'voir',
-        headerName: 'Voir',
-        width: 120,
-        renderCell: (params) => (
-          <CustomButton
-            onClick={() => onButtonClick(params)}
-            style={{
-              cursor: 'pointer',
-              fontSize: 16,
-              padding: 8,
-              color: 'white',
-              backgroundColor: '#1976d2',
-              borderRadius: 4,
-            }}
-          >
-            Voir
-          </CustomButton>
-        ),
-      },
     ];
 
     const columns_etudiant = [
@@ -138,9 +118,10 @@ const CustomDataGrid = styled(DataGrid)(({ theme }) => ({
   },
   '& .MuiDataGrid-cell': {
     textAlign: 'center', // Centrer le contenu horizontalement
-    width: "100%", // Ajouter cette ligne pour que les champs prennent toute la largeur
     fontFamily: 'Inter',
-
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
   },
 }));
 
