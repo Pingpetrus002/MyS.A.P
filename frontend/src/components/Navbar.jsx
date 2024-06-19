@@ -11,9 +11,10 @@ import {Badge, Box, Container, AppBar, Toolbar, IconButton, Menu, Avatar, Toolti
 import MenuIcon from '@mui/icons-material/Menu';
 import * as Icons from '@mui/icons-material';
 import {useMediaQuery, useTheme} from '@mui/material';
+import '@fontsource/inter/400.css'; // Assurez-vous que la police est importée
 
 const pages = ['Rapports', 'Étudiants', 'Rendez-vous'];
-const settings = ['Paramètre', 'Profil', 'Déconnexion'];
+const settings = ['Profil', 'Déconnexion'];
 
 const Navbar = () => {
     const [data, setData] = useState(null);
@@ -62,6 +63,7 @@ const Navbar = () => {
     const NavMenuDesktop = () => (
         <Container maxWidth="false" style={{
             height: 80,
+            fontfamily: 'Inter',
             background: '#FDD47C',
             paddingLeft: '2rem',
             paddingRight: '2rem',
@@ -71,7 +73,6 @@ const Navbar = () => {
                 <Typography variant="h6" noWrap component="a" href="/" sx={{
                     mr: 2,
                     display: {xs: 'none', md: 'flex'},
-                    fontFamily: 'monospace',
                     fontWeight: 700,
                     letterSpacing: '.3rem',
                     color: 'inherit',
@@ -89,7 +90,7 @@ const Navbar = () => {
                 }}>
                     {pages.map((page) => (
                         <Button key={page} onClick={handleCloseNavMenu}
-                                href={`/?page=${page.toLowerCase().replace(' ', '-')}`}
+                                href={`/?page=${page.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase()}`.replace(/\s/g, '')}
                                 sx={{
                                     my: 2,
                                     color: 'black',

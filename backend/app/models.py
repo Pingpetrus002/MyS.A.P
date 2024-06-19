@@ -35,6 +35,7 @@ class Utilisateur(db.Model):
     mail = db.Column(db.String(50))
     date_naissance = db.Column(db.Date)
     statut = db.Column(db.Boolean)
+    classe = db.Column(db.String(50))
     password = db.Column(db.String(256))
     url_calendly = db.Column(db.String(256))
     id_user_1 = db.Column(db.Integer, db.ForeignKey('utilisateur.id_user'))
