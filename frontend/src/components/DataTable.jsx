@@ -119,6 +119,8 @@ const CustomDataGrid = styled(DataGrid)(({ theme }) => ({
   '& .MuiDataGrid-columnHeader': {
     backgroundColor: '#FDD47C',
     alignItems: 'center',
+    fontFamily: 'Inter',
+
 
     '&:hover': {
       backgroundColor: '#FFC039',
@@ -126,6 +128,7 @@ const CustomDataGrid = styled(DataGrid)(({ theme }) => ({
   },
   '& .MuiDataGrid-row': {
     borderBottom: `1px solid ${theme.palette.divider}`,
+    fontFamily: 'Inter',
     '&:nth-of-type(odd)': {
       backgroundColor: theme.palette.action.hover,
     },
@@ -136,6 +139,7 @@ const CustomDataGrid = styled(DataGrid)(({ theme }) => ({
   '& .MuiDataGrid-cell': {
     textAlign: 'center', // Centrer le contenu horizontalement
     width: "100%", // Ajouter cette ligne pour que les champs prennent toute la largeur
+    fontFamily: 'Inter',
 
   },
 }));
