@@ -89,7 +89,6 @@ CREATE TABLE IF NOT EXISTS evaluation(
 CREATE TABLE IF NOT EXISTS document_(
    id_doc INTEGER NOT NULL AUTO_INCREMENT,
    nom VARCHAR(50),
-   rapport LONGBLOB,
    md5 VARCHAR(50),
    rapport BLOB,
    type VARCHAR(50),
