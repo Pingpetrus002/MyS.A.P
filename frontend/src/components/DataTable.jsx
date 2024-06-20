@@ -1,13 +1,38 @@
 import { DataGrid } from '@mui/x-data-grid';
-import Grid from '@mui/material/Grid';
 import { styled } from '@mui/material/styles';
 import Button from '@mui/material/Button';
 import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
 import Typography from '@mui/material/Typography';
 import PropTypes from 'prop-types';
+import { saveAs } from 'file-saver';
 
+import FetchWraper from '../utils/FetchWraper';
 import ModalWrapper from './ButtonRapports';
-import { Container } from '@mui/material';
+import { Tooltip } from '@mui/material';
+
+const handleDownload = async (md5) => {
+  const url = `http://localhost:5000/auth/get_rapport/${md5}`;
+
+  const fetchWraper = new FetchWraper();
+  fetchWraper.url = url;
+  fetchWraper.method = "GET";
+  fetchWraper.headers.append("Content-Type", "application/pdf");
+  fetchWraper.headers.append("Accept", "application/pdf");
+  fetchWraper.headers.append("Access-Control-Allow-Origin", window.location.origin);
+  fetchWraper.headers.append("Access-Control-Allow-Credentials", "true");
+
+  try {
+      let result = await fetchWraper.fetchw();
+      if (result.ok) {
+          const blob = await result.blob();
+          saveAs(blob, `report_${md5}.pdf`);
+      } else {
+          console.error('Failed to download the file.');
+      }
+  } catch (error) {
+      console.error('Error downloading the file:', error);
+  }
+};
 
 const CustomButton = styled(Button)({
   backgroundColor: '#FDD47C',
@@ -60,9 +85,11 @@ const columnsRapport = [
     minWidth: 150,
     maxWidth: 150,
     renderCell: (params) => (
-      <CustomButton variant="contained" onClick={() => onButtonClick(params)}>
-        <PictureAsPdfIcon />
-      </CustomButton>
+      <Tooltip title="Télécharger" placement="top">
+        <CustomButton variant="contained" onClick={() => handleDownload(params.row.md5)}>
+          <PictureAsPdfIcon />
+        </CustomButton>
+      </Tooltip>
     ),
   },
 ];
@@ -78,9 +105,11 @@ const columnsMesRapports = [
     minWidth: 150,
     maxWidth: 150,
     renderCell: (params) => (
-      <CustomButton variant="contained" onClick={() => onButtonClick(params)}>
-        <PictureAsPdfIcon />
-      </CustomButton>
+      <Tooltip title="Télécharger" placement="top">
+        <CustomButton variant="contained" onClick={() => handleDownload(params.row.md5)}>
+          <PictureAsPdfIcon />
+        </CustomButton>
+      </Tooltip>
     ),
   },
 ];
@@ -138,24 +167,24 @@ function onButtonClick(cell) {
 export default function DataTable({ rows, type }) {
   return (
     <>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <Typography variant="h4" gutterBottom style={{ textAlign: 'left' }}>
-            {getTitle(type)}
-          </Typography>
-          <ModalWrapper />
-        </div>
-        <CustomDataGrid
-          autoHeight
-          rows={rows}
-          columns={getColumns(type)}
-          initialState={{
-            pagination: {
-              paginationModel: { page: 0, pageSize: 5 },
-            },
-          }}
-          pageSizeOptions={[5, 10]}
-          disableMultipleRowSelection
-        />
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <Typography variant="h4" gutterBottom style={{ textAlign: 'left' }}>
+          {getTitle(type)}
+        </Typography>
+        <ModalWrapper />
+      </div>
+      <CustomDataGrid
+        autoHeight
+        rows={rows}
+        columns={getColumns(type)}
+        initialState={{
+          pagination: {
+            paginationModel: { page: 0, pageSize: 5 },
+          },
+        }}
+        pageSizeOptions={[5, 10]}
+        disableMultipleRowSelection
+      />
     </>
   );
 }

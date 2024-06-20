@@ -212,11 +212,10 @@ def set_rapport():
     date = datetime.datetime.now()
     
     #Recup de hash MD5 du rapport
-    # Décodage du rapport encodé en base64
-    rapport = base64.b64decode(rapport)
 
     # Calcul de la somme de contrôle MD5
-    MD5 = hashlib.md5(rapport).hexdigest()
+    data_to_hash = f"{id_user}{id_suiveur}{date}".encode('utf-8')
+    MD5 = hashlib.md5(data_to_hash).hexdigest()
 
 
     #Verification des roles
@@ -227,7 +226,7 @@ def set_rapport():
     
     #Ajout du rapport
 
-    new_rapport = Document(id_user=id_user, id_user_1=id_suiveur, rapport=rapport, datecreation=date, md5=MD5)
+    new_rapport = Document(id_user=id_user, id_user_1=id_suiveur, rapport=rapport.encode('utf-8'), datecreation=date, md5=MD5)
     db.session.add(new_rapport)
 
     db.session.commit()
@@ -310,23 +309,19 @@ def get_students():
         return jsonify({'Unauthorized': 'Unauthorized'}), 403
 
 
-
-# Route pour download un rapport
+# Route pour récupérer les rapports
 @auth.route('/get_rapport/<string:md5>', methods=['GET'])
 @jwt_required()
 def get_rapport(md5):
     current_user = get_jwt_identity()
-    data = request.get_json()
     user = Utilisateur.query.get(current_user)
 
-    print(md5)
     rapport = Document.query.filter_by(md5=md5).first()
 
     if not rapport:
         return jsonify({'message': 'Report not found'}), 404
-    
-    rapport = rapport.rapport
-    rapport = base64.b64decode(rapport)
+
+    rapport_data = base64.b64decode(rapport.rapport)
 
     # Vérifiez les droits d'accès selon le rôle de l'utilisateur
     if check_role(user, 1) or check_role(user, 2):  # Admin ou RRE
@@ -338,10 +333,9 @@ def get_rapport(md5):
     else:
         return jsonify({'message': 'Unauthorized'}), 403
 
-    response = make_response(rapport)
-    response.headers['Content-Type'] = 'application/json'
-    response.headers['Accept'] = 'application/pdf'
-    response.headers['Content-Disposition'] = f'attachment; filename=report_{md5}.pdf'
+    response = make_response(rapport_data)
+    response.headers['Content-Type'] = 'application/pdf'
+    response.headers['Content-Disposition'] = f'attachment; filename=report{md5}.pdf'
 
     return response
 
