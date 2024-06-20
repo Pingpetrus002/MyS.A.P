@@ -1,147 +1,170 @@
 import { DataGrid } from '@mui/x-data-grid';
-import { alpha, styled } from '@mui/material/styles';
+import Grid from '@mui/material/Grid';
+import { styled } from '@mui/material/styles';
 import Button from '@mui/material/Button';
-import React from 'react';
+import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
+import Typography from '@mui/material/Typography';
+import PropTypes from 'prop-types';
 
+import ModalWrapper from './ButtonRapports';
+import { Container } from '@mui/material';
 
-const CustomButton = styled(Button)(({ theme }) => ({
+const CustomButton = styled(Button)({
   backgroundColor: '#FDD47C',
   '&:hover': {
-    backgroundColor: `${alpha('#FDD47C', 1)}`,
+    backgroundColor: '#FFC039',
   },
-}));
+});
 
-function DataTable({ rows, type, onRowButtonClick }) {
-  const getColumns = (type) => {
-    const columns_rapport = [
-      { field: 'etudiant', headerName: 'Étudiant', width: 180 },
-      { field: 'sujet', headerName: 'Sujet', width: 180 },
-      { field: 'concernes', headerName: 'Concernés', width: 220 },
-      { field: 'suiveur', headerName: 'Suiveur', width: 180 },
-      {
-        field: 'modifier',
-        headerName: 'Modifier',
-        width: 120,
-        renderCell: (params) => (
-          <CustomButton
-            variant="contained"
-            onClick={() => onButtonClick(params)}
-            sx={{
-              backgroundColor: '#FFC039',
-            }}
-          >
-            Modifier
-          </CustomButton>
-        ),
-      },
-    ];
-
-    const columns_mes_rapport = [
-      { field: 'sujet', headerName: 'Sujet', width: 180 },
-      { field: 'concernes', headerName: 'Concernés', width: 220 },
-      { field: 'suiveur', headerName: 'Suiveur', width: 180 },
-      {
-        field: 'voir',
-        headerName: 'Voir',
-        width: 120,
-        renderCell: (params) => (
-          <CustomButton
-            onClick={() => onButtonClick(params)}
-            style={{
-              cursor: 'pointer',
-              fontSize: 16,
-              padding: 8,
-              color: 'white',
-              backgroundColor: '#1976d2',
-              borderRadius: 4,
-            }}
-          >
-            Voir
-          </CustomButton>
-        ),
-      },
-    ];
-
-    const columns_etudiant = [
-      { field: 'nom', headerName: 'Nom', width: 180 },
-      { field: 'prenom', headerName: 'Prénom', width: 180 },
-      { field: 'classe', headerName: 'Classe', width: 180 },
-      { field: 'statut', headerName: 'Statut', width: 180 },
-      { field: 'entreprise', headerName: 'Entreprise', width: 180 },
-      {
-        field: 'Modifier',
-        headerName: 'Modifier',
-        width: 120,
-        renderCell: (params) => (
-          <CustomButton
-            onClick={() => onRowButtonClick(params.row)}
-            style={{
-              cursor: 'pointer',
-              fontSize: 16,
-              padding: 8,
-              color: 'black',
-              backgroundColor: '#FFC039',
-              borderRadius: 4,
-            }}
-          >
-            Modifier
-          </CustomButton>
-        ),
-      },
-    ];
-
-    switch (type) {
-      case 'rapport':
-        return columns_rapport;
-      case 'etudiant':
-        return columns_etudiant;
-      case 'mes_rapport':
-        return columns_mes_rapport;
-      default:
-        return [];
-    }
-  };
-
-  return (
-    <CustomDataGrid
-      rows={rows}
-      columns={getColumns(type)}
-      pageSizeOptions={[5, 10]}
-      disableMultipleRowSelection
-    />
-  );
-}
-
-const CustomDataGrid = styled(DataGrid)(({ theme }) => ({
+const CustomDataGrid = styled(DataGrid)({
   '& .MuiDataGrid-filler': {
     backgroundColor: '#FDD47C',
   },
   '& .MuiDataGrid-columnHeader': {
     backgroundColor: '#FDD47C',
-    alignItems: 'center',
-    fontFamily: 'Inter',
-
-
+    textAlign: 'center',
+    '& .MuiDataGrid-columnHeaderTitleContainer': {
+      justifyContent: 'center',
+      width: '100%',
+    },
     '&:hover': {
       backgroundColor: '#FFC039',
     },
   },
+  '& .MuiDataGrid-cell': {
+    textAlign: 'center',
+  },
   '& .MuiDataGrid-row': {
-    borderBottom: `1px solid ${theme.palette.divider}`,
-    fontFamily: 'Inter',
+    borderBottom: '1px solid #e0e0e0',
     '&:nth-of-type(odd)': {
-      backgroundColor: theme.palette.action.hover,
+      backgroundColor: '#f5f5f5',
+    },
+    '&:hover': {
+      backgroundColor: '#e0e0e0',
     },
     '&:last-child td, &:last-child th': {
       border: 0,
     },
   },
-  '& .MuiDataGrid-cell': {
-    textAlign: 'center', // Centrer le contenu horizontalement
-    width: "100%", // Ajouter cette ligne pour que les champs prennent toute la largeur
-    fontFamily: 'Inter',
+});
 
+const columnsRapport = [
+  { field: 'etudiant', headerName: 'Étudiant', width: 180, minWidth: 180, maxWidth: 300 },
+  { field: 'sujet', headerName: 'Sujet', width: 180, minWidth: 180, maxWidth: 300 },
+  { field: 'concernes', headerName: 'Concernés', width: 220, minWidth: 220 },
+  { field: 'suiveur', headerName: 'Suiveur', width: 180, minWidth: 180, maxWidth: 300 },
+  {
+    field: 'télécharger',
+    headerName: 'Télécharger',
+    width: 150,
+    minWidth: 150,
+    maxWidth: 150,
+    renderCell: (params) => (
+      <CustomButton variant="contained" onClick={() => onButtonClick(params)}>
+        <PictureAsPdfIcon />
+      </CustomButton>
+    ),
   },
-}));
+];
 
-export default DataTable;
+const columnsMesRapports = [
+  { field: 'sujet', headerName: 'Sujet', width: 180, minWidth: 180, maxWidth: 300 },
+  { field: 'concernes', headerName: 'Concernés', width: 220 },
+  { field: 'suiveur', headerName: 'Suiveur', width: 180, minWidth: 180, maxWidth: 300 },
+  {
+    field: 'télécharger',
+    headerName: 'Télécharger',
+    width: 150,
+    minWidth: 150,
+    maxWidth: 150,
+    renderCell: (params) => (
+      <CustomButton variant="contained" onClick={() => onButtonClick(params)}>
+        <PictureAsPdfIcon />
+      </CustomButton>
+    ),
+  },
+];
+
+const columnsEtudiant = [
+  { field: 'nom_prenom', headerName: 'Nom Prénom', width: 180, minWidth: 180, maxWidth: 300 },
+  { field: 'classe', headerName: 'Classe', width: 220, minWidth: 220, maxWidth: 300 },
+  { field: 'status', headerName: 'Status', width: 180, minWidth: 180, maxWidth: 300},
+  { field: 'duree', headerName: 'Durée', width: 180, minWidth: 180, maxWidth: 300},
+  { field: 'contract', headerName: 'Contract', width: 180, minWidth: 180, maxWidth: 300},
+  {
+    field: 'voir',
+    headerName: 'Voir',
+    width: 120,
+    minWidth: 120,
+    maxWidth: 120,
+    renderCell: (params) => (
+      <CustomButton onClick={() => onButtonClick(params)} style={{ backgroundColor: '#1976d2', color: 'white' }}>
+        Voir
+      </CustomButton>
+    ),
+  },
+];
+
+function getColumns(type) {
+  switch (type) {
+    case 'rapport':
+      return columnsRapport;
+    case 'etudiant':
+      return columnsEtudiant;
+    case 'mes_rapports':
+      return columnsMesRapports;
+    default:
+      return [];
+  }
+}
+
+function getTitle(type) {
+  switch (type) {
+    case 'rapport':
+      return 'Tous les rapports';
+    case 'etudiant':
+      return 'Tous les étudiants';
+    case 'mes_rapports':
+      return 'Mes rapports';
+    default:
+      return '';
+  }
+}
+
+function onButtonClick(cell) {
+  console.log(cell.row);
+}
+
+export default function DataTable({ rows, type }) {
+  return (
+    <Container sx={{ mt: 10 }}>
+      <Grid item xs={12}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <Typography variant="h4" gutterBottom style={{ textAlign: 'left' }}>
+            {getTitle(type)}
+          </Typography>
+          <ModalWrapper />
+        </div>
+      </Grid>
+      <Grid item xs={12}>
+        <CustomDataGrid
+          autoHeight
+          rows={rows}
+          columns={getColumns(type)}
+          initialState={{
+            pagination: {
+              paginationModel: { page: 0, pageSize: 5 },
+            },
+          }}
+          pageSizeOptions={[5, 10]}
+          disableMultipleRowSelection
+        />
+      </Grid>
+    </Container>
+  );
+}
+
+DataTable.propTypes = {
+  rows: PropTypes.arrayOf(PropTypes.object).isRequired,
+  type: PropTypes.oneOf(['rapport', 'etudiant', 'mes_rapports']).isRequired,
+};
