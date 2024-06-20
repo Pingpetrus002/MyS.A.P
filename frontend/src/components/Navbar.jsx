@@ -14,8 +14,13 @@ import {useMediaQuery, useTheme} from '@mui/material';
 import '@fontsource/inter/400.css'; // Assurez-vous que la police est importée
 
 const pages = ['Rapports', 'Étudiants', 'Rendez-vous'];
-const settings = ['Profil', 'Déconnexion'];
 
+const settings = [
+    { name: 'Profil', url: '/?page=profil' },
+    { name: 'Déconnexion', url: '/deconnexion' }
+  ];
+
+  
 const Navbar = () => {
     const [data, setData] = useState(null);
     const [anchorElNav, setAnchorElNav] = useState(null);
@@ -167,8 +172,7 @@ const Navbar = () => {
             </Menu>
         </Box>
     );
-
-
+    
     const ProfileIcon = () => (
         <Box sx={{ flexGrow: 0, marginLeft: 2 }}>
             <Tooltip title="Open settings">
@@ -192,15 +196,20 @@ const Navbar = () => {
                     vertical: 'top',
                     horizontal: 'right',  // Changed from 'left' to 'right'
                 }}
-            >
-                {settings.map((setting) => (
-                    <MenuItem key={setting} onClick={handleCloseProfileMenu}>
-                        <Typography textAlign="center">{setting}</Typography>
-                    </MenuItem>
-                ))}
+            >   
+            {settings.map((setting) => (
+                <MenuItem key={setting.name} onClick={handleCloseProfileMenu}>
+                    <Typography textAlign="center">
+                        <a href={setting.url} style={{ textDecoration: 'none', color: 'inherit' }}>
+                            {setting.name}
+                        </a>
+                    </Typography>
+                </MenuItem>
+            ))}
             </Menu>
         </Box>
     );
+    
 
     const NavMenuMobile = () => (
         <Container maxWidth="false" style={{

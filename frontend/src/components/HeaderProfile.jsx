@@ -7,9 +7,7 @@ import ButtonBase from '@mui/material/ButtonBase';
 import Logo from '../assets/logoFull.svg';
 import Avatar from '@mui/material/Avatar';
 
-
-
-export default function HeaderProfile({ Nom } = 'John', { Prenom } = "Doe", { Mail } = "John.Doe@MySapPro.com") {
+export default function HeaderProfile({ Nom, Prenom, Mail, Classe, Status }) {
     if (typeof Nom === 'undefined') {
         Nom = "John";
     }
@@ -19,24 +17,41 @@ export default function HeaderProfile({ Nom } = 'John', { Prenom } = "Doe", { Ma
     if (typeof Mail === 'undefined') {
         Mail = "John.Doe@MySapPro.com";
     }
+    if (typeof Classe === 'undefined') {
+        Classe = "Classe";
+    }
+    console.log(Status)
+    if (Status === true) {
+        Status = "Alternance en cours";
+    }
     return (
         <>
             <Paper width="100vw">
-                <Grid container justifyContent="center" alignItems="center" spacing={4}>
-                    <Grid item margin="80px">
-                        <Avatar sx={{width: 64, height: 64}}>{Array.from({Nom})[0]}</Avatar>
+                <Grid container spacing={4}>
+                    <Grid item margin="0px 0px 0px 2rem">
+                        <Avatar 
+                            src="../assets/logoFull.svg" 
+                            alt="description-de-l-image" 
+                            sx={{ width: 140, height: 140 }} 
+                        />
                     </Grid>
                     <Grid item xs={12} sm container marginRight="100px">
                         <Grid item xs container direction="column" spacing={2}>
                             <Grid item xs>
-                                <h1 style={{ color: '#000000' }}>
+                                <Typography variant="h4" style={{ color: '#000000', textAlign: 'left' }}>
                                     {Nom} {Prenom}
-                                </h1>
+                                </Typography>
                             </Grid>
                             <Grid item xs>
-                                <h1>
+                                <Typography variant="h6" style={{ textAlign: 'left' }}>
                                     {Mail}
-                                </h1>
+                                </Typography>
+                                <Typography variant="h6" style={{ textAlign: 'left' }}>
+                                    {Classe}
+                                </Typography>
+                                <Typography variant="h6" style={{ textAlign: 'left' }}>
+                                    {Status}
+                                </Typography>
                             </Grid>
                         </Grid>
                     </Grid>
