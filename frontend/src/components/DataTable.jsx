@@ -117,7 +117,7 @@ const columnsMesRapports = [
 const columnsEtudiant = [
   { field: 'nom_prenom', headerName: 'Nom Prénom', width: 180, minWidth: 180, maxWidth: 300 },
   { field: 'classe', headerName: 'Classe', width: 220, minWidth: 220, maxWidth: 300 },
-  { field: 'status', headerName: 'Status', width: 180, minWidth: 180, maxWidth: 300 },
+  { field: 'statut', headerName: 'Status', width: 180, minWidth: 180, maxWidth: 300 },
   { field: 'duree', headerName: 'Durée', width: 180, minWidth: 180, maxWidth: 300 },
   { field: 'contract', headerName: 'Contract', width: 180, minWidth: 180, maxWidth: 300 },
   {

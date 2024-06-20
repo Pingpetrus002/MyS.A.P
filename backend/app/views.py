@@ -246,31 +246,27 @@ def set_rapport():
 
     return jsonify({'message': 'Rapport set'}), 200
 
-#Route pour get les infos des rapports
+# Route pour récupérer les infos des rapports
 @auth.route('/get_rapport_info', methods=['GET'])
 @jwt_required()
 def get_rapport_info():
     current_user = get_jwt_identity()
     user = Utilisateur.query.get(current_user)
 
-    
-    # Cas Admin et RRE - Recupération de tous les rapports
+    # Récupération de tous les rapports de type 'rapport' pour les administrateurs et RRE
     if check_role(user, 1) or check_role(user, 2):
-        #Recupération des rapports
-        rapports = Document.query.all()
+        rapports = Document.query.filter_by(type='rapport').all()
         rapports_dict = [document_to_dict(rapport) for rapport in rapports]
-
-
         return jsonify({'rapports': rapports_dict}), 200
 
-    # Cas Suiveur - Recupération des rapports de ses étudiants
-    elif check_role(user, 3):
-        #Recupération des rapports
-        rapports = Document.query.filter_by(id_user_1=current_user).all()
-        rapports_dict = [document_to_dict(rapport) for rapport in rapports]
-
+    # Récupération des rapports de type 'autre' de l'utilisateur actuel, quel que soit le rôle
+    elif check_role(user, 3) or check_role(user, 4):
+        if request.args.get('type') == 'autre':
+            rapports = Document.query.filter_by(id_user=current_user, type='autre').all()
+        else:
+            rapports = Document.query.filter_by(type='rapport').all()  # Récupération de tous les rapports de type 'rapport'
+        rapports_dict = [document_to_dict(rapport) for rapport in rapports]        
         return jsonify({'rapports': rapports_dict}), 200
-    
     # Cas Etudiant - Recupération des rapports de l'étudiant
     elif check_role(user, 4):
         #Recupération des rapports
