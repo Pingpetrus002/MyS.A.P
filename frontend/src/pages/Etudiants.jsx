@@ -6,6 +6,7 @@ import { saveAs } from 'file-saver'; // Importer saveAs pour le téléchargement
 import FetchWraper from '../utils/FetchWraper';
 import DataTable from '../components/DataTable';
 import StudentModal from '../components/EtudiantModal';
+import Navbar from '../components/Navbar';
 
 // Fonction asynchrone pour récupérer les données des étudiants
 async function getDatas() {
@@ -76,6 +77,8 @@ export default function Etudiants() {
 
   // Rendu du composant
   return (
+    <>
+    <Navbar />
     <Grid container justifyContent="center">
       <Grid item xs={10} sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '3rem' }}>
         <h1>Tous les Étudiants</h1>
@@ -131,5 +134,6 @@ export default function Etudiants() {
       </Grid>
       
     </Grid>
+    </>
   );
 }
