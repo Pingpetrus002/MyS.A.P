@@ -38,6 +38,8 @@ function RendezVous() {
     }
 
     return (
+        <>
+            <Navbar />
         <div>
             <h1>Planifier un rendez-vous</h1>
             <form>
@@ -48,6 +50,7 @@ function RendezVous() {
                 </Grid>
             </form>
         </div>
+        </>
     );
 }
 
