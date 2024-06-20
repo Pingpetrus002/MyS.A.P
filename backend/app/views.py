@@ -4,7 +4,7 @@ from flask import Blueprint, request, jsonify, render_template, make_response
 from flask_mail import Message, Mail
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity, set_access_cookies, unset_jwt_cookies
 from werkzeug.security import generate_password_hash, check_password_hash
-from .models import Utilisateur, db, Document
+from .models import Utilisateur, db, Document, Entreprise
 
 import re 
 import random  
@@ -15,6 +15,15 @@ import hashlib
 # Création d'un blueprint pour les routes d'authentification
 auth = Blueprint('auth', __name__)
 mail = Mail()  # Initialisation de l'extension Flask-Mail pour l'envoi de mails
+
+ROLES_ACCESS = {
+    1: ['*'],  # Admin has access to all pages
+    2: ['*'],  # RRE has access to specific pages
+    3: ['dashboard', 'profil', 'rapports', 'etudiants'],  # Suiveur has access to profile and their reports
+    4: ['profil', 'rdv'],  # Etudiant has access to profile and concerned reports
+    5: ['profil', 'rdv'],  # Tuteur has access to profile, their students, and their students' reports
+}
+
 
 # Fonction pour générer un mot de passe aléatoire
 def generate_random_password(length=6):
@@ -136,12 +145,25 @@ def logout():
     unset_jwt_cookies(response)
     return response, 200
 
-# Route protégée accessible uniquement aux utilisateurs authentifiés
+# Route protégée qui verifie via un dictonnaire si l'utilisateur est authentifié avec la page
 @auth.route('/protected', methods=['GET'])
 @jwt_required()
 def protected():
     current_user = get_jwt_identity()
-    return jsonify({'message': f'Welcome user {current_user}'}), 200
+    page = request.args.get('page')  # Assumes the requested page is sent as a query parameter
+    
+    if not page:
+        return jsonify({'message': 'Page not specified'}), 400
+
+    user_role = Utilisateur.query.get(current_user).id_role
+    print(user_role)
+    if user_role not in ROLES_ACCESS:
+        return jsonify({'message': 'Role not recognized'}), 403
+
+    if '*' in ROLES_ACCESS[user_role] or page in ROLES_ACCESS[user_role]:
+        return jsonify({'message': f'Welcome {current_user}, you have access to {page}'}), 200
+    else:
+        return jsonify({'message': 'Access forbidden: you do not have permission to access this page'}), 403
 
 # Route pour récupérer le profil de l'utilisateur actuellement authentifié
 @auth.route('/get_profil', methods=['GET'])
@@ -167,6 +189,33 @@ def get_profil():
         'id_user_3': user.id_user_3,
         'id_planning': user.id_planning
     }}), 200
+
+
+@auth.route('/update_etudiant', methods=['POST'])
+@jwt_required()
+def update_profil():
+    current_user_id = get_jwt_identity()
+    data = request.get_json()
+    user = Utilisateur.query.get(data.get('id'))
+
+    if not user:
+        return jsonify({'message': 'Utilisateur non trouvé'}), 404
+
+    # Filtrer les données pour ne prendre en compte que les champs modifiables
+    allowed_fields = ['nom', 'prenom', 'classe', 'statut', 'entreprise']
+    # Si statut = Alternance en cours alors status = 1 sinon 0
+    if 'statut' in data:
+        if data['statut'] == "Alternance en cours":
+            data['statut'] = 1
+        else:
+            data['statut'] = 0
+    for field in allowed_fields:
+        if field in data:
+            setattr(user, field, data[field])
+
+    db.session.commit()
+    
+    return jsonify({'message': 'Profil mis à jour avec succès'}), 200
 
 #Route pour set un rapport
 @auth.route('/set_rapport', methods=['POST'])
@@ -241,6 +290,50 @@ def get_rapport_info():
         return jsonify({'rapports': rapports_dict}), 200
 
 
+#Route pour get les infos des etudiant
+@auth.route('/get_students', methods=['GET'])
+@jwt_required()
+def get_students():
+    current_user = get_jwt_identity()
+    user = Utilisateur.query.get(current_user)
+
+    # Cas Admin et RRE - Recupération de tous les étudiants
+    if check_role(user, 1) or check_role(user, 2):
+        #Recupération des étudiants
+        students = Utilisateur.query.filter_by(id_role=4).all()
+        students_dict = [{
+            'id': student.id_user,
+            'nom': student.nom,
+            'prenom': student.prenom,
+            'statut': "Pas d'alternance" if student.statut == 0 else "Alternance en cours",
+            'classe': student.classe,
+            # Nom de l'entreprise si l'étudiant est en alternance
+            'entreprise': "Aucune entreprise" if student.statut == 0 else Entreprise.query.get(student.id_entreprise).raison_sociale,
+        } for student in students]
+
+        return jsonify({'students': students_dict}), 200
+
+    # Cas Suiveur - Recupération de ses étudiants
+    elif check_role(user, 3):
+        #Recupération des étudiants
+        students = Utilisateur.query.filter_by(id_user_1=current_user).all()
+        students_dict = [{
+            'id': student.id_user,
+            'nom': student.nom,
+            'prenom': student.prenom,
+            'statut': "Pas d'alternance" if student.statut == 0 else "Alternance en cours",
+            'classe': student.classe,
+            'entreprise': student.id_entreprise,
+        } for student in students]
+    
+        return jsonify({'students': students_dict}), 200
+    
+    # Cas Etudiant - Recupération de ses informations
+    elif check_role(user, 4):
+        return jsonify({'Unauthorized': 'Unauthorized'}), 403
+
+
+
 # Route pour download un rapport
 @auth.route('/get_rapport/<string:md5>', methods=['GET'])
 @jwt_required()
@@ -286,12 +379,12 @@ def get_calendly():
         return jsonify({'message': 'User not found'}), 404
 
     # Vérification du rôle de l'utilisateur RRE ou Suiveur
-    if not check_role(user, 1) and not check_role(user, 2)  and not check_role(user, 3):
+    if check_role(user, 1) or check_role(user, 2) or check_role(user, 3):
         # Récupération de l'URL Calendly de l'utilisateur
         url_calendly = user.url_calendly
         return jsonify({'url_calendly': url_calendly}), 200
     
-    if not check_role(user, 4):
+    if check_role(user, 4):
         # Récupération de l'URL Calendly de son suiveur
         suiveur = Utilisateur.query.get(user.id_user_1)
         url_calendly = suiveur.url_calendly

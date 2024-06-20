@@ -1,6 +1,7 @@
 import Login from "./Login";
 import Profil from "./Profil";
 import RendezVous from "./RendezVous";
+import Etudiants from "./Etudiants";
 import FetchWraper from "../utils/FetchWraper";
 import { useEffect, useState } from 'react';
 
@@ -8,12 +9,13 @@ const Pages = {
     "login": Login,
     "profil":Profil,
     "rendez-vous": RendezVous,
+    "etudiants": Etudiants,
     "DefaultPage": Login
 };
 
-async function IsConnected() {
+async function IsConnected(page) {
     let fetchWraper = new FetchWraper();
-    fetchWraper.url = "http://localhost:5000/auth/protected";
+    fetchWraper.url = "http://localhost:5001/auth/protected?page=" + page;
     fetchWraper.method = "GET";
     fetchWraper.headers.append("Content-Type", "application/json");
     fetchWraper.headers.append("Accept", "application/json");
@@ -28,10 +30,11 @@ async function IsConnected() {
 
 function PageComposer(args) {
     const [isConnected, setIsConnected] = useState(null);
+    let Page = Pages[args.page] || Pages.DefaultPage;
 
     useEffect(() => {
         async function fetchData() {
-            const result = await IsConnected();
+            const result = await IsConnected(args.page);
             setIsConnected(result.status === 200);
         }
         fetchData();
@@ -42,7 +45,6 @@ function PageComposer(args) {
         return null;
     }
 
-    let Page = Pages[args.page] || Pages.DefaultPage;
     
     if (!isConnected) {
         Page = Pages.login;
