@@ -150,20 +150,10 @@ def logout():
 @jwt_required()
 def protected():
     current_user = get_jwt_identity()
-    page = request.args.get('page')  # Assumes the requested page is sent as a query parameter
-    
-    if not page:
-        return jsonify({'message': 'Page not specified'}), 400
+    user = Utilisateur.query.get(current_user)
 
-    user_role = Utilisateur.query.get(current_user).id_role
-    print(user_role)
-    if user_role not in ROLES_ACCESS:
-        return jsonify({'message': 'Role not recognized'}), 403
-
-    if '*' in ROLES_ACCESS[user_role] or page in ROLES_ACCESS[user_role]:
-        return jsonify({'message': f'Welcome {current_user}, you have access to {page}'}), 200
-    else:
-        return jsonify({'message': 'Access forbidden: you do not have permission to access this page'}), 403
+    # Vérification du rôle de l'utilisateur pour l'accès à la page
+    return jsonify({'message': 'Protected page', 'role': user.id_role, 'access': ROLES_ACCESS[user.id_role]}), 200
 
 # Route pour récupérer le profil de l'utilisateur actuellement authentifié
 @auth.route('/get_profil', methods=['GET'])

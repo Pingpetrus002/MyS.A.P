@@ -15,25 +15,50 @@ import '@fontsource/inter/400.css'; // Assurez-vous que la police est importée
 import FetchWraper from '../utils/FetchWraper';
 
 const pages = {
-    1: ['Accueil', 'Rapports', 'Étudiants', 'Calendrier', 'Mission', 'Rapport'],
-    2: ['Accueil', 'Rapports', 'Étudiants', 'Calendrier'],
-    3: ['Accueil', 'Rapport', 'Étudiants', 'Calendrier'],
-    4: ['Accueil', 'Mission', 'Calendrier'],
-    5: ['Accueil', 'Mission', 'Calendrier'],
+    1: ['Accueil', 'Rapports', 'Étudiants', 'Rendez-Vous', 'Mission'],
+    2: ['Accueil', 'Rapports', 'Étudiants', 'Rendez-Vous'],
+    3: ['Accueil', 'Rapport', 'Étudiants', 'Rendez-Vous'],
+    4: ['Accueil', 'Mission', 'Rendez-Vous'],
+    5: ['Accueil', 'Mission', 'Rendez-Vous'],
 };
+
+
+async function IsConnected() {
+    let fetchWraper = new FetchWraper();
+    fetchWraper.url = "http://localhost:5000/auth/protected";
+    fetchWraper.method = "GET";
+    fetchWraper.headers.append("Content-Type", "application/json");
+    fetchWraper.headers.append("Accept", "application/json");
+    fetchWraper.headers.append("Access-Control-Allow-Origin", window.location.origin);
+    fetchWraper.headers.append("Access-Control-Allow-Credentials", "true");
+    let result = await fetchWraper.fetchw();
+    
+    let data = await result.json();
+    return { "status": result.status, "role": data };
+}
 
 const settings = [
     { name: 'Profil', url: '/?page=profil', type: 'lien' },
     { name: 'Déconnexion', url: '/deconnexion', type: 'callback' }
 ];
 
-const Navbar = (params) => {
-    const [data, setData] = useState(null);
+const Navbar = () => {
+    const [role, setRole] = useState(null);
+
+    useEffect(() => {
+        const fetchRole = async () => {
+            let result = await IsConnected();
+            setRole(result.role);
+        };
+
+        fetchRole();
+    }, []);
 
     const getPage = () => {
-        let idRole = params.idRole;
-
-        return pages[idRole];
+        if (role) {
+            return pages[role.role];
+        }
+        return [];
     };
 
     const theme = useTheme();
@@ -251,7 +276,7 @@ const Navbar = (params) => {
                                         onClick={() => { SubmitLogout() }}>
                                         {setting.name}
                                     </Button> :
-                                    <Button style={{ textDecoration: 'none', color: 'inherit' }} href="/?page=${setting.name}">
+                                    <Button style={{ textDecoration: 'none', color: 'inherit' }} href={`/?page=${setting.url}`}>
                                         {setting.name}
                                     </Button>}
                             </Typography>

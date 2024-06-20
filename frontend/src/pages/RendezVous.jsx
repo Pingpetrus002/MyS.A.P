@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Grid from '@mui/material/Grid';
 import { InlineWidget } from 'react-calendly';
 import FetchWraper from '../utils/FetchWraper';
+import Navbar from '../components/Navbar';
 
 async function getDatas() {
     let fetchWraper = new FetchWraper();
