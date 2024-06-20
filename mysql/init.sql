@@ -160,6 +160,8 @@ INSERT INTO utilisateur (nom, prenom, mail, date_naissance, statut, password, ur
 ('Dupont', 'Jean', 'a@a.com', '1990-01-01', true, 'scrypt:32768:8:1$rBOKy7d3L5U5bdnJ$2b2457b7a9d8d7b5efb0eff4b3b531868d777750dc91fefc96bbedaa478dc483c60cf519d73c8ede40235dde8068ef434daea760c99d1ebc0465db4bd9ab91b8', 'http://calendly.com/jean', NULL, NULL, 1, NULL, NULL, 1, NULL, 1, NULL, 1),
 ('Martin', 'Sophie', 'b@b.com', '1992-02-02', true, 'scrypt:32768:8:1$rBOKy7d3L5U5bdnJ$2b2457b7a9d8d7b5efb0eff4b3b531868d777750dc91fefc96bbedaa478dc483c60cf519d73c8ede40235dde8068ef434daea760c99d1ebc0465db4bd9ab91b8', 'http://calendly.com/sophie', 1, NULL, 2, NULL, NULL, 2, NULL, 2, NULL, 2),
 ('Leclerc', 'Paul', 'c@c.com', '1994-03-03', false, 'scrypt:32768:8:1$rBOKy7d3L5U5bdnJ$2b2457b7a9d8d7b5efb0eff4b3b531868d777750dc91fefc96bbedaa478dc483c60cf519d73c8ede40235dde8068ef434daea760c99d1ebc0465db4bd9ab91b8', 'http://calendly.com/paul', 1, 2, NULL, NULL, NULL, NULL, NULL, 3, NULL, 3);
+('Verstappen', 'Max', 'd@d.com', '1994-04-04', true, 'scrypt:32768:8:1$rBOKy7d3L5U5bdnJ$2b2457b7a9d8d7b5efb0eff4b3b531868d777750dc91fefc96bbedaa478dc483c60cf519d73c8ede40235dde8068ef434daea760c99d1ebc0465db4bd9ab91b8', 'http://calendly.com/paul', 1, 2, NULL, NULL, NULL, NULL, NULL, 4, NULL, 3);
+('Leclerc', 'Charles', 'e@e.com', '1994-05-05', true, 'scrypt:32768:8:1$rBOKy7d3L5U5bdnJ$2b2457b7a9d8d7b5efb0eff4b3b531868d777750dc91fefc96bbedaa478dc483c60cf519d73c8ede40235dde8068ef434daea760c99d1ebc0465db4bd9ab91b8', 'http://calendly.com/paul', 1, 2, NULL, NULL, NULL, NULL, NULL, 5, NULL, 3);
 
 -- Insert data into mission
 INSERT INTO mission (libelle, description, datedebut, datefin, id_user) VALUES
