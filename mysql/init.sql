@@ -41,6 +41,7 @@ CREATE TABLE IF NOT EXISTS utilisateur(
    mail VARCHAR(50),
    date_naissance DATE,
    statut BOOLEAN,
+   classe VARCHAR(50),
    password VARCHAR(256),
    url_calendly VARCHAR(256),
    id_user_1 INT,
