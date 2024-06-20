@@ -239,7 +239,6 @@ def set_rapport():
 @jwt_required()
 def get_rapport_info():
     current_user = get_jwt_identity()
-    data = request.get_json()
     user = Utilisateur.query.get(current_user)
 
     
