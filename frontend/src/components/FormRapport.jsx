@@ -85,6 +85,7 @@ function SyntheseSuiviTuteur() {
         setOpen(false);
     };
 
+    const [textFieldNomRapport, setTextFieldNomRapport] = useState('');
     const [textFieldIdEtudiant, setTextFieldIdEtudiant] = useState('');
     const [selectFieldFormation, setSelectFieldFormation] = useState('');
     const [textFieldNomEtudiant, setTextFieldNomEtudiant] = useState('');
@@ -109,6 +110,7 @@ function SyntheseSuiviTuteur() {
 
     // Mettre à jour la fonction handleReset pour réinitialiser tous les champs
     const handleReset = () => {
+        setTextFieldNomRapport('');
         setTextFieldIdEtudiant('');
         setSelectFieldFormation('');
         setTextFieldNomEtudiant('');
@@ -169,6 +171,18 @@ function SyntheseSuiviTuteur() {
             <Typography sx={{ color: 'red', textAlign: 'left' }}>
                 * indique un champ obligatoire
             </Typography>
+
+            <TextField
+                label="Sujet du rapport"
+                value={textFieldNomRapport}
+                onChange={(e) => setTextFieldNomRapport(e.target.value)}
+                required
+                fullWidth
+                margin="normal"
+                InputLabelProps={{
+                    sx: { '& .MuiFormLabel-asterisk': { color: 'red' } },
+                }}
+            />
 
             <TextField
                 label="ID étudiant"
@@ -707,6 +721,7 @@ function SyntheseSuiviTuteur() {
             <Grid container justifyContent="center">
                 <Grid item>
                     <PdfGenerator
+                        nomRapport={textFieldNomRapport}
                         idEtudiant={textFieldIdEtudiant}
                         formation={selectFieldFormation}
                         nomEtudiant={textFieldNomEtudiant}

@@ -36,8 +36,8 @@ def document_to_dict(doc):
         'type': doc.type,
         'datecreation': doc.datecreation.isoformat() if doc.datecreation else None,
         'datesuppression': doc.datesuppression.isoformat() if doc.datesuppression else None,
-        'id_user': doc.id_user,
-        'id_user_1': doc.id_user_1
+        'id_user': Utilisateur.query.get(doc.id_user).nom + ' ' + Utilisateur.query.get(doc.id_user).prenom,
+        'id_user_1': Utilisateur.query.get(doc.id_user_1).nom + ' ' + Utilisateur.query.get(doc.id_user_1).prenom,
     }
 
 # Fonction verifiant les champs du formulaire
@@ -202,12 +202,14 @@ def set_rapport():
     current_user = get_jwt_identity()
     data: dict = request.get_json()
 
-    fields = ['id_user', 'id_suiveur', 'rapport']
+    fields = ['id_user', 'sujet', 'rapport']
     if check_fields(data, fields) != 0:
         return check_fields(data, fields)
     
+    id_suiveur = Utilisateur.query.get(current_user).id_user
+
     id_user = data.get('id_user')
-    id_suiveur = data.get('id_suiveur')
+    sujet = data.get('sujet')
     rapport = data.get('rapport')
     date = datetime.datetime.now()
     
@@ -226,7 +228,7 @@ def set_rapport():
     
     #Ajout du rapport
 
-    new_rapport = Document(id_user=id_user, id_user_1=id_suiveur, rapport=rapport.encode('utf-8'), datecreation=date, md5=MD5)
+    new_rapport = Document(nom=sujet, id_user=id_user, id_user_1=id_suiveur, rapport=rapport.encode('utf-8'), datecreation=date, md5=MD5)
     db.session.add(new_rapport)
 
     db.session.commit()

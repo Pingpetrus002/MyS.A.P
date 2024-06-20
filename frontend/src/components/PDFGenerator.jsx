@@ -7,27 +7,28 @@ const PdfGenerator = (props) => {
         const doc = new jsPDF();
 
         // Ajout des valeurs au document PDF
-        doc.text(`ID Étudiant: ${props.idEtudiant}`, 10, 10);
-        doc.text(`Formation: ${props.formation}`, 10, 20);
-        doc.text(`Nom Étudiant: ${props.nomEtudiant}`, 10, 30);
-        doc.text(`Prénom Étudiant: ${props.prenomEtudiant}`, 10, 40);
-        doc.text(`Nom Entreprise: ${props.nomEntreprise}`, 10, 50);
-        doc.text(`Nom Tuteur Entreprise: ${props.nomTuteurEntreprise}`, 10, 60);
-        doc.text(`Prénom Tuteur Entreprise: ${props.prenomTuteurEntreprise}`, 10, 70);
-        doc.text(`Poste Étudiant: ${props.posteEtudiant}`, 10, 80);
-        doc.text(`Missions: ${props.missions}`, 10, 90);
-        doc.text(`Commentaire Tuteur: ${props.commentaireTuteur}`, 10, 100);
-        doc.text(`Projets Second Semestre: ${props.projetsSecondSemestre}`, 10, 110);
-        doc.text(`Axes Amélioration: ${props.axesAmelioration}`, 10, 120);
-        doc.text(`Points Fort: ${props.pointsFort}`, 10, 130);
-        doc.text(`Sujet Mémoire: ${props.sujetMemoire}`, 10, 140);
-        doc.text(`Commentaire Entretien Suivi: ${props.commentaireEntretienSuivi}`, 10, 150);
-        doc.text(`Nom Suiveur: ${props.nomSuiveur}`, 10, 160);
-        doc.text(`Date Entretien: ${props.dateEntretien}`, 10, 170);
-        doc.text(`Format Suivi: ${props.formatSuivi}`, 10, 180);
-        doc.text(`Présence: ${props.presence}`, 10, 190);
-        doc.text(`Recrutement: ${props.recrutement}`, 10, 200);
-        doc.text(`Poursuite Études: ${props.poursuiteEtudes}`, 10, 210);
+        doc.text(`${props.nomRapport}`, 90, 10);
+        doc.text(`ID Étudiant: ${props.idEtudiant}`, 10, 30);
+        doc.text(`Formation: ${props.formation}`, 10, 40);
+        doc.text(`Nom Étudiant: ${props.nomEtudiant}`, 10, 50);
+        doc.text(`Prénom Étudiant: ${props.prenomEtudiant}`, 10, 60);
+        doc.text(`Nom Entreprise: ${props.nomEntreprise}`, 10, 70);
+        doc.text(`Nom Tuteur Entreprise: ${props.nomTuteurEntreprise}`, 10, 80);
+        doc.text(`Prénom Tuteur Entreprise: ${props.prenomTuteurEntreprise}`, 10, 90);
+        doc.text(`Poste Étudiant: ${props.posteEtudiant}`, 10, 100);
+        doc.text(`Missions: ${props.missions}`, 10, 110);
+        doc.text(`Commentaire Tuteur: ${props.commentaireTuteur}`, 10, 120);
+        doc.text(`Projets Second Semestre: ${props.projetsSecondSemestre}`, 10, 130);
+        doc.text(`Axes Amélioration: ${props.axesAmelioration}`, 10, 140);
+        doc.text(`Points Fort: ${props.pointsFort}`, 10, 150);
+        doc.text(`Sujet Mémoire: ${props.sujetMemoire}`, 10, 160);
+        doc.text(`Commentaire Entretien Suivi: ${props.commentaireEntretienSuivi}`, 10, 170);
+        doc.text(`Nom Suiveur: ${props.nomSuiveur}`, 10, 180);
+        doc.text(`Date Entretien: ${props.dateEntretien}`, 10, 190);
+        doc.text(`Format Suivi: ${props.formatSuivi}`, 10, 200);
+        doc.text(`Présence: ${props.presence}`, 10, 210);
+        doc.text(`Recrutement: ${props.recrutement}`, 10, 220);
+        doc.text(`Poursuite Études: ${props.poursuiteEtudes}`, 10, 230);
 
         // Générer le PDF en tant que base64
         const pdfContent = doc.output('datauristring').split(',')[1];
@@ -44,7 +45,7 @@ const PdfGenerator = (props) => {
 
         const body = {
             id_user: props.idEtudiant,
-            id_suiveur: 1,
+            sujet: props.nomRapport,
             rapport: pdfContent
         };
 
