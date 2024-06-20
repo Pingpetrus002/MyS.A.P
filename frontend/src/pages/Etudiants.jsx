@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { LinearProgress, Grid } from '@mui/material';
 
 // Importations personnalisées
+import Navbar from '../components/Navbar';
 import FetchWraper from '../utils/FetchWraper';
 import DataTable from '../components/DataTable';
 import StudentModal from '../components/EtudiantModal';
@@ -62,6 +63,7 @@ export default function Etudiants() {
   // Rendu du composant
   return (
     <>
+    <Navbar />
       {loading ? (
         <LinearProgress />
       ) : (
