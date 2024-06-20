@@ -51,41 +51,16 @@ export default function Profil() {
     const [rapports, setRapports] = useState([]);
     const [loading, setLoading] = useState(true);
 
-    const rows = [
-        { id: 1, etudiant: 'Jean Dupont', sujet: 'Projet de fin d\'études', concernes: 'Jean Dupont, Paul Durand', suiveur: 'Marie Martin' },
-        { id: 2, etudiant: 'Paul Durand', sujet: 'Contrat', concernes: 'Jean Dupont, Paul Durand', suiveur: 'Marie Martin' },
-        { id: 3, etudiant: 'Paul Durand', sujet: 'Contrat', concernes: 'Jean Dupont, Paul Durand', suiveur: 'Marie Martin' },
-        { id: 4, etudiant: 'Paul Durand', sujet: 'Contrat', concernes: 'Jean Dupont, Paul Durand', suiveur: 'Marie Martin' },
-        { id: 5, etudiant: 'Paul Durand', sujet: 'Contrat', concernes: 'Jean Dupont, Paul Durand', suiveur: 'Marie Martin' },
-        { id: 6, etudiant: 'Paul Durand', sujet: 'Contrat', concernes: 'Jean Dupont, Paul Durand', suiveur: 'Marie Martin' },
-        { id: 7, etudiant: 'Paul Durand', sujet: 'Contrat', concernes: 'Jean Dupont, Paul Durand', suiveur: 'Marie Martin' },
-        { id: 8, etudiant: 'Paul Durand', sujet: 'Contrat', concernes: 'Jean Dupont, Paul Durand', suiveur: 'Marie Martin' },
-        { id: 9, etudiant: 'Paul Durand', sujet: 'Contrat', concernes: 'Jean Dupont, Paul Durand', suiveur: 'Marie Martin' },
-    ];
-
     useEffect(() => {
         async function fetchData() {
             const userData = await getDatas();
             setUser(userData);
             setLoading(false); // Arrête le chargement une fois les données récupérées
 
-            // Récupération des données supplémentaires en fonction du rôle de l'utilisateur
-            if (userData.role === 'RRE') {
-                const rapportData = await getRapports();
-                setRapports(rapportData);
-            } else if (userData.role === 'Suiveur') {
-                const rapportData = await getRapports();
-                // Récupération des rapports de l'utilisateur et des rapports créés par lui
-                setRapports(rapportData);
-            } else if (userData.role === 'Etudiant') {
-                const rapportData = await getRapportsEtudiant();
-                // Récupération des rapports concernant l'étudiant
-                setRapports(rapportData);
-            } else if (userData.role === 'Tuteur') {
-                const etudiantsData = await getEtudiants();
-                // Récupération des étudiants du tuteur et de leurs rapports
-                // ...
-            }
+            const rapportsData = await getRapports();
+            setRapports(rapportsData);
+            setLoading(false); // Arrête le chargement une fois les données récupérées
+
         }
 
         fetchData();
@@ -100,7 +75,7 @@ export default function Profil() {
             <NavBar />
             <Grid container direction="row" justifyContent="center" alignItems="flex-start" spacing={4} marginTop={4}>
                 <Grid item>
-                    <HeaderProfile Nom={user ? user.nom : <LinearProgress />} Prenom={user ? user.prenom : <LinearProgress />} Mail={user ? user.mail : <LinearProgress />} />
+                    <HeaderProfile Nom={user ? user.nom : <LinearProgress />} Prenom={user ? user.prenom : <LinearProgress />} Mail={user ? user.mail : <LinearProgress />} Classe={user ? user.classe : <LinearProgress />} Status={user ? user.statut : <LinearProgress />} />
                 </Grid>
                 <Grid item>
                     <Grid container direction="row">
@@ -118,7 +93,7 @@ export default function Profil() {
                             </Grid>
                         </Grid>
                     </Grid>
-                    <DataTable rows={rows} type="rapport" />
+                    <DataTable rows={rapports} type="rapport" />
                 </Grid>
             </Grid>
         </>
