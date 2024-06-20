@@ -1,6 +1,6 @@
 import FetchWraper from '../utils/FetchWraper';
-//import { useEffect, useState } from 'react';
-import { Button} from '@mui/material';
+import { Button } from '@mui/material';
+import { useState, useEffect } from 'react';
 
 
 
@@ -30,21 +30,17 @@ async function sendFile(body) {
     fetchWraper.headers.append("Accept", "application/json");
     //fetchWraper.headers.append("Access-Control-Allow-Origin", window.location.origin); // create a cors error
     //fetchWraper.headers.append("Access-Control-Allow-Credentials", "true"); // create a cors error
-    
+
 
     fetchWraper.body = JSON.stringify(body);
 
-    //console.log(fetchWraper);
-    
+
     let result = await fetchWraper.fetchw();
-    let data = await result.json();
-    console.log(data);
 
     switch (result.status) {
         case 200:
-            console.log("File uploaded successfully");
             return true;
-            
+
         default:
             console.log("Error uploading file:", result.status);
             return false;
@@ -54,36 +50,82 @@ async function sendFile(body) {
 }
 
 
-async function main(event) {
-    try {
-        let base64 = await getLocalFile(event);
-        if (base64) {
-            let body = {
-                "id_user": 1,
-                "id_suiveur": 2,
-                "rapport": base64
-            };
-            let worked = await sendFile(body);
-            console.log("worked",worked);
+export default function UploadRapport(params) {
+
+    const [uploadStatus, setUploadStatus] = useState('Upload File'); // initial state
+    const [buttonStyle, setButtonStyle] = useState({ variant: "contained" }); // initial style
+
+    useEffect(() => {
+        //console.log("Upload status changed:", uploadStatus);
+        if (uploadStatus === 'File Uploaded') {
+            setButtonStyle({ variant: "outlined", color: "success" }); // change style on success
+        }
+        else if (uploadStatus === 'Error Uploading File') {
+            setButtonStyle({ variant: "outlined", color: "error" }); // change style on error
         }
         else {
-            console.log("Error: no file selected", base64);
+            setButtonStyle({ variant: "contained" }); // reset style
         }
-    } catch (error) {
-        console.error("Error getting file:", error);
+    }, [uploadStatus]); // effect depends on uploadStatus
+
+    const main = async (event, args) => {
+
+        try {
+            let base64 = await getLocalFile(event);
+            if (base64) {
+                const body = {
+                    "id_user": args.id_user || null,
+                    "id_suiveur": args.id_suiveur || null,
+                    "rapport": base64
+                };
+
+                if (await sendFile(body)) {
+                    setUploadStatus('File Uploaded'); // update state on success
+                }
+                else {
+                    setUploadStatus('Error Uploading File'); // update state on error
+                    setTimeout(() => {
+                        setUploadStatus('Upload File'); // reset state on error
+                    }, 2500);
+                }
+            }
+            else {
+                console.log("Error: no file selected", base64);
+            }
+        } catch (error) {
+            console.error("Error getting file:", error);
+        }
     }
-}
-
-
-export default function UploadRapport() {
-    
 
     return (
         <div>
-            <Button variant="contained" component="label">
-                Upload File
-                <input type="file" hidden onChange={main} />
+            <Button {...buttonStyle} component="label">
+                {uploadStatus} {/* display the current status */}
+                <input
+                    type="file"
+                    hidden
+                    onChange={(event) => {
+                        main(event, params.args); // call main function
+                    }}
+                    onClick={() => setUploadStatus('Upload File')} // reset
+                />
             </Button>
         </div>
     );
 }
+
+UploadRapport.arguments = {
+    args: {
+        id_user: null,
+        id_suiveur: null
+    }
+}; // default arguments
+
+// Usage:
+/* <UploadRapport args={
+    {
+        id_user: user ? user.id_user : null,
+        id_suiveur: user ? user.id_suiveur : null
+    }
+} />
+ */

@@ -38,7 +38,7 @@ export default function Profil() {
             <p>Email: {user ? user.mail : <LinearProgress />}</p>
             <p>Nom: {user ? user.nom : <LinearProgress />}</p>
             <p>Prénom: {user ? user.prenom : <LinearProgress />}</p>
-            <UploadRapport />
+            <UploadRapport args={{id_user: user ? user.id_user : null}} />
         </div>
     );
 }
