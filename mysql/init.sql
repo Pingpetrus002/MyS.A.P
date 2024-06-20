@@ -90,7 +90,7 @@ CREATE TABLE IF NOT EXISTS document_(
    id_doc INTEGER NOT NULL AUTO_INCREMENT,
    nom VARCHAR(50),
    md5 VARCHAR(50),
-   rapport BLOB,
+   rapport LONGBLOB,
    type VARCHAR(50),
    datecreation DATE,
    datesuppression DATE,

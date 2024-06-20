@@ -6,6 +6,8 @@ import HeaderProfile from '../components/HeaderProfile';
 import DataTable from '../components/DataTable';
 import Grid from '@mui/material/Grid';
 import NavBar from '../components/Navbar.jsx';
+import UploadRapport from '../components/UploadRapport';
+
 
 async function getDatas() {
     // Appel à l'API pour récupérer les données de l'utilisateur
@@ -76,6 +78,9 @@ export default function Profil() {
             <Grid container direction="row" justifyContent="center" alignItems="flex-start" spacing={4} marginTop={4}>
                 <Grid item>
                     <HeaderProfile Nom={user ? user.nom : <LinearProgress />} Prenom={user ? user.prenom : <LinearProgress />} Mail={user ? user.mail : <LinearProgress />} Classe={user ? user.classe : <LinearProgress />} Status={user ? user.statut : <LinearProgress />} />
+                    <Grid item sx={{ marginLeft: "auto", marginTop: 4 }}>
+                        <UploadRapport args={{ id_user: user ? user.id_user : null }} />
+                    </Grid>
                 </Grid>
                 <Grid item>
                     <Grid container direction="row">
