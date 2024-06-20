@@ -4,6 +4,7 @@ import { IconButton, LinearProgress, Stack } from '@mui/material';
 import HeaderProfile from '../components/HeaderProfile';
 import DataTable from '../components/DataTable';
 import Grid from '@mui/material/Grid';
+import NavBar from '../components/Navbar.jsx';
 
 async function getDatas() {
     let fetchWraper = new FetchWraper();
@@ -45,45 +46,32 @@ export default function Profil() {
         fetchData();
     }, []);
 
-    // return (
-    //     <div>
-    //         <h1>Profil</h1>
-    //         <p>Email: {user ? user.mail : <LinearProgress />}</p>
-    //         <p>Nom: {user ? user.nom : <LinearProgress />}</p>
-    //         <p>Prénom: {user ? user.prenom : <LinearProgress />}</p>
-    //     </div>
-    // );
-
     return (
         <>
-            <header>
-                <h1>Navbar</h1>
-            </header>
-            <body>
-                <Grid container direction="row" justifyContent="center" alignItems="flex-start" spacing={4}>
-                    <Grid item>
-                        <HeaderProfile Nom={user ? user.nom : <LinearProgress />} Prenom={user ? user.prenom : <LinearProgress />} Mail={user ? user.mail : <LinearProgress />} />
-                    </Grid>
-                    <Grid item>
-                        <Grid container direction="row">
-                            <Grid item>
-                                <h1>Mes Rapports</h1>
-                            </Grid>
-                            <Grid item sx={{ marginLeft: "auto"}}>
-                                <Grid container direction="row">
-                                    <Grid item>
-                                        <h1>Item 1</h1>
-                                    </Grid>
-                                    <Grid item alignContent="center">
-                                        <IconButton sx={{color: '#000000'}}>-></IconButton>
-                                    </Grid>
+            <NavBar />
+            <Grid container direction="row" justifyContent="center" alignItems="flex-start" spacing={4} marginTop={4}>
+                <Grid item>
+                    <HeaderProfile Nom={user ? user.nom : <LinearProgress />} Prenom={user ? user.prenom : <LinearProgress />} Mail={user ? user.mail : <LinearProgress />} />
+                </Grid>
+                <Grid item>
+                    <Grid container direction="row">
+                        <Grid item>
+                            <h1>Mes Rapports</h1>
+                        </Grid>
+                        <Grid item sx={{ marginLeft: "auto" }}>
+                            <Grid container direction="row">
+                                <Grid item>
+                                    <h1>Item 1</h1>
+                                </Grid>
+                                <Grid item alignContent="center">
+                                    <IconButton sx={{ color: '#000000' }}>-></IconButton>
                                 </Grid>
                             </Grid>
                         </Grid>
-                        <DataTable rows={rows} type="rapport" />
                     </Grid>
+                    <DataTable rows={rows} type="rapport" />
                 </Grid>
-            </body>
+            </Grid>
         </>
     );
 }
