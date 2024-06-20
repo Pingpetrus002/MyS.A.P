@@ -45,10 +45,3 @@ export default function HeaderProfile({ Nom } = 'John', { Prenom } = "Doe", { Ma
         </>
     );
 }
-
-const Img = styled('img')({
-    margin: 'auto',
-    display: 'block',
-    maxWidth: '100%',
-    maxHeight: '100%',
-});
