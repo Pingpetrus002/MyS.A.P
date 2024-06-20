@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Button, LinearProgress, Grid } from '@mui/material';
+import { saveAs } from 'file-saver'; // Importer saveAs pour le téléchargement de fichiers
 
 // Importations personnalisées
 import FetchWraper from '../utils/FetchWraper';
@@ -59,6 +60,20 @@ export default function Etudiants() {
     setModalOpen(false);
   };
 
+  // Fonction pour exporter les données au format CSV
+  const exportToCSV = () => {
+    const csvData = students.map((student) => {
+      // Générer une ligne CSV pour chaque étudiant
+      return `${student.nom},${student.prenom},${student.classe},${student.statut}, ${student.entreprise}`;
+    });
+    const csvString = csvData.join('\n'); // Concaténer les lignes avec un saut de ligne
+
+    // Créer un objet Blob contenant les données CSV
+    const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8' });
+    // Télécharger le fichier CSV avec FileSaver.js
+    saveAs(blob, 'etudiants.csv');
+  };
+
   // Rendu du composant
   return (
     <Grid container justifyContent="center">
@@ -83,6 +98,7 @@ export default function Etudiants() {
         >
           +
         </Button>
+        
       </Grid>
       <Grid item xs={10}>
         {loading ? (
@@ -91,11 +107,29 @@ export default function Etudiants() {
           <DataTable rows={students} type="etudiant" onRowButtonClick={handleRowClick} getRowId={getRowId} />
         )}
       </Grid>
-      <Grid item xs={10}>
-        {selectedStudent && (
-          <StudentModal student={selectedStudent} open={modalOpen} onClose={handleCloseModal} />
-        )}
+      <Grid item xs={10} sx={{ marginTop: '2rem' }}>
+        <Button 
+          variant="contained" 
+          sx={{ 
+            backgroundColor: '#FDD47C', 
+            color: 'black', 
+            size: 'large',
+            borderRadius: '4px',
+            border: '2.5px solid #000000',
+            width: '150px', 
+            height: '60px', 
+            fontSize: '16px', // Augmenter la taille du texte
+            fontFamily: 'Inter', // Changer la police du texte
+            '&:hover': {
+              backgroundColor: '#FFC039'
+            } 
+          }} 
+          onClick={exportToCSV} // Appeler la fonction d'export CSV lors du clic sur le bouton
+        >
+          Exporter CSV
+        </Button>
       </Grid>
+      
     </Grid>
   );
 }
