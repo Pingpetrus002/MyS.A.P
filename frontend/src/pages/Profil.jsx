@@ -103,14 +103,14 @@ export default function Profil() {
             <Grid container direction="row" justifyContent="center" alignItems="flex-start" spacing={4} marginTop={4}>
                 <Grid item>
                     <HeaderProfile Nom={user ? user.nom : <LinearProgress />} Prenom={user ? user.prenom : <LinearProgress />} Mail={user ? user.mail : <LinearProgress />} />
+                    <Grid item sx={{ marginLeft: "auto", marginTop: 4 }}>
+                        <UploadRapport args={{ id_user: user ? user.id_user : null }} />
+                    </Grid>
                 </Grid>
                 <Grid item>
                     <Grid container direction="row">
                         <Grid item>
                             <h1>Mes Rapports</h1>
-                        </Grid>
-                        <Grid item sx={{ marginLeft: "auto" }}>
-                            <UploadRapport args={{id_user: user ? user.id_user : null}} />
                         </Grid>
                         <Grid item sx={{ marginLeft: "auto" }}>
                             <Grid container direction="row">
