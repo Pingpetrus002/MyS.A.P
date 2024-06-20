@@ -16,6 +16,15 @@ import hashlib
 auth = Blueprint('auth', __name__)
 mail = Mail()  # Initialisation de l'extension Flask-Mail pour l'envoi de mails
 
+ROLES_ACCESS = {
+    1: ['*'],  # Admin has access to all pages
+    2: ['*'],  # RRE has access to specific pages
+    3: ['dashboard', 'profil', 'rapports', 'etudiants'],  # Suiveur has access to profile and their reports
+    4: ['profil', 'rdv'],  # Etudiant has access to profile and concerned reports
+    5: ['profil', 'rdv'],  # Tuteur has access to profile, their students, and their students' reports
+}
+
+
 # Fonction pour générer un mot de passe aléatoire
 def generate_random_password(length=6):
     characters = string.ascii_letters + string.digits
@@ -136,12 +145,25 @@ def logout():
     unset_jwt_cookies(response)
     return response, 200
 
-# Route protégée accessible uniquement aux utilisateurs authentifiés
+# Route protégée qui verifie via un dictonnaire si l'utilisateur est authentifié avec la page
 @auth.route('/protected', methods=['GET'])
 @jwt_required()
 def protected():
     current_user = get_jwt_identity()
-    return jsonify({'message': f'Welcome user {current_user}'}), 200
+    page = request.args.get('page')  # Assumes the requested page is sent as a query parameter
+    
+    if not page:
+        return jsonify({'message': 'Page not specified'}), 400
+
+    user_role = Utilisateur.query.get(current_user).id_role
+    print(user_role)
+    if user_role not in ROLES_ACCESS:
+        return jsonify({'message': 'Role not recognized'}), 403
+
+    if '*' in ROLES_ACCESS[user_role] or page in ROLES_ACCESS[user_role]:
+        return jsonify({'message': f'Welcome {current_user}, you have access to {page}'}), 200
+    else:
+        return jsonify({'message': 'Access forbidden: you do not have permission to access this page'}), 403
 
 # Route pour récupérer le profil de l'utilisateur actuellement authentifié
 @auth.route('/get_profil', methods=['GET'])
