@@ -16,9 +16,12 @@
     "@fontsource/inter": "^5.0.18",
     "@mui/icons-material": "^5.15.20",
     "@mui/material": "^5.15.20",
-    "@mui/x-data-grid": "^7.6.2",
+    "@mui/x-data-grid": "^7.7.0",
+    "@mui/x-date-pickers": "^7.7.0",
     "axios": "^1.7.2",
+    "date-fns": "^3.6.0",
     "file-saver": "^2.0.5",
+    "jspdf": "^2.5.1",
     "react": "^18.2.0",
     "react-calendly": "^4.3.1",
     "react-dom": "^18.2.0"

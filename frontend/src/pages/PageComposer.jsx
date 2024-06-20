@@ -2,6 +2,7 @@ import Login from "./Login";
 import Profil from "./Profil";
 import RendezVous from "./RendezVous";
 import Etudiants from "./Etudiants";
+import Rapports from "./Rapports";
 import FetchWraper from "../utils/FetchWraper";
 import { useEffect, useState } from 'react';
 
@@ -10,6 +11,7 @@ const Pages = {
     "profil":Profil,
     "rendez-vous": RendezVous,
     "etudiants": Etudiants,
+    "rapports": Rapports,
     "DefaultPage": Login
 };
 
