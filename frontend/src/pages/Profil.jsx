@@ -97,7 +97,7 @@ export default function Profil() {
 
     return (
         <>
-            <NavBar />
+            <NavBar idRole={user.id_role}/>
             <Grid container direction="row" justifyContent="center" alignItems="flex-start" spacing={4} marginTop={4}>
                 <Grid item>
                     <HeaderProfile Nom={user ? user.nom : <LinearProgress />} Prenom={user ? user.prenom : <LinearProgress />} Mail={user ? user.mail : <LinearProgress />} />
