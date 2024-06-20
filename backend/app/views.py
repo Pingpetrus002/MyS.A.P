@@ -29,7 +29,7 @@ def send_welcome_email(username, password):
 
 def document_to_dict(doc):
     return {
-        #'id_doc': doc.id_doc,
+        'id': doc.id_doc,
         'nom': doc.nom,
         #'rapport': base64.b64encode(doc.rapport).decode('utf-8'),  # Convertir en base64 pour l'affichage
         'md5': doc.md5,
