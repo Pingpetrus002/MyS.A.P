@@ -49,10 +49,10 @@ const CustomDataGrid = styled(DataGrid)({
 });
 
 const columnsRapport = [
-  { field: 'etudiant', headerName: 'Étudiant', width: 180, minWidth: 180, maxWidth: 300 },
-  { field: 'sujet', headerName: 'Sujet', width: 180, minWidth: 180, maxWidth: 300 },
+  { field: 'id_user', headerName: 'Étudiant', width: 180, minWidth: 180, maxWidth: 300 },
+  { field: 'nom', headerName: 'Sujet', width: 180, minWidth: 180, maxWidth: 300 },
   { field: 'concernes', headerName: 'Concernés', width: 220, minWidth: 220 },
-  { field: 'suiveur', headerName: 'Suiveur', width: 180, minWidth: 180, maxWidth: 300 },
+  { field: 'id_user_1', headerName: 'Suiveur', width: 180, minWidth: 180, maxWidth: 300 },
   {
     field: 'télécharger',
     headerName: 'Télécharger',
@@ -88,9 +88,9 @@ const columnsMesRapports = [
 const columnsEtudiant = [
   { field: 'nom_prenom', headerName: 'Nom Prénom', width: 180, minWidth: 180, maxWidth: 300 },
   { field: 'classe', headerName: 'Classe', width: 220, minWidth: 220, maxWidth: 300 },
-  { field: 'status', headerName: 'Status', width: 180, minWidth: 180, maxWidth: 300},
-  { field: 'duree', headerName: 'Durée', width: 180, minWidth: 180, maxWidth: 300},
-  { field: 'contract', headerName: 'Contract', width: 180, minWidth: 180, maxWidth: 300},
+  { field: 'status', headerName: 'Status', width: 180, minWidth: 180, maxWidth: 300 },
+  { field: 'duree', headerName: 'Durée', width: 180, minWidth: 180, maxWidth: 300 },
+  { field: 'contract', headerName: 'Contract', width: 180, minWidth: 180, maxWidth: 300 },
   {
     field: 'voir',
     headerName: 'Voir',
@@ -137,16 +137,13 @@ function onButtonClick(cell) {
 
 export default function DataTable({ rows, type }) {
   return (
-    <Container sx={{ mt: 10 }}>
-      <Grid item xs={12}>
+    <>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <Typography variant="h4" gutterBottom style={{ textAlign: 'left' }}>
             {getTitle(type)}
           </Typography>
           <ModalWrapper />
         </div>
-      </Grid>
-      <Grid item xs={12}>
         <CustomDataGrid
           autoHeight
           rows={rows}
@@ -159,8 +156,7 @@ export default function DataTable({ rows, type }) {
           pageSizeOptions={[5, 10]}
           disableMultipleRowSelection
         />
-      </Grid>
-    </Container>
+    </>
   );
 }
 

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { LinearProgress } from '@mui/material';
+import { LinearProgress, Grid } from '@mui/material';
 
 // Importations personnalisées
 import FetchWraper from '../utils/FetchWraper';
@@ -65,7 +65,11 @@ export default function Etudiants() {
       {loading ? (
         <LinearProgress />
       ) : (
-        <DataTable rows={students} type="etudiant" onRowButtonClick={handleRowClick} getRowId={getRowId} />
+        <Grid container direction="row" justifyContent="center" spacing={4} marginTop={4}>
+          <Grid item>
+            <DataTable rows={students} type="etudiant" onRowButtonClick={handleRowClick} getRowId={getRowId} />
+          </Grid>
+        </Grid>
       )}
       {selectedStudent && (
         <StudentModal student={selectedStudent} open={modalOpen} onClose={handleCloseModal} />
