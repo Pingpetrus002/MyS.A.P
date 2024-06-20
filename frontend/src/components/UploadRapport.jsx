@@ -114,12 +114,6 @@ export default function UploadRapport(params) {
     );
 }
 
-UploadRapport.arguments = {
-    args: {
-        id_user: null,
-        id_suiveur: null
-    }
-}; // default arguments
 
 // Usage:
 /* <UploadRapport args={
