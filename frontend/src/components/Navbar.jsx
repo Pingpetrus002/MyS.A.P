@@ -17,7 +17,7 @@ import FetchWraper from '../utils/FetchWraper';
 const pages = {
     1: ['Accueil', 'Rapports', 'Étudiants', 'Rendez-Vous', 'Mission'],
     2: ['Accueil', 'Rapports', 'Étudiants', 'Rendez-Vous'],
-    3: ['Accueil', 'Rapport', 'Étudiants', 'Rendez-Vous'],
+    3: ['Accueil', 'Rapports', 'Étudiants', 'Rendez-Vous'],
     4: ['Accueil', 'Mission', 'Rendez-Vous'],
     5: ['Accueil', 'Mission', 'Rendez-Vous'],
 };
@@ -276,7 +276,7 @@ const Navbar = () => {
                                         onClick={() => { SubmitLogout() }}>
                                         {setting.name}
                                     </Button> :
-                                    <Button style={{ textDecoration: 'none', color: 'inherit' }} href={`/?page=${setting.url}`}>
+                                    <Button style={{ textDecoration: 'none', color: 'inherit' }} href={`${setting.url}`}>
                                         {setting.name}
                                     </Button>}
                             </Typography>

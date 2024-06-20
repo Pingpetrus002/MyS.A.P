@@ -16,13 +16,6 @@ import hashlib
 auth = Blueprint('auth', __name__)
 mail = Mail()  # Initialisation de l'extension Flask-Mail pour l'envoi de mails
 
-ROLES_ACCESS = {
-    1: ['*'],  # Admin has access to all pages
-    2: ['*'],  # RRE has access to specific pages
-    3: ['dashboard', 'profil', 'rapports', 'etudiants'],  # Suiveur has access to profile and their reports
-    4: ['profil', 'rdv'],  # Etudiant has access to profile and concerned reports
-    5: ['profil', 'rdv'],  # Tuteur has access to profile, their students, and their students' reports
-}
 
 
 # Fonction pour générer un mot de passe aléatoire
@@ -153,7 +146,7 @@ def protected():
     user = Utilisateur.query.get(current_user)
 
     # Vérification du rôle de l'utilisateur pour l'accès à la page
-    return jsonify({'message': 'Protected page', 'role': user.id_role, 'access': ROLES_ACCESS[user.id_role]}), 200
+    return jsonify({'message': 'Protected page', 'role': user.id_role,}), 200
 
 # Route pour récupérer le profil de l'utilisateur actuellement authentifié
 @auth.route('/get_profil', methods=['GET'])
@@ -215,7 +208,7 @@ def set_rapport():
     current_user = get_jwt_identity()
     data: dict = request.get_json()
 
-    fields = ['id_user', 'sujet', 'rapport']
+    fields = ['id_user', 'sujet', 'rapport','type']
     if check_fields(data, fields) != 0:
         return check_fields(data, fields)
     
@@ -224,6 +217,7 @@ def set_rapport():
     id_user = data.get('id_user')
     sujet = data.get('sujet')
     rapport = data.get('rapport')
+    type = data.get('type')
     date = datetime.datetime.now()
     
     #Recup de hash MD5 du rapport
@@ -237,11 +231,15 @@ def set_rapport():
     user = Utilisateur.query.get(current_user)
 
     if not check_role(user, 1) and not check_role(user, 2) and not check_role(user, 3):
-        return jsonify({'message': 'Unauthorized'}), 403
+        if(type != 'rapport' and check_role(user, 4) or check_role(user, 5)):
+            pass
+        else:
+            return jsonify({'message': 'Unauthorized'}), 403
+    
     
     #Ajout du rapport
 
-    new_rapport = Document(nom=sujet, id_user=id_user, id_user_1=id_suiveur, rapport=rapport.encode('utf-8'), datecreation=date, md5=MD5)
+    new_rapport = Document(nom=sujet, id_user=id_user, id_user_1=id_suiveur, rapport=rapport.encode('utf-8'), datecreation=date, md5=MD5, type=type)
     db.session.add(new_rapport)
 
     db.session.commit()

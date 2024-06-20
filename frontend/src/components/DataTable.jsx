@@ -134,6 +134,25 @@ const columnsEtudiant = [
   },
 ];
 
+const columnsOther = [
+  { field: 'nom', headerName: 'Nom', width: 180, minWidth: 180, maxWidth: 300 },
+  { field: 'datecreation', headerName: 'Date d\'ajout', width: 180, minWidth: 180, maxWidth: 300 },
+  {
+    field: 'télécharger',
+    headerName: 'Télécharger',
+    width: 150,
+    minWidth: 150,
+    maxWidth: 150,
+    renderCell: (params) => (
+      <Tooltip title="Télécharger" placement="top">
+        <CustomButton variant="contained" onClick={() => handleDownload(params.row.md5)}>
+          <PictureAsPdfIcon />
+        </CustomButton>
+      </Tooltip>
+    ),
+  },
+];
+
 function getColumns(type) {
   switch (type) {
     case 'rapport':
@@ -142,6 +161,8 @@ function getColumns(type) {
       return columnsEtudiant;
     case 'mes_rapports':
       return columnsMesRapports;
+    case 'other':
+      return columnsOther;
     default:
       return [];
   }

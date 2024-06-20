@@ -46,6 +46,7 @@ const PdfGenerator = (props) => {
         const body = {
             id_user: props.idEtudiant,
             sujet: props.nomRapport,
+            type: 'rapport',
             rapport: pdfContent
         };
 
