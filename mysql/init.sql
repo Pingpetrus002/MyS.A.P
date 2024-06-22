@@ -133,6 +133,7 @@ CREATE TABLE IF NOT EXISTS programme(
 CREATE TABLE IF NOT EXISTS alerte(
    id_alerte INTEGER NOT NULL AUTO_INCREMENT,
    type VARCHAR(50),
+   commentaires VARCHAR(250),
    id_user_cible INT,
    id_user_source INT,   
    PRIMARY KEY(id_alerte),

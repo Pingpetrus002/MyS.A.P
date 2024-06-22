@@ -736,6 +736,8 @@ function SyntheseSuiviTuteur() {
                         axesAmelioration={textFieldAxesAmelioration}
                         pointsFort={textFieldPointsFort}
                         sujetMemoire={textFieldSujetMemoire}
+                        alerteRE={isREOtherChecked ? reOtherText : null}
+                        alerteSP={isPedagogiqueOtherChecked ? PedagogiqueOtherText : null}
                         commentaireEntretienSuivi={textFieldCommentaireEntretienSuivi}
                         nomSuiveur={textFieldNomSuiveur}
                         dateEntretien={dateFieldEntretien}

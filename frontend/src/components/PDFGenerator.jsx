@@ -1,10 +1,14 @@
 import { Button } from '@mui/material';
 import jsPDF from 'jspdf';
 import FetchWraper from '../utils/FetchWraper';
+import AlertCreator from '../utils/AlertCreator';
+import { idID } from '@mui/material/locale';
 
 const PdfGenerator = (props) => {
     const generateAndSendPDF = async () => {
         const doc = new jsPDF();
+        let alertCreator = new AlertCreator(props=props);
+        alertCreator.checkForAlert();
 
         // Ajout des valeurs au document PDF
         doc.text(`${props.nomRapport}`, 90, 10);
