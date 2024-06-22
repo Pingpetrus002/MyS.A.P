@@ -4,7 +4,7 @@ from flask import Blueprint, request, jsonify, render_template, make_response
 from flask_mail import Message, Mail
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity, set_access_cookies, unset_jwt_cookies
 from werkzeug.security import generate_password_hash, check_password_hash
-from .models import Utilisateur, db, Document, Entreprise
+from .models import Utilisateur, db, Document, Entreprise, Alert
 
 import re 
 import random  
@@ -375,3 +375,23 @@ def get_calendly():
         suiveur = Utilisateur.query.get(user.id_user_1)
         url_calendly = suiveur.url_calendly
         return jsonify({'url_calendly': url_calendly}), 200
+    
+
+# Route pour créer une alerte
+@auth.route('/create_alert', methods=['POST'])
+@jwt_required()
+def create_alert():
+    data = request.get_json()    
+    current_user = get_jwt_identity()
+
+    type = data.get('type')
+    commentaire = data.get('commentaire')
+    id_user_cible = data.get('id_user_cible')
+    id_user_source = Utilisateur.query.get(current_user).id_user
+
+    # Création d'une alerte pour l'utilisateur spécifié
+    new_alert = Alert(type=type, commentaires=commentaire, id_user_cible=id_user_cible, id_user_source=id_user_source)
+    db.session.add(new_alert)
+    db.session.commit()
+
+    return jsonify({'message': 'Alert created'}), 200
