@@ -276,7 +276,7 @@ const Navbar = () => {
                                         onClick={() => { SubmitLogout() }}>
                                         {setting.name}
                                     </Button> :
-                                    <Button style={{ textDecoration: 'none', color: 'inherit' }} href={`/?page=${setting.url}`}>
+                                    <Button style={{ textDecoration: 'none', color: 'inherit' }} href={setting.url}>
                                         {setting.name}
                                     </Button>}
                             </Typography>
