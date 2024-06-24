@@ -122,7 +122,7 @@ const Navbar = () => {
             case 'Type3':
                 return '#C4C4C4';
             default:
-                return 'black';
+                return '#FFFFFF';
         }
     };
 
