@@ -65,6 +65,7 @@ function Login() {
                                 label="Identifiant"
                                 variant="outlined"
                                 name='username'
+                                onKeyDown={(e) => {(e.key === 'Enter' ? SubmitLogin() : null)}}
                             />
                         </Grid>
                         <Grid item xs={12}>
@@ -74,6 +75,7 @@ function Login() {
                                 type="password"
                                 variant="outlined"
                                 name='password'
+                                onKeyDown={(e) => {(e.key === 'Enter' ? SubmitLogin() : null)}}
                             />
                         </Grid>
                         <Grid item xs={12}>
