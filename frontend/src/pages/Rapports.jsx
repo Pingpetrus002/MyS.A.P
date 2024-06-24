@@ -27,7 +27,7 @@ export default function Rapports() {
             try {
                 const rapportsData = await getRapports();
                 setRapports(rapportsData);
-                
+
                 setLoading(false);
             } catch (error) {
                 console.error('Error fetching data:', error);
@@ -45,11 +45,15 @@ export default function Rapports() {
     return (
         <>
             <NavBar />
-            <Grid container direction="row" justifyContent="center"  spacing={4} marginTop={4}>
-                <Grid item>
-                    <DataTable rows={rapports} type="rapport" />
+            {loading ? (
+                <LinearProgress />
+            ) : (
+                <Grid container direction="row" justifyContent="center" spacing={4} marginTop={4}>
+                    <Grid item>
+                        <DataTable rows={rapports} type="rapport" />
+                    </Grid>
                 </Grid>
-            </Grid>
+            )}
         </>
     );
 }

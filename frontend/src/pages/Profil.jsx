@@ -74,7 +74,7 @@ export default function Profil() {
 
     return (
         <>
-            <NavBar idRole={user.id_role}/>
+            <NavBar idRole={user.id_role} />
             <Grid container direction="row" justifyContent="center" alignItems="flex-start" spacing={4} marginTop={4}>
                 <Grid item>
                     <HeaderProfile Nom={user ? user.nom : <LinearProgress />} Prenom={user ? user.prenom : <LinearProgress />} Mail={user ? user.mail : <LinearProgress />} Classe={user ? user.classe : <LinearProgress />} Status={user ? user.statut : <LinearProgress />} />
@@ -83,22 +83,7 @@ export default function Profil() {
                     </Grid>
                 </Grid>
                 <Grid item>
-                    <Grid container direction="row">
-                        <Grid item>
-                            <h1>Mes Rapports</h1>
-                        </Grid>
-                        <Grid item sx={{ marginLeft: "auto" }}>
-                            <Grid container direction="row">
-                                <Grid item>
-                                    <h1>Item 1</h1>
-                                </Grid>
-                                <Grid item alignContent="center">
-                                    <IconButton sx={{ color: '#000000' }}>-></IconButton>
-                                </Grid>
-                            </Grid>
-                        </Grid>
-                    </Grid>
-                    <DataTable rows={rapports} type="rapport" />
+                    <DataTable rows={rapports} type="mes_rapports" />
                 </Grid>
             </Grid>
         </>
