@@ -4,6 +4,7 @@ import RendezVous from "./RendezVous";
 import Etudiants from "./Etudiants";
 import Rapports from "./Rapports";
 import Accueil from "./Accueil";
+import Alertes from "./Alertes";
 import FetchWraper from "../utils/FetchWraper";
 import { useEffect, useState } from 'react';
 
@@ -14,7 +15,8 @@ const Pages = {
     "etudiants": Etudiants,
     "rapports": Rapports,
     "accueil": Accueil,
-    "DefaultPage": Login
+    "DefaultPage": Login,
+    "alertes": Alertes,
 };
 
 async function IsConnected() {

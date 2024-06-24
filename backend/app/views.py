@@ -387,7 +387,7 @@ def create_alert():
     type = data.get('type')
     commentaire = data.get('commentaire')
     id_user_cible = data.get('id_user_cible')
-    # id_user_source = current_user.id_user
+    id_user_source = current_user.id_user
 
     # Création d'une alerte pour l'utilisateur spécifié
     new_alert = Alert(type=type, commentaires=commentaire, id_user_cible=id_user_cible, id_user_source=current_user)
@@ -395,3 +395,22 @@ def create_alert():
     db.session.commit()
 
     return jsonify({'message': 'Alert created'}), 200
+
+# Route pour récupérer toutes les alertes
+@auth.route('/get_alerts', methods=['GET'])
+@jwt_required()
+def get_alerts():
+    # Recherche de toutes les alertes
+    alerts = Alert.query.all()
+
+    alerts_dict = [
+        {
+            'id_alerte': alert.id_alerte,
+            'type': alert.type,
+            'commentaires': alert.commentaires,
+            'id_user_cible': alert.id_user_cible,
+            'id_user_source': alert.id_user_source
+        } for alert in alerts
+    ]
+
+    return jsonify(alerts_dict), 200

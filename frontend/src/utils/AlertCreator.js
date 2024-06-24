@@ -1,18 +1,17 @@
-import FetchWraper from "./FetchWraper"
+import FetchWraper from "./FetchWraper";
 
 export default class AlertCreator {
-
     constructor(props) {
-        this.props = props
+        this.props = props;
     }
 
     checkForAlert() {
         if (this.props.alerteRE != null) {
-            this.createAlert("Relation Entreprise", this.props.alerteRE)
+            this.createAlert("Relation Entreprise", this.props.alerteRE);
         }
         
         if (this.props.alerteSP != null) {
-            this.createAlert("Service Pedagogique", this.props.alerteSP)
+            this.createAlert("Service Pedagogique", this.props.alerteSP);
         }
     }
 
@@ -43,4 +42,20 @@ export default class AlertCreator {
             console.error('Erreur:', error);
         }
     }
-};
+}
+
+export async function getAlerts() {
+    let fetchWraper = new FetchWraper();
+    fetchWraper.url = "http://localhost:5000/auth/get_alerts";
+    fetchWraper.method = "GET";
+    fetchWraper.headers.append("Content-Type", "application/json");
+    fetchWraper.headers.append("Accept", "application/json");
+    fetchWraper.headers.append("Access-Control-Allow-Origin", window.location.origin);
+    fetchWraper.headers.append("Access-Control-Allow-Credentials", "true");
+
+    const response = await fetchWraper.fetchw();
+    if (!response.ok) {
+        throw new Error('Erreur lors de la récupération des alertes');
+    }
+    return await response.json();
+}
