@@ -5,10 +5,12 @@ import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
 import Typography from '@mui/material/Typography';
 import PropTypes from 'prop-types';
 import { saveAs } from 'file-saver';
+import { Tooltip, Link } from '@mui/material';
+import EastIcon from '@mui/icons-material/East';
+import AddIcon from '@mui/icons-material/Add';
 
 import FetchWraper from '../utils/FetchWraper';
 import ModalWrapper from './ButtonRapports';
-import { Tooltip } from '@mui/material';
 
 const handleDownload = async (md5) => {
   const url = `http://localhost:5000/auth/get_rapport/${md5}`;
@@ -22,15 +24,15 @@ const handleDownload = async (md5) => {
   fetchWraper.headers.append("Access-Control-Allow-Credentials", "true");
 
   try {
-      let result = await fetchWraper.fetchw();
-      if (result.ok) {
-          const blob = await result.blob();
-          saveAs(blob, `report_${md5}.pdf`);
-      } else {
-          console.error('Failed to download the file.');
-      }
+    let result = await fetchWraper.fetchw();
+    if (result.ok) {
+      const blob = await result.blob();
+      saveAs(blob, `report_${md5}.pdf`);
+    } else {
+      console.error('Failed to download the file.');
+    }
   } catch (error) {
-      console.error('Error downloading the file:', error);
+    console.error('Error downloading the file:', error);
   }
 };
 
@@ -85,7 +87,7 @@ const columnsRapport = [
     minWidth: 150,
     maxWidth: 150,
     renderCell: (params) => (
-      <Tooltip title="Télécharger" placement="top">
+      <Tooltip title="Télécharger" placement="right">
         <CustomButton variant="contained" onClick={() => handleDownload(params.row.md5)}>
           <PictureAsPdfIcon />
         </CustomButton>
@@ -105,7 +107,7 @@ const columnsMesRapports = [
     minWidth: 150,
     maxWidth: 150,
     renderCell: (params) => (
-      <Tooltip title="Télécharger" placement="top">
+      <Tooltip title="Télécharger" placement="right">
         <CustomButton variant="contained" onClick={() => handleDownload(params.row.md5)}>
           <PictureAsPdfIcon />
         </CustomButton>
@@ -134,6 +136,35 @@ const columnsEtudiant = [
   },
 ];
 
+const columnsAlertes = [
+  { field: 'commentaires', headerName: 'Commentaire', width: 800, minWidth: 220, maxWidth: 900 },
+  { field: 'id_user_source', headerName: 'ID utilisateur source', width: 180, minWidth: 180, maxWidth: 300 },
+  {
+    field: 'voir',
+    headerName: 'Voir',
+    width: 120,
+    minWidth: 120,
+    maxWidth: 120,
+    renderCell: (params) => (
+      <CustomButton onClick={() => console.log(params.row)} style={{ backgroundColor: '#1976d2', color: 'white' }}>
+        Voir
+      </CustomButton>
+    ),
+  },
+  {
+    field: 'supprimer',
+    headerName: 'Supprimer',
+    width: 150,
+    minWidth: 150,
+    maxWidth: 150,
+    renderCell: (params) => (
+      <CustomButton onClick={() => console.log('Supprimer', params.row)} style={{ backgroundColor: '#bb2124', color: 'white' }}>
+        Supprimer
+      </CustomButton>
+    ),
+  },
+];
+
 function getColumns(type) {
   switch (type) {
     case 'rapport':
@@ -142,6 +173,8 @@ function getColumns(type) {
       return columnsEtudiant;
     case 'mes_rapports':
       return columnsMesRapports;
+    case 'alerte':
+      return columnsAlertes;
     default:
       return [];
   }
@@ -155,23 +188,72 @@ function getTitle(type) {
       return 'Tous les étudiants';
     case 'mes_rapports':
       return 'Mes rapports';
+    case 'alerte':
+      return 'Toutes les alertes';
     default:
       return '';
   }
 }
 
-function onButtonClick(cell) {
-  console.log(cell.row);
-}
-
 export default function DataTable({ rows, type }) {
+
+  const handleOpen = () => {
+    // TODO: Open étudiant modal
+  };
+
   return (
     <>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <Typography variant="h4" gutterBottom style={{ textAlign: 'left' }}>
           {getTitle(type)}
         </Typography>
-        <ModalWrapper />
+
+        {/* Bouton type Rapport */}
+        {type === 'rapport' && <ModalWrapper />}
+
+        {/* Bouton type Mes Rapports */}
+        {type === 'mes_rapports' && (<Link
+          href={'/?page=rapports'}
+          underline="none"
+          color="inherit"
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            '&:hover': {
+              color: 'black',
+              '& .icon-hover': {
+                transform: 'translateX(4px)',
+              }
+            }
+          }}
+        >
+          <Typography variant="h5">
+            Voir tout
+          </Typography>
+          <EastIcon fontSize="medium" className="icon-hover" sx={{ transition: 'transform 0.3s ease', ml: '0.3em' }} />
+        </Link>)}
+
+        {/* Bouton type Etudiant */}
+        {type === 'etudiant' && (
+          <Tooltip title="Ajouter un étudiant" placement="top">
+            <Button
+              variant="outlined"
+              onClick={handleOpen}
+              sx={{
+                color: '#000000',
+                borderColor: '#F0C975',
+                backgroundColor: '#FDD47C',
+                mb: 1,
+                '&:hover': {
+                  backgroundColor: '#FFC039',
+                  borderColor: '#FFC039',
+                }
+              }}
+            >
+              <AddIcon />
+            </Button>
+          </Tooltip>
+        )}
       </div>
       <CustomDataGrid
         autoHeight
@@ -182,8 +264,6 @@ export default function DataTable({ rows, type }) {
             paginationModel: { page: 0, pageSize: 5 },
           },
         }}
-        pageSizeOptions={[5, 10]}
-        disableMultipleRowSelection
       />
     </>
   );
@@ -191,5 +271,5 @@ export default function DataTable({ rows, type }) {
 
 DataTable.propTypes = {
   rows: PropTypes.arrayOf(PropTypes.object).isRequired,
-  type: PropTypes.oneOf(['rapport', 'etudiant', 'mes_rapports']).isRequired,
+  type: PropTypes.oneOf(['rapport', 'etudiant', 'mes_rapports', 'alerte']).isRequired,
 };

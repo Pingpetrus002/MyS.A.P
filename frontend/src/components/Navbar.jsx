@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import logoSelect from '../assets/LogoSelect.svg';
 import student from '../assets/images/Student.svg';
 import calendar from '../assets/images/Calendar.svg';
@@ -7,12 +7,15 @@ import rapport from '../assets/images/Rapport.svg';
 import logo from '../assets/logo.svg';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
-import { Badge, Box, Container, AppBar, Toolbar, IconButton, Menu, Avatar, Tooltip, MenuItem, Popover } from "@mui/material";
+import { Badge, Box, Container, AppBar, Toolbar, IconButton, Menu, Avatar, Tooltip, MenuItem, Popover, Link, Divider } from "@mui/material";
 import MenuIcon from '@mui/icons-material/Menu';
 import * as Icons from '@mui/icons-material';
+import EastIcon from '@mui/icons-material/East';
 import { useMediaQuery, useTheme } from '@mui/material';
 import '@fontsource/inter/400.css'; // Assurez-vous que la police est importée
 import FetchWraper from '../utils/FetchWraper';
+import { getAlerts } from '../utils/AlertCreator';
+import { darken } from '@mui/system';
 
 const pages = {
     1: ['Accueil', 'Rapports', 'Étudiants', 'Rendez-Vous', 'Mission'],
@@ -32,14 +35,14 @@ async function IsConnected() {
     fetchWraper.headers.append("Access-Control-Allow-Origin", window.location.origin);
     fetchWraper.headers.append("Access-Control-Allow-Credentials", "true");
     let result = await fetchWraper.fetchw();
-    
+
     let data = await result.json();
     return { "status": result.status, "role": data };
 }
 
 const settings = [
     { name: 'Profil', url: '/?page=profil', type: 'lien' },
-    { name: 'Déconnexion', url: '/deconnexion', type: 'callback' }
+    { name: 'Déconnexion', url: '/deconnexion', type: 'callback' },
 ];
 
 const Navbar = () => {
@@ -86,6 +89,43 @@ const Navbar = () => {
         console.log(data);
     }
 
+    const [anchorElNotification, setAnchorElNotification] = useState(null);
+    const [alerts, setAlerts] = useState([]);
+
+    useEffect(() => {
+        async function fetchAlerts() {
+            try {
+                const alertsData = await getAlerts();
+                setAlerts(alertsData);
+            } catch (error) {
+                console.error('Error fetching alerts:', error);
+            }
+        }
+
+        fetchAlerts();
+    }, []);
+
+    const handleOpenNotificationMenu = (event) => {
+        setAnchorElNotification(event.currentTarget);
+    };
+
+    const handleCloseNotificationMenu = () => {
+        setAnchorElNotification(null);
+    };
+
+    const getColorByType = (type) => {
+        switch (type) {
+            case 'Type1':
+                return '#FF7A7A';
+            case 'Type2':
+                return '#FFBD3D';
+            case 'Type3':
+                return '#C4C4C4';
+            default:
+                return '#FFFFFF';
+        }
+    };
+
     const NavMenuDesktop = () => {
 
         const [anchorElNav, setAnchorElNav] = useState(null);
@@ -127,15 +167,24 @@ const Navbar = () => {
                         marginRight: '2rem'
                     }}>
                         {getPage().map((page) => (
-                            <Button key={page}
+                            <Button
+                                key={page}
                                 href={`/?page=${page.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase()}`.replace(/\s/g, '')}
                                 sx={{
                                     my: 2,
                                     color: 'black',
                                     display: 'block',
                                     mx: 5,
-                                    fontWeight: 'bold',
-                                    fontSize: 15
+                                    fontWeight: '600',
+                                    fontSize: 15,
+                                    transition: 'all 0.3s ease-in-out',
+                                    '&:hover': {
+                                        color: 'white',
+                                        backgroundColor: '#FFC039',
+                                        fontWeight: '700',
+                                        transform: 'scale(1.1)',
+                                        borderRadius: '10px'
+                                    }
                                 }}>
                                 {page}
                             </Button>
@@ -205,7 +254,7 @@ const Navbar = () => {
             <Box sx={{ justifyContent: 'end' }}>
                 <IconButton size='large' aria-label="show new notifications" color="black"
                     onClick={handleOpenNotificationMenu}>
-                    <Badge badgeContent={50} color="error">
+                    <Badge badgeContent={alerts.length} color="error">
                         <Icons.Notifications />
                     </Badge>
                 </IconButton>
@@ -218,19 +267,65 @@ const Navbar = () => {
                     onClose={handleCloseNotificationMenu}
                     anchorOrigin={{
                         vertical: 'bottom',
-                        horizontal: 'right',  // Changed from 'left' to 'right'
+                        horizontal: 'right',
                     }}
                     transformOrigin={{
                         vertical: 'top',
-                        horizontal: 'right',  // Changed from 'left' to 'right'
+                        horizontal: 'right',
                     }}
                 >
-                    <MenuItem key="notification" onClick={handleCloseNotificationMenu}>
-                        <Typography textAlign="center">Notification</Typography>
+                    <MenuItem onClick={handleCloseNotificationMenu} sx={{ display: 'flex', justifyContent: 'right', '&:hover': { backgroundColor: 'transparent' } }}>
+                        <Link
+                            href={'/?page=alertes'}
+                            underline="none"
+                            color="inherit"
+                            sx={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                '&:hover': {
+                                    color: 'black',
+                                    '& .icon-hover': {
+                                        transform: 'translateX(4px)',
+                                    }
+                                }
+                            }}
+                        >
+                            <Typography sx={{ fontSize: '0.875rem' }}>
+                                Voir toutes les alertes
+                            </Typography>
+                            <EastIcon fontSize="small" className="icon-hover" sx={{ transition: 'transform 0.3s ease', ml: '0.3em' }} />
+                        </Link>
                     </MenuItem>
+                    <Divider />
+                    {(alerts.length === 0) ? (
+                        <MenuItem onClick={handleCloseNotificationMenu} sx={{ display: 'flex', justifyContent: 'center' }}>
+                            <Typography textAlign="center">
+                                Aucune alerte pour le moment
+                            </Typography>
+                        </MenuItem>
+                    ) : alerts.map((alert) => {
+                        const backgroundColor = getColorByType(alert.type);
+                        return (
+                            <MenuItem
+                                key={alert.id_alerte}
+                                onClick={handleCloseNotificationMenu}
+                                sx={{
+                                    backgroundColor,
+                                    padding: '0.5rem',
+                                    '&:hover': {
+                                        backgroundColor: darken(backgroundColor, 0.1),
+                                    }
+                                }}
+                            >
+                                <Typography textAlign="center">
+                                    {alert.commentaires}
+                                </Typography>
+                            </MenuItem>
+                        );
+                    })}
                 </Menu>
             </Box>
-        )
+        );
     };
 
     const ProfileIcon = () => {
@@ -261,32 +356,38 @@ const Navbar = () => {
                     onClose={handleCloseProfileMenu}
                     anchorOrigin={{
                         vertical: 'top',
-                        horizontal: 'right',  // Changed from 'left' to 'right'
+                        horizontal: 'right',
                     }}
                     transformOrigin={{
                         vertical: 'top',
-                        horizontal: 'right',  // Changed from 'left' to 'right'
+                        horizontal: 'right',
                     }}
                 >
-                    {settings.map((setting) => (
-                        <MenuItem key={setting.name} onClick={handleCloseProfileMenu}>
-                            <Typography textAlign="center">
-                                {setting.type === "callback" ?
-                                    <Button style={{ textDecoration: 'none', color: 'inherit' }}
-                                        onClick={() => { SubmitLogout() }}>
-                                        {setting.name}
-                                    </Button> :
-                                    <Button style={{ textDecoration: 'none', color: 'inherit' }} href={setting.url}>
-                                        {setting.name}
-                                    </Button>}
-                            </Typography>
-                        </MenuItem>
+                    {settings.map((setting, index) => (
+                        <Box key={setting.name}>
+                            <MenuItem onClick={handleCloseProfileMenu}>
+                                <Typography
+                                    textAlign="left"
+                                    style={{ textDecoration: 'none', color: 'inherit', width: '100%', cursor: 'pointer', textTransform: 'uppercase', fontSize: '0.875rem' }}
+                                    onClick={(e) => {
+                                        e.stopPropagation(); // Pour éviter que l'événement onClick du MenuItem ne se déclenche après celui du Typography
+                                        if (setting.type === "callback") {
+                                            SubmitLogout();
+                                        } else {
+                                            window.location.href = setting.url;
+                                        }
+                                    }}
+                                >
+                                    {setting.name}
+                                </Typography>
+                            </MenuItem>
+                            {index < settings.length - 1 && <Divider />}
+                        </Box>
                     ))}
                 </Menu>
             </Box>
         );
     };
-
 
     const NavMenuMobile = () => (
         <Container maxWidth="false" style={{
