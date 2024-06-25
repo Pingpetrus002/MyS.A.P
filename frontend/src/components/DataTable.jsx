@@ -117,13 +117,15 @@ function getColumns(type, isLargeScreen) {
       },
     ],
     mes_rapports: [
-      { field: 'sujet', headerName: 'Sujet', maxWidth: 300 },
-      { field: 'concernes', headerName: 'Concernés', maxWidth: 300 },
-      { field: 'suiveur', headerName: 'Suiveur', maxWidth: 300 },
+      { field: 'sujet', headerName: 'Sujet', width: 180, minWidth: 180, maxWidth: 300 },
+      { field: 'concernes', headerName: 'Concernés', width: 220, minWidth: 220, maxWidth: 300 },
+      { field: 'suiveur', headerName: 'Suiveur', width: 180, minWidth: 180, maxWidth: 300 },
       {
         field: 'télécharger',
         headerName: 'Télécharger',
+        width: 150,
         maxWidth: 150,
+        minWidth: 150,
         renderCell: (params) => (
           <Tooltip title="Télécharger" placement="right">
             <CustomButton variant="contained" onClick={() => handleDownload(params.row.md5)}>
