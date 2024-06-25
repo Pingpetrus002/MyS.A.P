@@ -10,9 +10,9 @@ import EastIcon from '@mui/icons-material/East';
 import AddIcon from '@mui/icons-material/Add';
 
 import FetchWraper from '../utils/FetchWraper';
-import ModalWrapper from './ButtonRapports';
-import AddMissionModal from './ButtonMissions';
+import ButtonRapports from './ButtonRapports';
 import useMediaQuery from '../utils/useMediaQuery';
+import AddMissionModal from './ButtonMissions';
 
 const handleDownload = async (md5) => {
   const url = `http://localhost:5000/auth/get_rapport/${md5}`;
@@ -45,7 +45,7 @@ const CustomButton = styled(Button)({
   },
 });
 
-const CustomDataGrid = styled(DataGrid)({
+const CustomDataGrid = styled(DataGrid)(({ theme, isSmallScreen }) => ({
   '& .MuiDataGrid-filler': {
     backgroundColor: '#FDD47C',
   },
@@ -61,7 +61,7 @@ const CustomDataGrid = styled(DataGrid)({
     },
     '& .MuiDataGrid-columnHeaderDraggableContainer': {
       '& .MuiDataGrid-iconButtonContainer': {
-        display: 'none',
+        display: isSmallScreen ? 'none' : 'flex',
       },
     },
     '&:hover .MuiDataGrid-columnHeaderDraggableContainer .MuiDataGrid-iconButtonContainer': {
@@ -83,13 +83,13 @@ const CustomDataGrid = styled(DataGrid)({
       border: 0,
     },
   },
-});
+}));
 
 const adjustColumns = (columns, isLargeScreen) => {
   return columns.map(col => {
     if (!isLargeScreen) {
       const { width, minWidth, ...rest } = col;
-      return rest;
+      return rest ;
     }
     return col;
   });
@@ -118,13 +118,15 @@ function getColumns(type, isLargeScreen) {
       },
     ],
     mes_rapports: [
-      { field: 'nom', headerName: 'Sujet', maxWidth: 300 },
-      { field: 'id_user', headerName: 'Concernés', maxWidth: 300 },
-      { field: 'id_user_1', headerName: 'Suiveur', maxWidth: 300 },
+      { field: 'nom', headerName: 'Sujet', width: 180, minWidth: 180, maxWidth: 300 },
+      { field: 'id_user', headerName: 'Concernés', width: 220, minWidth: 220, maxWidth: 300 },
+      { field: 'id_user_1', headerName: 'Suiveur', width: 180, minWidth: 180, maxWidth: 300 },
       {
         field: 'télécharger',
         headerName: 'Télécharger',
+        width: 150,
         maxWidth: 150,
+        minWidth: 150,
         renderCell: (params) => (
           <Tooltip title="Télécharger" placement="right">
             <CustomButton variant="contained" onClick={() => handleDownload(params.row.md5)}>
@@ -215,6 +217,7 @@ function getTitle(type) {
 
 export default function DataTable({ rows, type }) {
   const isLargeScreen = useMediaQuery('(min-width: 1024px)');
+  const isSmallScreen = useMediaQuery('(max-width: 768px)');
 
   const handleOpen = () => {
     // TODO: Open étudiant modal
@@ -253,7 +256,7 @@ export default function DataTable({ rows, type }) {
         </Typography>
 
         {/* Bouton type Rapport */}
-        {type === 'rapport' && <ModalWrapper />}
+        {type === 'rapport' && <ButtonRapports />}
 
         {/* Bouton type Mes Rapports */}
         {type === 'mes_rapports' && (<Link
@@ -312,6 +315,7 @@ export default function DataTable({ rows, type }) {
             paginationModel: { page: 0, pageSize: 5 },
           },
         }}
+        isSmallScreen={isSmallScreen}
       />
        {/* Bouton Exporter en CSV */}
        <Button

@@ -1,10 +1,12 @@
 import { useEffect, useState } from 'react';
+
 import logoSelect from '../assets/LogoSelect.svg';
 import student from '../assets/images/Student.svg';
 import calendar from '../assets/images/Calendar.svg';
 import profil from '../assets/images/Profil.svg';
 import rapport from '../assets/images/Rapport.svg';
 import logo from '../assets/logo.svg';
+
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import { Badge, Box, Container, AppBar, Toolbar, IconButton, Menu, Avatar, Tooltip, MenuItem, Divider } from "@mui/material";
@@ -67,6 +69,26 @@ const Navbar = () => {
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
     const isMedium = useMediaQuery(theme.breakpoints.between('sm', 'md'));
     const isDesktop = useMediaQuery(theme.breakpoints.up('md'));
+
+    const handleOpenAccueilMenu = () => {
+        window.location.href = '?page=accueil';
+    };
+
+    const handleOpenRapportMenu = () => {
+        window.location.href = '?page=rapports';
+    };
+
+    const handleOpenStudentMenu = () => {
+        window.location.href = '?page=etudiants';
+    };
+
+    const handleOpenCalendarMenu = () => {
+        window.location.href = '?page=rendez-vous';
+    };
+
+    const handleOpenProfileMenu = () => {
+        window.location.href = '?page=profil';
+    };
 
     async function SubmitLogout() {
         let fetchWraper = new FetchWraper();
@@ -397,43 +419,43 @@ const Navbar = () => {
 
     return (
         <>
-            <AppBar position="static">
-                {isMobile ? (
-                    <NavMenuMobile />
-                ) : (isMedium ? (
-                    <NavMenuMedium />
-                ) : (isDesktop && (
-                    <NavMenuDesktop />
-                )))}
-            </AppBar>
-
-            {/* Footer for Mobile */}
-            {isMobile && (
-                <Box component="footer" sx={{
-                    background: '#FDD47C',
-                    height: 50,
-                    display: 'flex',
-                    justifyContent: 'space-around',
-                    alignItems: 'center',
-                    position: 'sticky',
-                    bottom: 0,
-                    width: '100%',
-                    zIndex: 1000
-                }}>
-                    <IconButton href="/?page=accueil" sx={{ p: 0 }}>
-                        <img style={{ width: '2.5rem', borderRadius: 210.07, opacity: 0.6 }} src={logo} alt="logo" />
+            {!isMobile ? (
+                <AppBar position="static">
+                    {isMedium ? (
+                        <NavMenuMedium />
+                    ) : (
+                        isDesktop && <NavMenuDesktop />
+                    )}
+                </AppBar>
+            ) : (
+                <Box
+                    component="nav"
+                    sx={{
+                        background: '#FDD47C',
+                        height: 50,
+                        display: 'flex',
+                        justifyContent: 'space-around',
+                        alignItems: 'center',
+                        position: 'fixed',
+                        bottom: 0,
+                        width: '100%',
+                        zIndex: 1000
+                    }}
+                >
+                    <IconButton onClick={handleOpenAccueilMenu} sx={{ p: 0 }}>
+                        <img style={{ width: '2.5rem', borderRadius: '50%', opacity: 0.6 }} src={logo} alt="logo" />
                     </IconButton>
-                    <IconButton href="/?page=rapports" sx={{ p: 0 }}>
-                        <img style={{ width: '2.5rem', borderRadius: 210.07, opacity: 0.6 }} src={rapport} alt="rapport" />
+                    <IconButton onClick={handleOpenRapportMenu} sx={{ p: 0 }}>
+                        <img style={{ width: '2.5rem', borderRadius: '50%', opacity: 0.6 }} src={rapport} alt="rapport" />
                     </IconButton>
-                    <IconButton href="/?page=etudiants" sx={{ p: 0 }}>
-                        <img style={{ width: '2.5rem', borderRadius: 210.07, opacity: 0.6 }} src={student} alt="student" />
+                    <IconButton onClick={handleOpenStudentMenu} sx={{ p: 0 }}>
+                        <img style={{ width: '2.5rem', borderRadius: '50%', opacity: 0.6 }} src={student} alt="student" />
                     </IconButton>
-                    <IconButton href="/?page=rendez-vous" sx={{ p: 0 }}>
-                        <img style={{ width: '2.5rem', borderRadius: 210.07, opacity: 0.6 }} src={calendar} alt="calendar" />
+                    <IconButton onClick={handleOpenCalendarMenu} sx={{ p: 0 }}>
+                        <img style={{ width: '2.5rem', borderRadius: '50%', opacity: 0.6 }} src={calendar} alt="calendar" />
                     </IconButton>
                     <IconButton onClick={handleOpenProfileMenu} sx={{ p: 0 }}>
-                        <img style={{ width: '2.5rem', borderRadius: 210.07, opacity: 0.6 }} src={profil} alt="profile" />
+                        <img style={{ width: '2.5rem', borderRadius: '50%', opacity: 0.6 }} src={profil} alt="profile" />
                     </IconButton>
                 </Box>
             )}
