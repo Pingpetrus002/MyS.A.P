@@ -9,7 +9,7 @@ import logo from '../assets/logo.svg';
 
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
-import { Badge, Box, Container, AppBar, Toolbar, IconButton, Menu, Avatar, Tooltip, MenuItem, Divider } from "@mui/material";
+import { Badge, Box, Container, AppBar, Toolbar, IconButton, Menu, Avatar, Tooltip, MenuItem, Divider, Link } from "@mui/material";
 import MenuIcon from '@mui/icons-material/Menu';
 import * as Icons from '@mui/icons-material';
 import EastIcon from '@mui/icons-material/East';
@@ -293,10 +293,26 @@ const Navbar = () => {
                     }}
                 >
                     <MenuItem onClick={handleCloseNotificationMenu} sx={{ display: 'flex', justifyContent: 'right', '&:hover': { backgroundColor: 'transparent' } }}>
-                        <Typography sx={{ fontSize: '0.875rem' }}>
-                            Voir toutes les alertes
-                        </Typography>
-                        <EastIcon fontSize="small" className="icon-hover" sx={{ transition: 'transform 0.3s ease', ml: '0.3em' }} />
+                        <Link
+                            href={'/?page=alertes'}
+                            underline="none"
+                            color="inherit"
+                            sx={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                '&:hover': {
+                                    color: 'black',
+                                    '& .icon-hover': {
+                                        transform: 'translateX(4px)',
+                                    }
+                                }
+                            }}
+                        >
+                            <Typography sx={{ fontSize: '0.875rem' }}>
+                                Voir toutes les alertes
+                            </Typography>
+                            <EastIcon fontSize="small" className="icon-hover" sx={{ transition: 'transform 0.3s ease', ml: '0.3em' }} />
+                        </Link>
                     </MenuItem>
                     <Divider />
                     {(alerts.length === 0) ? (
