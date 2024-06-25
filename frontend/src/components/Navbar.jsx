@@ -19,8 +19,8 @@ import { darken } from '@mui/system';
 
 const pages = {
     1: ['Accueil', 'Rapports', 'Étudiants', 'Rendez-Vous', 'Mission'],
-    2: ['Accueil', 'Rapports', 'Étudiants', 'Rendez-Vous'],
-    3: ['Accueil', 'Rapports', 'Étudiants', 'Rendez-Vous'],
+    2: ['Accueil', 'Rapports', 'Étudiants', 'Rendez-Vous', 'Mission'],
+    3: ['Accueil', 'Rapports', 'Étudiants', 'Rendez-Vous', 'Mission'],
     4: ['Accueil', 'Mission', 'Rendez-Vous'],
     5: ['Accueil', 'Mission', 'Rendez-Vous'],
 };

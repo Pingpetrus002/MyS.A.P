@@ -420,17 +420,17 @@ def add_mission():
     current_user = get_jwt_identity()
 
     # Vérification des champs du formulaire
-    fields = ['libellé', 'description', 'date_debut', 'date_fin']
+    fields = ['libelle', 'description', 'datedebut', 'datefin']
     if check_fields(data, fields) != 0:
         return check_fields(data, fields)
 
-    libellé = data.get('nom')
+    libellé = data.get('libelle')
     description = data.get('description')
-    date_debut = data.get('date_debut')
-    date_fin = data.get('date_fin')
+    date_debut = data.get('datedebut')
+    date_fin = data.get('datefin')
 
     # Création d'une mission pour l'utilisateur spécifié
-    new_mission = Mission(nom=libellé, description=description, date_debut=date_debut, date_fin=date_fin, id_user=current_user)
+    new_mission = Mission(libelle=libellé, description=description, datedebut=date_debut, datefin=date_fin, id_user=current_user)
     db.session.add(new_mission)
     db.session.commit()
 

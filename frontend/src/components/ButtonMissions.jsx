@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Dialog, DialogContent, DialogTitle, DialogActions, TextField, Button, Tooltip } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
+import FetchWraper from '../utils/FetchWraper'; // Assurez-vous d'importer correctement votre classe FetchWraper
 
 export default function AddMissionModal() {
     const [libelle, setLibelle] = useState('');
@@ -38,12 +39,34 @@ export default function AddMissionModal() {
         setDatefin(event.target.value);
     };
 
-    const handleAddMission = (newMission) => {
-        // Ajouter la logique pour ajouter la mission à la base de données
-        console.log(newMission);
+    const handleAddMission = async (newMission) => {
+        try {
+            const fetchWraper = new FetchWraper();
+            fetchWraper.url = "http://localhost:5000/auth/add_mission";
+            fetchWraper.method = "POST";
+            fetchWraper.headers.set("Content-Type", "application/json");
+            fetchWraper.headers.set("Accept", "application/json");
+            fetchWraper.headers.set("Access-Control-Allow-Origin", window.location.origin);
+            fetchWraper.headers.set("Access-Control-Allow-Credentials", "true");
+            console.log(JSON.stringify(newMission));
+            
+            fetchWraper.body = JSON.stringify(newMission);
+
+            const response = await fetchWraper.fetchw();
+
+            if (!response.ok) {
+                throw new Error('Failed to add mission');
+            }
+
+            const data = await response.json();
+            console.log('Mission added successfully:', data);
+        } catch (error) {
+            console.error('Error:', error);
+            throw error; // Re-lancer l'erreur pour la gestion à l'endroit où cette fonction est appelée
+        }
     };
 
-    const handleAdd = () => {
+    const handleAdd = async () => {
         const newMission = {
             libelle,
             description,
@@ -51,8 +74,14 @@ export default function AddMissionModal() {
             datefin,
             // Ajouter d'autres champs de mission si nécessaire
         };
-        handleAddMission(newMission);
-        handleClose(); // Fermer la modal après ajout
+
+        try {
+            await handleAddMission(newMission);
+            handleClose(); // Fermer la modal après l'ajout
+        } catch (error) {
+            console.error('Failed to add mission:', error);
+            // Gérer l'erreur ici (affichage d'un message d'erreur, rollback, etc.)
+        }
     };
 
     return (
