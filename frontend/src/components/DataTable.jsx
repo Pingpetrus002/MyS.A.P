@@ -8,7 +8,6 @@ import { saveAs } from 'file-saver';
 import { Tooltip, Link } from '@mui/material';
 import EastIcon from '@mui/icons-material/East';
 import AddIcon from '@mui/icons-material/Add';
-import { json2csv } from 'json2csv';  // Import json2csv for converting JSON data to CSV
 
 import FetchWraper from '../utils/FetchWraper';
 import ModalWrapper from './ButtonRapports';
@@ -211,10 +210,29 @@ export default function DataTable({ rows, type }) {
   };
 
   const handleExportCSV = () => {
-    const csv = json2csv(rows);
-    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    // Récupérer les colonnes
+    const columns = getColumns(type, isLargeScreen);
+  
+    // Créer l'en-tête CSV à partir des noms de colonne
+    const header = columns.map(col => col.headerName).join(',') + '\n';
+  
+    // Créer les lignes CSV à partir des données
+    const csv = rows.map(row => {
+      return columns.map(col => {
+        const cell = row[col.field];
+        // Si la cellule contient une virgule, la placer entre guillemets
+        return typeof cell === 'string' && cell.includes(',') ? `"${cell}"` : cell;
+      }).join(',');
+    }).join('\n');
+  
+    // Concaténer l'en-tête et les lignes pour former le contenu CSV complet
+    const csvData = header + csv;
+  
+    // Convertir en Blob et enregistrer en tant que fichier CSV
+    const blob = new Blob([csvData], { type: 'text/csv;charset=utf-8;' });
     saveAs(blob, `${getTitle(type)}.csv`);
   };
+  
 
   return (
     <>
@@ -270,23 +288,6 @@ export default function DataTable({ rows, type }) {
           </Tooltip>
         )}
 
-        {/* Bouton Exporter en CSV */}
-        <Button
-          variant="outlined"
-          onClick={handleExportCSV}
-          sx={{
-            color: '#000000',
-            borderColor: '#F0C975',
-            backgroundColor: '#FDD47C',
-            mb: 1,
-            '&:hover': {
-              backgroundColor: '#FFC039',
-              borderColor: '#FFC039',
-            }
-          }}
-        >
-          Exporter en CSV
-        </Button>
       </div>
       <CustomDataGrid
         autoHeight
@@ -298,6 +299,25 @@ export default function DataTable({ rows, type }) {
           },
         }}
       />
+       {/* Bouton Exporter en CSV */}
+       <Button
+          variant="outlined"
+          onClick={handleExportCSV}
+          sx={{
+            color: '#000000',
+            borderColor: '#F0C975',
+            backgroundColor: '#FDD47C',
+            marginTop: '1em',
+            mb: 1,
+            alignItems: 'right',
+            '&:hover': {
+              backgroundColor: '#FFC039',
+              borderColor: '#FFC039',
+            }
+          }}
+        >
+          Exporter en CSV
+        </Button>
     </>
   );
 }
