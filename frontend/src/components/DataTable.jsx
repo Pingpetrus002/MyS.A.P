@@ -117,9 +117,9 @@ function getColumns(type, isLargeScreen) {
       },
     ],
     mes_rapports: [
-      { field: 'sujet', headerName: 'Sujet', maxWidth: 300 },
-      { field: 'concernes', headerName: 'Concernés', maxWidth: 300 },
-      { field: 'suiveur', headerName: 'Suiveur', maxWidth: 300 },
+      { field: 'nom', headerName: 'Sujet', maxWidth: 300 },
+      { field: 'id_user', headerName: 'Concernés', maxWidth: 300 },
+      { field: 'id_user_1', headerName: 'Suiveur', maxWidth: 300 },
       {
         field: 'télécharger',
         headerName: 'Télécharger',
