@@ -8,6 +8,7 @@ import { saveAs } from 'file-saver';
 import { Tooltip, Link } from '@mui/material';
 import EastIcon from '@mui/icons-material/East';
 import AddIcon from '@mui/icons-material/Add';
+import { json2csv } from 'json2csv';  // Import json2csv for converting JSON data to CSV
 
 import FetchWraper from '../utils/FetchWraper';
 import ModalWrapper from './ButtonRapports';
@@ -201,6 +202,12 @@ export default function DataTable({ rows, type }) {
     // TODO: Open étudiant modal
   };
 
+  const handleExportCSV = () => {
+    const csv = json2csv(rows);
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    saveAs(blob, `${getTitle(type)}.csv`);
+  };
+
   return (
     <>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
@@ -254,6 +261,24 @@ export default function DataTable({ rows, type }) {
             </Button>
           </Tooltip>
         )}
+
+        {/* Bouton Exporter en CSV */}
+        <Button
+          variant="outlined"
+          onClick={handleExportCSV}
+          sx={{
+            color: '#000000',
+            borderColor: '#F0C975',
+            backgroundColor: '#FDD47C',
+            mb: 1,
+            '&:hover': {
+              backgroundColor: '#FFC039',
+              borderColor: '#FFC039',
+            }
+          }}
+        >
+          Exporter en CSV
+        </Button>
       </div>
       <CustomDataGrid
         autoHeight
