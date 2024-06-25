@@ -7,12 +7,12 @@ import rapport from '../assets/images/Rapport.svg';
 import logo from '../assets/logo.svg';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
-import { Badge, Box, Container, AppBar, Toolbar, IconButton, Menu, Avatar, Tooltip, MenuItem, Popover, Link, Divider } from "@mui/material";
+import { Badge, Box, Container, AppBar, Toolbar, IconButton, Menu, Avatar, Tooltip, MenuItem, Divider } from "@mui/material";
 import MenuIcon from '@mui/icons-material/Menu';
 import * as Icons from '@mui/icons-material';
 import EastIcon from '@mui/icons-material/East';
 import { useMediaQuery, useTheme } from '@mui/material';
-import '@fontsource/inter/400.css'; // Assurez-vous que la police est importée
+import '@fontsource/inter/400.css';
 import FetchWraper from '../utils/FetchWraper';
 import { getAlerts } from '../utils/AlertCreator';
 import { darken } from '@mui/system';
@@ -24,7 +24,6 @@ const pages = {
     4: ['Accueil', 'Mission', 'Rendez-Vous'],
     5: ['Accueil', 'Mission', 'Rendez-Vous'],
 };
-
 
 async function IsConnected() {
     let fetchWraper = new FetchWraper();
@@ -127,7 +126,6 @@ const Navbar = () => {
     };
 
     const NavMenuDesktop = () => {
-
         const [anchorElNav, setAnchorElNav] = useState(null);
 
         const handleOpenNavMenu = (event) => {
@@ -141,7 +139,7 @@ const Navbar = () => {
         return (
             <Container maxWidth="false" style={{
                 height: 80,
-                fontfamily: 'Inter',
+                fontFamily: 'Inter',
                 background: '#FDD47C',
                 paddingLeft: '2rem',
                 paddingRight: '2rem',
@@ -194,11 +192,10 @@ const Navbar = () => {
                     <ProfileIcon />
                 </Toolbar>
             </Container>
-        )
+        );
     };
 
     const NavMenuMedium = () => {
-
         const [anchorElNav, setAnchorElNav] = useState(null);
 
         const handleOpenNavMenu = (event) => {
@@ -235,11 +232,10 @@ const Navbar = () => {
                     </Box>
                 </Toolbar>
             </Container>
-        )
+        );
     };
 
     const NotificationIcon = () => {
-
         const [anchorElNotification, setAnchorElNotification] = useState(null);
 
         const handleOpenNotificationMenu = (event) => {
@@ -275,26 +271,10 @@ const Navbar = () => {
                     }}
                 >
                     <MenuItem onClick={handleCloseNotificationMenu} sx={{ display: 'flex', justifyContent: 'right', '&:hover': { backgroundColor: 'transparent' } }}>
-                        <Link
-                            href={'/?page=alertes'}
-                            underline="none"
-                            color="inherit"
-                            sx={{
-                                display: 'flex',
-                                alignItems: 'center',
-                                '&:hover': {
-                                    color: 'black',
-                                    '& .icon-hover': {
-                                        transform: 'translateX(4px)',
-                                    }
-                                }
-                            }}
-                        >
-                            <Typography sx={{ fontSize: '0.875rem' }}>
-                                Voir toutes les alertes
-                            </Typography>
-                            <EastIcon fontSize="small" className="icon-hover" sx={{ transition: 'transform 0.3s ease', ml: '0.3em' }} />
-                        </Link>
+                        <Typography sx={{ fontSize: '0.875rem' }}>
+                            Voir toutes les alertes
+                        </Typography>
+                        <EastIcon fontSize="small" className="icon-hover" sx={{ transition: 'transform 0.3s ease', ml: '0.3em' }} />
                     </MenuItem>
                     <Divider />
                     {(alerts.length === 0) ? (
@@ -329,7 +309,6 @@ const Navbar = () => {
     };
 
     const ProfileIcon = () => {
-
         const [anchorElProfile, setAnchorElProfile] = useState(null);
 
         const handleCloseProfileMenu = () => {
@@ -370,7 +349,7 @@ const Navbar = () => {
                                     textAlign="left"
                                     style={{ textDecoration: 'none', color: 'inherit', width: '100%', cursor: 'pointer', textTransform: 'uppercase', fontSize: '0.875rem' }}
                                     onClick={(e) => {
-                                        e.stopPropagation(); // Pour éviter que l'événement onClick du MenuItem ne se déclenche après celui du Typography
+                                        e.stopPropagation();
                                         if (setting.type === "callback") {
                                             SubmitLogout();
                                         } else {
@@ -406,6 +385,15 @@ const Navbar = () => {
             </Toolbar>
         </Container>
     );
+    const [anchorElProfile, setAnchorElProfile] = useState(null);
+
+        const handleCloseProfileMenu = () => {
+            setAnchorElProfile(null);
+        };
+
+        const handleOpenProfileMenu = (event) => {
+            setAnchorElProfile(event.currentTarget);
+        };
 
     return (
         <>
@@ -425,33 +413,29 @@ const Navbar = () => {
                     background: '#FDD47C',
                     height: 50,
                     display: 'flex',
-                    justifyContent: 'center',
+                    justifyContent: 'space-around',
                     alignItems: 'center',
-                    position: 'fixed',
+                    position: 'sticky',
                     bottom: 0,
-                    width: '100%'
+                    width: '100%',
+                    zIndex: 1000
                 }}>
-                    <IconButton onClick={handleOpenProfileMenu} sx={{ p: 0, marginRight: '2rem' }}>
-                        <img style={{ width: '2.5rem', borderRadius: 210.07, opacity: 0.6 }} src={logo}
-                            alt="logo" />
+                    <IconButton href="/?page=accueil" sx={{ p: 0 }}>
+                        <img style={{ width: '2.5rem', borderRadius: 210.07, opacity: 0.6 }} src={logo} alt="logo" />
                     </IconButton>
-                    <IconButton onClick={handleOpenProfileMenu} sx={{ p: 0, marginRight: '2rem' }}>
-                        <img style={{ width: '2.5rem', borderRadius: 210.07, opacity: 0.6 }} src={rapport}
-                            alt="rapport" />
+                    <IconButton href="/?page=rapports" sx={{ p: 0 }}>
+                        <img style={{ width: '2.5rem', borderRadius: 210.07, opacity: 0.6 }} src={rapport} alt="rapport" />
                     </IconButton>
-                    <IconButton onClick={handleOpenProfileMenu} sx={{ p: 0, marginRight: '2rem' }}>
-                        <img style={{ width: '2.5rem', borderRadius: 210.07, opacity: 0.6 }} src={student}
-                            alt="student" />
+                    <IconButton href="/?page=etudiants" sx={{ p: 0 }}>
+                        <img style={{ width: '2.5rem', borderRadius: 210.07, opacity: 0.6 }} src={student} alt="student" />
                     </IconButton>
-                    <IconButton onClick={handleOpenProfileMenu} sx={{ p: 0, marginRight: '2rem' }}>
-                        <img style={{ width: '2.5rem', borderRadius: 210.07, opacity: 0.6 }} src={calendar}
-                            alt="calendar" />
+                    <IconButton href="/?page=rendez-vous" sx={{ p: 0 }}>
+                        <img style={{ width: '2.5rem', borderRadius: 210.07, opacity: 0.6 }} src={calendar} alt="calendar" />
                     </IconButton>
-                    <IconButton onClick={handleOpenProfileMenu} sx={{ p: 0, marginRight: '2rem' }}>
+                    <IconButton onClick={handleOpenProfileMenu} sx={{ p: 0 }}>
                         <img style={{ width: '2.5rem', borderRadius: 210.07, opacity: 0.6 }} src={profil} alt="profile" />
                     </IconButton>
                 </Box>
-
             )}
         </>
     );
