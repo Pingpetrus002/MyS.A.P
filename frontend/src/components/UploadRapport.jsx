@@ -71,9 +71,12 @@ export default function UploadRapport(params) {
     const main = async (event, args) => {
 
         try {
-            let base64 = await getLocalFile(event);
+            const file = await getLocalFile(event);
+            const base64 = file.split(',')[1];
+
             if (base64) {
                 const body = {
+                    "sujet": "Rapport_" + new Date().toISOString().split('T')[0],
                     "id_user": args.id_user || null,
                     "id_suiveur": args.id_suiveur || null,
                     "rapport": base64
