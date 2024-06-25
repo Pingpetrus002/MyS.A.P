@@ -1,7 +1,8 @@
 import FetchWraper from '../utils/FetchWraper';
 import { useEffect, useState } from 'react';
 
-import { IconButton, LinearProgress, Stack, Box, Grid, Modal, Button, TextField, Select, MenuItem } from '@mui/material';
+import { Stack, Box, Grid, Modal, Button, TextField, Select, MenuItem } from '@mui/material';
+import { DataGrid } from "@mui/x-data-grid";
 import NavBar from '../components/Navbar.jsx';
 import PropTypes from "prop-types";
 
@@ -115,9 +116,48 @@ AddUserModal.propTypes = {
     handleClose: PropTypes.func,
 };
 
+
+async function getUsers() {
+    let fetchWraper = new FetchWraper();
+    fetchWraper.url = "http://localhost:5000/auth/users/list";
+    fetchWraper.method = "GET";
+    fetchWraper.headers.append("Content-Type", "application/json");
+    fetchWraper.headers.append("Accept", "application/json");
+    fetchWraper.headers.append("Access-Control-Allow-Origin", window.location.origin);
+    fetchWraper.headers.append("Access-Control-Allow-Credentials", "true");
+    let result = await fetchWraper.fetchw();
+
+    let data = await result.json() || [];
+
+    return { "status": result.status, "data": data.users };
+
+}
+
+
+function roleNames(role) {
+    switch (role) {
+        case 1:
+            return "Admin";
+        case 2:
+            return "RRE";
+        case 3:
+            return "Suiveur";
+        case 4:
+            return "Etudiant";
+        case 5:
+            return "Tuteur";
+        default:
+            return "Inconnu";
+    }
+}
+
+
+
 function UsersManagement() {
 
     const [open, setOpen] = useState(false);
+    const [users, setUsers] = useState([]);
+    const [reload, setReload] = useState(false);
 
     const handleOpen = () => {
         setOpen(true);
@@ -127,25 +167,79 @@ function UsersManagement() {
         setOpen(false);
     }
 
+    const triggerReload = () => {
+        setReload(prev => !prev); // This toggles the reload state, triggering the useEffect hook
+    };
+
+    useEffect(() => {
+        async function fetchData() {
+            const result = await getUsers();
+            const formattedUsers = result.data.map(user => (
+                { 
+                    id: user.id_user,
+                    role: roleNames(user.id_role),
+                    date_naissance_formatted: new Date(user.date_naissance).toLocaleDateString(),
+                    ...user }));
+            setUsers(formattedUsers);
+            //console.log(formattedUsers);
+        }
+        fetchData();
+    }, [reload]);
+
+
     return (
         <>
             <NavBar />
             <Grid container item xs={12} sx={{ justifyContent: 'center' }} >
-                <AddUserModal 
-                open={open}
-                handleClose={handleClose}
+                <AddUserModal
+                    open={open}
+                    handleClose={handleClose}
                 />
                 <Grid item xs={12} sx={{ textAlign: 'center' }}>
                     <h1>Gestion des utilisateurs</h1>
                 </Grid>
                 <Grid item xs={12} sx={{ textAlign: 'center' }}>
-                    <Button 
-                    variant="contained" 
-                    color="primary"
-                    onClick={() => handleOpen()}
+                    <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={() => handleOpen()}
                     >
                         Ajouter un utilisateur
                     </Button>
+                </Grid>
+                <Grid item xs={12} sx={{ textAlign: 'center', p:8}}>
+                    <DataGrid
+                        sx={{ height: 300, width: '100%'}}
+                        rows={users}
+                        columns={[
+                            { field: 'id', headerName: 'ID', width: 90 },
+                            { field: 'mail', headerName: 'Email', width: 150 },
+                            { field: 'role', headerName: 'Role', width: 150 },
+                            { field: 'nom', headerName: 'Prénom', width: 150 },
+                            { field: 'prenom', headerName: 'Nom', width: 150 },
+                            { field: 'date_naissance_formatted', headerName: 'Date de naissance', width: 250 },
+                            {
+                                field: 'actions',
+                                headerName: 'Actions',
+                                width: 150,
+                                renderCell: (params) => (
+                                    <strong>
+                                        <Button
+                                            variant="contained"
+                                            color="primary"
+                                            size="small"
+                                            style={{ marginLeft: 16 }}
+                                            onClick={() => console.log("TODO:",params.row)}
+                                        >
+                                            Action
+                                        </Button>
+                                    </strong>
+                                ),
+                            },
+                        ]}
+                        pageSize={10}
+                    />
+
                 </Grid>
             </Grid>
         </>
