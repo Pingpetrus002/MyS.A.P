@@ -11,7 +11,8 @@ import AddIcon from '@mui/icons-material/Add';
 
 import FetchWraper from '../utils/FetchWraper';
 import ButtonRapports from './ButtonRapports';
-import useMediaQuery from '@mui/material/useMediaQuery';
+import useMediaQuery from '../utils/useMediaQuery';
+import AddMissionModal from './ButtonMissions';
 
 const handleDownload = async (md5) => {
   const url = `http://localhost:5000/auth/get_rapport/${md5}`;
@@ -117,9 +118,9 @@ function getColumns(type, isLargeScreen) {
       },
     ],
     mes_rapports: [
-      { field: 'sujet', headerName: 'Sujet', width: 180, minWidth: 180, maxWidth: 300 },
-      { field: 'concernes', headerName: 'Concernés', width: 220, minWidth: 220, maxWidth: 300 },
-      { field: 'suiveur', headerName: 'Suiveur', width: 180, minWidth: 180, maxWidth: 300 },
+      { field: 'nom', headerName: 'Sujet', width: 180, minWidth: 180, maxWidth: 300 },
+      { field: 'id_user', headerName: 'Concernés', width: 220, minWidth: 220, maxWidth: 300 },
+      { field: 'id_user_1', headerName: 'Suiveur', width: 180, minWidth: 180, maxWidth: 300 },
       {
         field: 'télécharger',
         headerName: 'Télécharger',
@@ -181,6 +182,14 @@ function getColumns(type, isLargeScreen) {
           </CustomButton>
         ),
       },
+    ],
+    // Définir les colonnes pour le type Mission
+    mission: [
+        { field: 'libelle', headerName: 'Libellé', width: 200 },
+        { field: 'description', headerName: 'Description', width: 200 },
+        { field: 'datedebut', headerName: 'Date début', width: 150 },
+        { field: 'datefin', headerName: 'Date fin', width: 150 },
+        { field: 'id_user', headerName: 'Utilisateur', width: 150 },
     ]
   };
 
@@ -195,8 +204,12 @@ function getTitle(type) {
       return 'Tous les étudiants';
     case 'mes_rapports':
       return 'Mes rapports';
+    case 'other':
+      return 'Mes Documents';
     case 'alerte':
       return 'Toutes les alertes';
+    case 'mission':
+      return 'Toutes mes missions';
     default:
       return '';
   }
@@ -209,6 +222,31 @@ export default function DataTable({ rows, type }) {
   const handleOpen = () => {
     // TODO: Open étudiant modal
   };
+
+  const handleExportCSV = () => {
+    // Récupérer les colonnes
+    const columns = getColumns(type, isLargeScreen);
+  
+    // Créer l'en-tête CSV à partir des noms de colonne
+    const header = columns.map(col => col.headerName).join(',') + '\n';
+  
+    // Créer les lignes CSV à partir des données
+    const csv = rows.map(row => {
+      return columns.map(col => {
+        const cell = row[col.field];
+        // Si la cellule contient une virgule, la placer entre guillemets
+        return typeof cell === 'string' && cell.includes(',') ? `"${cell}"` : cell;
+      }).join(',');
+    }).join('\n');
+  
+    // Concaténer l'en-tête et les lignes pour former le contenu CSV complet
+    const csvData = header + csv;
+  
+    // Convertir en Blob et enregistrer en tant que fichier CSV
+    const blob = new Blob([csvData], { type: 'text/csv;charset=utf-8;' });
+    saveAs(blob, `${getTitle(type)}.csv`);
+  };
+  
 
   return (
     <>
@@ -263,6 +301,10 @@ export default function DataTable({ rows, type }) {
             </Button>
           </Tooltip>
         )}
+        
+        {type === 'mission' && <AddMissionModal />}
+
+
       </div>
       <CustomDataGrid
         autoHeight
@@ -275,11 +317,30 @@ export default function DataTable({ rows, type }) {
         }}
         isSmallScreen={isSmallScreen}
       />
+       {/* Bouton Exporter en CSV */}
+       <Button
+          variant="outlined"
+          onClick={handleExportCSV}
+          sx={{
+            color: '#000000',
+            borderColor: '#F0C975',
+            backgroundColor: '#FDD47C',
+            marginTop: '1em',
+            mb: 1,
+            alignItems: 'right',
+            '&:hover': {
+              backgroundColor: '#FFC039',
+              borderColor: '#FFC039',
+            }
+          }}
+        >
+          Exporter en CSV
+        </Button>
     </>
   );
 }
 
 DataTable.propTypes = {
   rows: PropTypes.arrayOf(PropTypes.object).isRequired,
-  type: PropTypes.oneOf(['rapport', 'etudiant', 'mes_rapports', 'alerte']).isRequired,
+  type: PropTypes.oneOf(['rapport', 'etudiant', 'mes_rapports', 'other', 'alerte', 'mission']).isRequired,
 };

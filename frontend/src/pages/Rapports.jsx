@@ -6,6 +6,7 @@ import DataTable from '../components/DataTable';
 import NavBar from '../components/Navbar.jsx';
 
 async function getRapports() {
+    // Appel à l'API pour récupérer les rapports de l'utilisateur
     let fetchWraper = new FetchWraper();
     fetchWraper.url = "http://localhost:5000/auth/get_rapport_info";
     fetchWraper.method = "GET";
@@ -13,10 +14,17 @@ async function getRapports() {
     fetchWraper.headers.append("Accept", "application/json");
     fetchWraper.headers.append("Access-Control-Allow-Origin", window.location.origin);
     fetchWraper.headers.append("Access-Control-Allow-Credentials", "true");
+
+
     let result = await fetchWraper.fetchw();
     let data = await result.json();
-    return data.rapports;
+    
+    // Filtrer les rapports avec le type 'autre'
+    let filteredRapports = data.rapports.filter(rapport => rapport.type !== 'autre');
+    
+    return filteredRapports;
 }
+
 
 export default function Rapports() {
     const [rapports, setRapports] = useState([]);

@@ -1,8 +1,6 @@
 import FetchWraper from '../utils/FetchWraper';
-import { Button } from '@mui/material';
+import { Button, TextField, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@mui/material';
 import { useState, useEffect } from 'react';
-
-
 
 function getLocalFile(event) {
     return new Promise((resolve, reject) => {
@@ -11,7 +9,6 @@ function getLocalFile(event) {
         reader.readAsDataURL(file);
         reader.onload = function () {
             let base64 = reader.result;
-            //console.log(base64);
             resolve(base64);
         };
         reader.onerror = function (error) {
@@ -22,98 +19,118 @@ function getLocalFile(event) {
 }
 
 async function sendFile(body) {
-    // send file to server
     let fetchWraper = new FetchWraper();
     fetchWraper.url = "http://localhost:5000/auth/set_rapport";
     fetchWraper.method = "POST";
     fetchWraper.headers.append("Content-Type", "application/json");
     fetchWraper.headers.append("Accept", "application/json");
-    //fetchWraper.headers.append("Access-Control-Allow-Origin", window.location.origin); // create a cors error
-    //fetchWraper.headers.append("Access-Control-Allow-Credentials", "true"); // create a cors error
-
 
     fetchWraper.body = JSON.stringify(body);
-
 
     let result = await fetchWraper.fetchw();
 
     switch (result.status) {
         case 200:
             return true;
-
         default:
             console.log("Error uploading file:", result.status);
             return false;
     }
-
-
 }
 
-
 export default function UploadRapport(params) {
-
-    const [uploadStatus, setUploadStatus] = useState('Upload File'); // initial state
-    const [buttonStyle, setButtonStyle] = useState({ variant: "contained" }); // initial style
+    const [uploadStatus, setUploadStatus] = useState('Upload File');
+    const [buttonStyle, setButtonStyle] = useState({ variant: "contained" });
+    const [fileTitle, setFileTitle] = useState('');
+    const [open, setOpen] = useState(false);
+    const [file, setFile] = useState(null);
 
     useEffect(() => {
-        //console.log("Upload status changed:", uploadStatus);
         if (uploadStatus === 'File Uploaded') {
-            setButtonStyle({ variant: "outlined", color: "success" }); // change style on success
+            setButtonStyle({ variant: "outlined", color: "success" });
+        } else if (uploadStatus === 'Error Uploading File') {
+            setButtonStyle({ variant: "outlined", color: "error" });
+        } else {
+            setButtonStyle({ variant: "contained" });
         }
-        else if (uploadStatus === 'Error Uploading File') {
-            setButtonStyle({ variant: "outlined", color: "error" }); // change style on error
-        }
-        else {
-            setButtonStyle({ variant: "contained" }); // reset style
-        }
-    }, [uploadStatus]); // effect depends on uploadStatus
+    }, [uploadStatus]);
 
-    const main = async (event, args) => {
+    const handleClickOpen = () => {
+        setOpen(true);
+    };
 
+    const handleClose = () => {
+        setOpen(false);
+    };
+
+    const handleConfirm = async () => {
+        setOpen(false);
         try {
-            let base64 = await getLocalFile(event);
+            let base64 = await getLocalFile(file);
             if (base64) {
                 const body = {
-                    "id_user": args.id_user || null,
-                    "id_suiveur": args.id_suiveur || null,
+                    "sujet": fileTitle || "Rapport de stage",
+                    "id_user": params.args.id_user || null,
+                    "id_suiveur": params.args.id_suiveur || null,
+                    type: 'autre',
                     "rapport": base64
                 };
 
                 if (await sendFile(body)) {
-                    setUploadStatus('File Uploaded'); // update state on success
-                }
-                else {
-                    setUploadStatus('Error Uploading File'); // update state on error
+                    setUploadStatus('File Uploaded');
+                } else {
+                    setUploadStatus('Error Uploading File');
                     setTimeout(() => {
-                        setUploadStatus('Upload File'); // reset state on error
+                        setUploadStatus('Upload File');
                     }, 2500);
                 }
-            }
-            else {
+            } else {
                 console.log("Error: no file selected", base64);
             }
         } catch (error) {
             console.error("Error getting file:", error);
         }
-    }
+    };
 
     return (
         <div>
+            <TextField
+                label="Titre du fichier"
+                value={fileTitle}
+                onChange={(e) => setFileTitle(e.target.value)}
+                fullWidth
+                margin="normal"
+            />
             <Button {...buttonStyle} component="label">
-                {uploadStatus} {/* display the current status */}
+                {uploadStatus}
                 <input
                     type="file"
                     hidden
                     onChange={(event) => {
-                        main(event, params.args); // call main function
+                        setFile(event);
+                        handleClickOpen();
                     }}
-                    onClick={() => setUploadStatus('Upload File')} // reset
+                    onClick={() => setUploadStatus('Upload File')}
                 />
             </Button>
+
+            <Dialog open={open} onClose={handleClose}>
+                <DialogTitle>Confirmation</DialogTitle>
+                <DialogContent>
+                    <DialogContentText>
+                        Êtes-vous sûr de vouloir télécharger ce fichier ?
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleClose}>Annuler</Button>
+                    <Button onClick={handleConfirm} color="primary">
+                        Confirmer
+                    </Button>
+                </DialogActions>
+            </Dialog>
         </div>
     );
 }
-
 
 // Usage:
 /* <UploadRapport args={
@@ -122,4 +139,4 @@ export default function UploadRapport(params) {
         id_suiveur: user ? user.id_suiveur : null
     }
 } />
- */
+*/
