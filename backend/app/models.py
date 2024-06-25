@@ -98,3 +98,11 @@ class Programme(db.Model):
     diplome = db.Column(db.String(50))
     annee = db.Column(db.String(50))
     id_user = db.Column(db.Integer, db.ForeignKey('utilisateur.id_user'))
+
+class Alert(db.Model):
+    __tablename__ = 'alerte'
+    id_alerte = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    type = db.Column(db.String(50))
+    commentaires = db.Column(db.String(250))
+    id_user_cible = db.Column(db.Integer, db.ForeignKey('utilisateur.id_user'))
+    id_user_source = db.Column(db.Integer, db.ForeignKey('utilisateur.id_user'))
