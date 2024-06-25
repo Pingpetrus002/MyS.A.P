@@ -1,7 +1,8 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { GetUrlArgs } from './utils/Utilities';
 import PageComposer from './pages/PageComposer';
 import './App.css';
+import Navbar from "./components/Navbar.jsx";
 
 
 function App() {
@@ -12,13 +13,14 @@ function App() {
     useEffect(() => {
         const args = GetUrlArgs();
         if ("page" in args) {
-            //console.log(args);
+            console.log(args);
             setPage(args["page"]);
         }
     }, []);
 
     return (
         <div className="App">
+            <Navbar/>
             <PageComposer page={page} />
         </div>
     );
