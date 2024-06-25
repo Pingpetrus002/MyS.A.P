@@ -9,7 +9,7 @@ import logo from '../assets/logo.svg';
 
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
-import { Badge, Box, Container, AppBar, Toolbar, IconButton, Menu, Avatar, Tooltip, MenuItem, Link, Divider } from "@mui/material";
+import { Badge, Box, Container, AppBar, Toolbar, IconButton, Menu, Avatar, Tooltip, MenuItem, Divider, Link } from "@mui/material";
 import MenuIcon from '@mui/icons-material/Menu';
 import * as Icons from '@mui/icons-material';
 import EastIcon from '@mui/icons-material/East';
