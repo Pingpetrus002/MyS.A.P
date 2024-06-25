@@ -1,6 +1,5 @@
 import FetchWraper from '../utils/FetchWraper';
 import { useEffect, useState } from 'react';
-
 import { IconButton, LinearProgress, Stack } from '@mui/material';
 import HeaderProfile from '../components/HeaderProfile';
 import DataTable from '../components/DataTable';
@@ -33,25 +32,25 @@ async function getRapports() {
     fetchWraper.headers.append("Accept", "application/json");
     fetchWraper.headers.append("Access-Control-Allow-Origin", window.location.origin);
     fetchWraper.headers.append("Access-Control-Allow-Credentials", "true");
+
+
     let result = await fetchWraper.fetchw();
     let data = await result.json();
-    return data.rapports;
+    
+    // Filtrer les rapports avec le type 'autre'
+    let filteredRapports = data.rapports.filter(rapport => rapport.type !== 'autre');
+    
+    return { filteredRapports, otherRapports: data.rapports.filter(rapport => rapport.type === 'autre') };
 }
 
-async function getRapportsEtudiant() {
-    // Appel à l'API pour récupérer les rapports de l'étudiant
-    // ...
-}
-
-async function getEtudiants() {
-    // Appel à l'API pour récupérer les étudiants du tuteur
-    // ...
-}
 
 export default function Profil() {
     const [user, setUser] = useState(null);
-    const [rapports, setRapports] = useState([]);
+    const [filteredRapports, setFilteredRapports] = useState([]);
+    const [otherRapports, setOtherRapports] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [showSecondTable, setShowSecondTable] = useState(false);
+    const [tableTitle, setTableTitle] = useState('Mes Documents');
 
     useEffect(() => {
         async function fetchData() {
@@ -59,14 +58,19 @@ export default function Profil() {
             setUser(userData);
             setLoading(false); // Arrête le chargement une fois les données récupérées
 
-            const rapportsData = await getRapports();
-            setRapports(rapportsData);
+            const { filteredRapports, otherRapports } = await getRapports();
+            setFilteredRapports(filteredRapports);
+            setOtherRapports(otherRapports);
             setLoading(false); // Arrête le chargement une fois les données récupérées
-
         }
 
         fetchData();
     }, []);
+
+    const handleShowSecondTable = () => {
+        setShowSecondTable(!showSecondTable);
+        setTableTitle(showSecondTable ? 'Mes Autres Documents' : 'Mes Rapports');
+    };
 
     if (loading) {
         return <LinearProgress />;
@@ -74,18 +78,18 @@ export default function Profil() {
 
     return (
         <>
-            <NavBar idRole={user.id_role} />
-            <Grid container direction="row" justifyContent="center" alignItems="flex-start" spacing={4} marginTop={4}>
-                <Grid item>
-                    <HeaderProfile Nom={user ? user.nom : <LinearProgress />} Prenom={user ? user.prenom : <LinearProgress />} Mail={user ? user.mail : <LinearProgress />} Classe={user ? user.classe : <LinearProgress />} Status={user ? user.statut : <LinearProgress />} />
-                    <Grid item sx={{ marginLeft: "auto", marginTop: 4 }}>
-                        <UploadRapport args={{ id_user: user ? user.id_user : null }} />
-                    </Grid>
-                </Grid>
-                <Grid item>
-                    <DataTable rows={rapports} type="mes_rapports" />
+        <NavBar idRole={user.id_role} />
+        <Grid container direction="row" justifyContent="center" alignItems="flex-start" spacing={4} marginTop={4}>
+            <Grid item>
+                <HeaderProfile Nom={user ? user.nom : <LinearProgress />} Prenom={user ? user.prenom : <LinearProgress />} Mail={user ? user.mail : <LinearProgress />} Classe={user ? user.classe : <LinearProgress />} Status={user ? user.statut : <LinearProgress />} Role={user ? user.id_role : <LinearProgress />} />
+                <Grid item sx={{ marginLeft: "auto", marginTop: 4 }}>
+                    <UploadRapport args={{ id_user: user ? user.id_user : null }} />
                 </Grid>
             </Grid>
-        </>
+            <Grid item>
+                <DataTable rows={filteredRapports} type="mes_rapports" />
+            </Grid>
+        </Grid>
+    </>
     );
 }

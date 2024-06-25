@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { DataGrid } from '@mui/x-data-grid';
 import { styled } from '@mui/material/styles';
 import Button from '@mui/material/Button';
@@ -5,13 +6,14 @@ import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
 import Typography from '@mui/material/Typography';
 import PropTypes from 'prop-types';
 import { saveAs } from 'file-saver';
-import { Tooltip, Link } from '@mui/material';
+import { Tooltip, Link, useMediaQuery } from '@mui/material';
 import EastIcon from '@mui/icons-material/East';
 import AddIcon from '@mui/icons-material/Add';
 
 import FetchWraper from '../utils/FetchWraper';
-import ModalWrapper from './ButtonRapports';
-import useMediaQuery from '../utils/useMediaQuery';
+import ButtonRapports from './ButtonRapports';
+import StudentModal from './EtudiantModal';
+import AddMissionModal from './ButtonMissions';
 
 const handleDownload = async (md5) => {
   const url = `http://localhost:5000/auth/get_rapport/${md5}`;
@@ -44,7 +46,7 @@ const CustomButton = styled(Button)({
   },
 });
 
-const CustomDataGrid = styled(DataGrid)({
+const CustomDataGrid = styled(DataGrid)(({ theme, isSmallScreen }) => ({
   '& .MuiDataGrid-filler': {
     backgroundColor: '#FDD47C',
   },
@@ -53,14 +55,13 @@ const CustomDataGrid = styled(DataGrid)({
     textAlign: 'center',
     '& .MuiDataGrid-columnHeaderTitleContainer': {
       justifyContent: 'center',
-      width: '100%',
     },
     '&:hover': {
       backgroundColor: '#FFC039',
     },
     '& .MuiDataGrid-columnHeaderDraggableContainer': {
       '& .MuiDataGrid-iconButtonContainer': {
-        display: 'none',
+        display: isSmallScreen ? 'none' : 'flex',
       },
     },
     '&:hover .MuiDataGrid-columnHeaderDraggableContainer .MuiDataGrid-iconButtonContainer': {
@@ -82,7 +83,7 @@ const CustomDataGrid = styled(DataGrid)({
       border: 0,
     },
   },
-});
+}));
 
 const adjustColumns = (columns, isLargeScreen) => {
   return columns.map(col => {
@@ -117,9 +118,9 @@ function getColumns(type, isLargeScreen) {
       },
     ],
     mes_rapports: [
-      { field: 'sujet', headerName: 'Sujet', width: 180, minWidth: 180, maxWidth: 300 },
-      { field: 'concernes', headerName: 'Concernés', width: 220, minWidth: 220, maxWidth: 300 },
-      { field: 'suiveur', headerName: 'Suiveur', width: 180, minWidth: 180, maxWidth: 300 },
+      { field: 'nom', headerName: 'Sujet', width: 180, minWidth: 180, maxWidth: 300 },
+      { field: 'id_user', headerName: 'Concernés', width: 220, minWidth: 220, maxWidth: 300 },
+      { field: 'id_user_1', headerName: 'Suiveur', width: 180, minWidth: 180, maxWidth: 300 },
       {
         field: 'télécharger',
         headerName: 'Télécharger',
@@ -181,6 +182,14 @@ function getColumns(type, isLargeScreen) {
           </CustomButton>
         ),
       },
+    ],
+    // Définir les colonnes pour le type Mission
+    mission: [
+      { field: 'libelle', headerName: 'Libellé', width: 200 },
+      { field: 'description', headerName: 'Description', width: 200 },
+      { field: 'datedebut', headerName: 'Date début', width: 150 },
+      { field: 'datefin', headerName: 'Date fin', width: 150 },
+      { field: 'id_user', headerName: 'Utilisateur', width: 150 },
     ]
   };
 
@@ -195,19 +204,54 @@ function getTitle(type) {
       return 'Tous les étudiants';
     case 'mes_rapports':
       return 'Mes rapports';
+    case 'documents':
+      return 'Mes documents';
     case 'alerte':
       return 'Toutes les alertes';
+    case 'mission':
+      return 'Mes missions';
     default:
       return '';
   }
 }
 
 export default function DataTable({ rows, type }) {
+  const [openModal, setOpenModal] = useState(false);
   const isLargeScreen = useMediaQuery('(min-width: 1024px)');
+  const isSmallScreen = useMediaQuery('(max-width: 768px)');
 
   const handleOpen = () => {
-    // TODO: Open étudiant modal
+    setOpenModal(true);
   };
+
+  const handleClose = () => {
+    setOpenModal(false);
+  };
+
+  const handleExportCSV = () => {
+    // Récupérer les colonnes
+    const columns = getColumns(type, isLargeScreen);
+
+    // Créer l'en-tête CSV à partir des noms de colonne
+    const header = columns.map(col => col.headerName).join(',') + '\n';
+
+    // Créer les lignes CSV à partir des données
+    const csv = rows.map(row => {
+      return columns.map(col => {
+        const cell = row[col.field];
+        // Si la cellule contient une virgule, la placer entre guillemets
+        return typeof cell === 'string' && cell.includes(',') ? `"${cell}"` : cell;
+      }).join(',');
+    }).join('\n');
+
+    // Concaténer l'en-tête et les lignes pour former le contenu CSV complet
+    const csvData = header + csv;
+
+    // Convertir en Blob et enregistrer en tant que fichier CSV
+    const blob = new Blob([csvData], { type: 'text/csv;charset=utf-8;' });
+    saveAs(blob, `${getTitle(type)}.csv`);
+  };
+
 
   return (
     <>
@@ -217,7 +261,7 @@ export default function DataTable({ rows, type }) {
         </Typography>
 
         {/* Bouton type Rapport */}
-        {type === 'rapport' && <ModalWrapper />}
+        {type === 'rapport' && <ButtonRapports />}
 
         {/* Bouton type Mes Rapports */}
         {type === 'mes_rapports' && (<Link
@@ -262,22 +306,48 @@ export default function DataTable({ rows, type }) {
             </Button>
           </Tooltip>
         )}
+
+        {type === 'mission' && <AddMissionModal />}
+
+
       </div>
       <CustomDataGrid
         autoHeight
         rows={rows}
         columns={getColumns(type, isLargeScreen)}
+        pageSizeOptions={[5, 10, 25]}
         initialState={{
           pagination: {
             paginationModel: { page: 0, pageSize: 5 },
           },
         }}
+        isSmallScreen={isSmallScreen}
       />
+      {/* Bouton Exporter en CSV */}
+      <Button
+        variant="outlined"
+        onClick={handleExportCSV}
+        sx={{
+          color: '#000000',
+          borderColor: '#F0C975',
+          backgroundColor: '#FDD47C',
+          marginTop: '1em',
+          mb: 1,
+          alignItems: 'right',
+          '&:hover': {
+            backgroundColor: '#FFC039',
+            borderColor: '#FFC039',
+          }
+        }}
+      >
+        Exporter en CSV
+      </Button>
+      <StudentModal open={openModal} onClose={handleClose} />
     </>
   );
 }
 
 DataTable.propTypes = {
   rows: PropTypes.arrayOf(PropTypes.object).isRequired,
-  type: PropTypes.oneOf(['rapport', 'etudiant', 'mes_rapports', 'alerte']).isRequired,
+  type: PropTypes.oneOf(['rapport', 'etudiant', 'mes_rapports', 'documents', 'alerte', 'mission']).isRequired,
 };

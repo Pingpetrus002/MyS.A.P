@@ -7,7 +7,7 @@ import ButtonBase from '@mui/material/ButtonBase';
 import Logo from '../assets/logoFull.svg';
 import Avatar from '@mui/material/Avatar';
 
-export default function HeaderProfile({ Nom, Prenom, Mail, Classe, Status }) {
+export default function HeaderProfile({ Nom, Prenom, Mail, Classe, Role }) {
     if (typeof Nom === 'undefined') {
         Nom = "John";
     }
@@ -20,9 +20,20 @@ export default function HeaderProfile({ Nom, Prenom, Mail, Classe, Status }) {
     if (typeof Classe === 'undefined') {
         Classe = "Classe";
     }
-    console.log(Status)
-    if (Status === true) {
-        Status = "Alternance en cours";
+    if (Role === 1) {
+        Role = "Administrateur";
+    }
+    else if (Role === 2) {
+        Role = "RRE";
+    }
+    else if (Role === 3) {
+        Role = "Suiveur";
+    }
+    else if (Role === 4) {
+        Role = "Etudiant";
+    }
+    else if (Role === 5) {
+        Role = "Tuteur";
     }
     return (
         <>
@@ -50,7 +61,7 @@ export default function HeaderProfile({ Nom, Prenom, Mail, Classe, Status }) {
                                     {Classe}
                                 </Typography>
                                 <Typography variant="h6" style={{ textAlign: 'left' }}>
-                                    {Status}
+                                    {Role}
                                 </Typography>
                             </Grid>
                         </Grid>

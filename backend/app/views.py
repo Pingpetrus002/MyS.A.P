@@ -4,7 +4,7 @@ from flask import Blueprint, request, jsonify, render_template, make_response
 from flask_mail import Message, Mail
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity, set_access_cookies, unset_jwt_cookies
 from werkzeug.security import generate_password_hash, check_password_hash
-from .models import Utilisateur, db, Document, Entreprise, Alert
+from .models import Utilisateur, db, Document, Entreprise, Alert, Mission
 
 import re 
 import random  
@@ -16,13 +16,6 @@ import hashlib
 auth = Blueprint('auth', __name__)
 mail = Mail()  # Initialisation de l'extension Flask-Mail pour l'envoi de mails
 
-ROLES_ACCESS = {
-    1: ['*'],  # Admin has access to all pages
-    2: ['*'],  # RRE has access to specific pages
-    3: ['dashboard', 'profil', 'rapports', 'etudiants'],  # Suiveur has access to profile and their reports
-    4: ['profil', 'rdv'],  # Etudiant has access to profile and concerned reports
-    5: ['profil', 'rdv'],  # Tuteur has access to profile, their students, and their students' reports
-}
 
 
 # Fonction pour générer un mot de passe aléatoire
@@ -153,7 +146,7 @@ def protected():
     user = Utilisateur.query.get(current_user)
 
     # Vérification du rôle de l'utilisateur pour l'accès à la page
-    return jsonify({'message': 'Protected page', 'role': user.id_role, 'access': ROLES_ACCESS[user.id_role]}), 200
+    return jsonify({'message': 'Protected page', 'role': user.id_role,}), 200
 
 # Route pour récupérer le profil de l'utilisateur actuellement authentifié
 @auth.route('/get_profil', methods=['GET'])
@@ -215,7 +208,7 @@ def set_rapport():
     current_user = get_jwt_identity()
     data: dict = request.get_json()
 
-    fields = ['id_user', 'sujet', 'rapport']
+    fields = ['id_user', 'sujet', 'rapport','type']
     if check_fields(data, fields) != 0:
         return check_fields(data, fields)
     
@@ -224,6 +217,7 @@ def set_rapport():
     id_user = data.get('id_user')
     sujet = data.get('sujet')
     rapport = data.get('rapport')
+    type = data.get('type')
     date = datetime.datetime.now()
     
     #Recup de hash MD5 du rapport
@@ -237,42 +231,45 @@ def set_rapport():
     user = Utilisateur.query.get(current_user)
 
     if not check_role(user, 1) and not check_role(user, 2) and not check_role(user, 3):
-        return jsonify({'message': 'Unauthorized'}), 403
+        if(type != 'rapport' and check_role(user, 4) or check_role(user, 5)):
+            pass
+        else:
+            return jsonify({'message': 'Unauthorized'}), 403
+    
     
     #Ajout du rapport
 
-    new_rapport = Document(nom=sujet, id_user=id_user, id_user_1=id_suiveur, rapport=rapport.encode('utf-8'), datecreation=date, md5=MD5)
+    new_rapport = Document(nom=sujet, id_user=id_user, id_user_1=id_suiveur, rapport=rapport.encode('utf-8'), datecreation=date, md5=MD5, type=type)
     db.session.add(new_rapport)
 
     db.session.commit()
 
     return jsonify({'message': 'Rapport set'}), 200
 
-#Route pour get les infos des rapports
+# Route pour récupérer les infos des rapports
 @auth.route('/get_rapport_info', methods=['GET'])
 @jwt_required()
 def get_rapport_info():
     current_user = get_jwt_identity()
     user = Utilisateur.query.get(current_user)
 
-    
-    # Cas Admin et RRE - Recupération de tous les rapports
+    # Récupération de tous les rapports de type 'rapport' pour les administrateurs et RRE
     if check_role(user, 1) or check_role(user, 2):
-        #Recupération des rapports
-        rapports = Document.query.all()
+        rapports = Document.query.filter_by(type='rapport').all()
+        autre = Document.query.filter_by(id_user=current_user, type='autre').all()
         rapports_dict = [document_to_dict(rapport) for rapport in rapports]
-
-
+        autre_dict = [document_to_dict(rapport) for rapport in autre]
+        rapports_dict.extend(autre_dict)
         return jsonify({'rapports': rapports_dict}), 200
 
-    # Cas Suiveur - Recupération des rapports de ses étudiants
-    elif check_role(user, 3):
-        #Recupération des rapports
-        rapports = Document.query.filter_by(id_user_1=current_user).all()
-        rapports_dict = [document_to_dict(rapport) for rapport in rapports]
-
+    # Récupération des rapports de type 'autre' de l'utilisateur actuel, quel que soit le rôle
+    elif check_role(user, 3) or check_role(user, 4):
+        if request.args.get('type') == 'autre':
+            rapports = Document.query.filter_by(id_user=current_user, type='autre').all()
+        else:
+            rapports = Document.query.filter_by(type='rapport').all()  # Récupération de tous les rapports de type 'rapport'
+        rapports_dict = [document_to_dict(rapport) for rapport in rapports]        
         return jsonify({'rapports': rapports_dict}), 200
-    
     # Cas Etudiant - Recupération des rapports de l'étudiant
     elif check_role(user, 4):
         #Recupération des rapports
@@ -413,3 +410,59 @@ def get_alerts():
     ]
 
     return jsonify(alerts_dict), 200
+
+
+# Route pour ajouter une mission
+@auth.route('/add_mission', methods=['POST'])
+@jwt_required()
+def add_mission():
+    data = request.get_json()
+    current_user = get_jwt_identity()
+
+    # Vérification des champs du formulaire
+    fields = ['libelle', 'description', 'datedebut', 'datefin']
+    if check_fields(data, fields) != 0:
+        return check_fields(data, fields)
+
+    libellé = data.get('libelle')
+    description = data.get('description')
+    date_debut = data.get('datedebut')
+    date_fin = data.get('datefin')
+
+    # Création d'une mission pour l'utilisateur spécifié
+    new_mission = Mission(libelle=libellé, description=description, datedebut=date_debut, datefin=date_fin, id_user=current_user)
+    db.session.add(new_mission)
+    db.session.commit()
+
+    return jsonify({'message': 'Mission added'}), 200
+
+# Route pour récupérer toutes les missions
+@auth.route('/get_missions', methods=['GET'])
+@jwt_required()
+def get_missions():
+    # Recherche de toutes les missions
+
+    # Check des roles
+    if check_role(Utilisateur.query.get(get_jwt_identity()), 1) or check_role(Utilisateur.query.get(get_jwt_identity()), 2):
+        missions = Mission.query.all()
+    
+    elif check_role(Utilisateur.query.get(get_jwt_identity()), 3):
+        missions = Utilisateur.query.get(id_user_1=get_jwt_identity()).missions.all()
+    
+    elif check_role(Utilisateur.query.get(get_jwt_identity()), 4):
+        missions = Mission.query.filter_by(id_user=get_jwt_identity()).all()
+    
+
+
+    missions_dict = [
+        {
+            'id_mission': mission.id_mission,
+            'libelle': mission.libelle,
+            'description': mission.description,
+            'datedebut': mission.datedebut,
+            'datefin': mission.datefin,
+            'id_user': Utilisateur.query.get(mission.id_user).nom + ' ' + Utilisateur.query.get(mission.id_user).prenom
+        } for mission in missions
+    ]
+
+    return jsonify({'missions': missions_dict}), 200

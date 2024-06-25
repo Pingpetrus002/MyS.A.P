@@ -5,7 +5,7 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 import { useTheme } from '@mui/material/styles';
 import AddIcon from '@mui/icons-material/Add';
 
-function ModalWrapper() {
+function ButtonRapports() {
     const [open, setOpen] = useState(false);
     const theme = useTheme();
     const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
@@ -53,4 +53,4 @@ function ModalWrapper() {
     );
 }
 
-export default ModalWrapper;
+export default ButtonRapports;

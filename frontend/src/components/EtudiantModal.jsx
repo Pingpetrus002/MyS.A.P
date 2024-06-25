@@ -1,14 +1,22 @@
-import React, { useState, useEffect } from 'react';
-import { Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField, Select, MenuItem } from '@mui/material';
+import { useState, useEffect } from 'react';
+import { Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField, Select, MenuItem, FormControl, InputLabel } from '@mui/material';
 import FetchWraper from '../utils/FetchWraper';
 
 
 export default function StudentModal({ student, open, onClose }) {
-  const [editedStudent, setEditedStudent] = useState(student);
+  const [editedStudent, setEditedStudent] = useState({
+    nom: '',
+    prenom: '',
+    classe: '',
+    statut: '',
+    entreprise: ''
+  });
 
   // Mettre à jour l'état `editedStudent` lorsque le student prop change
   useEffect(() => {
-    setEditedStudent(student);
+    if (student) {
+      setEditedStudent(student);
+    }
   }, [student]);
 
   const handleChange = (e) => {
@@ -37,17 +45,18 @@ export default function StudentModal({ student, open, onClose }) {
       return;
     }
     alert("Les informations de l'étudiant ont été mises à jour avec succès !");
-    
   };
 
   const handleCancel = () => {
-    setEditedStudent(student); // Réinitialiser les champs aux valeurs d'origine
+    if (student) {
+      setEditedStudent(student); // Réinitialiser les champs aux valeurs d'origine
+    }
     onClose();
   };
 
   return (
     <Dialog open={open} onClose={onClose}>
-      <DialogTitle>Informations sur l'étudiant</DialogTitle>
+      <DialogTitle>Informations sur l&apos;étudiant</DialogTitle>
       <DialogContent>
         <TextField
           name="nom"
@@ -73,17 +82,22 @@ export default function StudentModal({ student, open, onClose }) {
           fullWidth
           style={{ marginBottom: '8px' }}
         />
-        <Select
-          name="statut"
-          label="Statut"
-          value={editedStudent.statut}
-          onChange={handleChange}
-          fullWidth
-          style={{ marginBottom: '8px' }}
-        >
-          <MenuItem value="Alternance en cours">Alternance en cours</MenuItem>
-          <MenuItem value="Pas d'alternance">Pas d'alternance</MenuItem>
-        </Select>
+        <FormControl fullWidth>
+          <InputLabel>
+            Statut
+          </InputLabel>
+          <Select
+            name="statut"
+            label="Statut"
+            value={editedStudent.statut}
+            onChange={handleChange}
+            fullWidth
+            style={{ marginBottom: '8px' }}
+          >
+            <MenuItem value="Alternance en cours">Alternance en cours</MenuItem>
+            <MenuItem value="Pas d'alternance">Pas d&apos;alternance</MenuItem>
+          </Select>
+        </FormControl>
         <TextField
           name="entreprise"
           label="Entreprise"

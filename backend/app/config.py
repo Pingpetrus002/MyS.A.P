@@ -1,4 +1,5 @@
 from dotenv import load_dotenv
+import datetime
 import os
 
 load_dotenv('/app/app/.env')
@@ -15,7 +16,7 @@ class Config:
     JWT_COOKIE_CSRF_PROTECT = False
     JWT_COOKIE_SECURE = True
     JWT_COOKIE_SAMESITE = 'Lax' 
-    JWT_ACCESS_TOKEN_EXPIRES = 3600
+    JWT_ACCESS_TOKEN_EXPIRES = datetime.timedelta(days=30)
     SQLALCHEMY_DATABASE_URI= os.getenv('SQLALCHEMY_DATABASE_URI')
     SQLALCHEMY_TRACK_MODIFICATIONS = False  # Ajout pour désactiver les notifications de modification
     MAIL_SERVER = os.getenv('MAIL_SERVER')
