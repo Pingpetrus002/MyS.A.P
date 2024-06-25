@@ -11,6 +11,7 @@ import AddIcon from '@mui/icons-material/Add';
 
 import FetchWraper from '../utils/FetchWraper';
 import ModalWrapper from './ButtonRapports';
+import AddMissionModal from './ButtonMissions';
 import useMediaQuery from '../utils/useMediaQuery';
 
 const handleDownload = async (md5) => {
@@ -179,6 +180,14 @@ function getColumns(type, isLargeScreen) {
           </CustomButton>
         ),
       },
+    ],
+    // Définir les colonnes pour le type Mission
+    mission: [
+        { field: 'libelle', headerName: 'Libellé', width: 200 },
+        { field: 'description', headerName: 'Description', width: 200 },
+        { field: 'datedebut', headerName: 'Date début', width: 150 },
+        { field: 'datefin', headerName: 'Date fin', width: 150 },
+        { field: 'id_user', headerName: 'Utilisateur', width: 150 },
     ]
   };
 
@@ -197,6 +206,8 @@ function getTitle(type) {
       return 'Mes Documents';
     case 'alerte':
       return 'Toutes les alertes';
+    case 'mission':
+      return 'Toutes mes missions';
     default:
       return '';
   }
@@ -287,6 +298,9 @@ export default function DataTable({ rows, type }) {
             </Button>
           </Tooltip>
         )}
+        
+        {type === 'mission' && <AddMissionModal />}
+
 
       </div>
       <CustomDataGrid
@@ -324,5 +338,5 @@ export default function DataTable({ rows, type }) {
 
 DataTable.propTypes = {
   rows: PropTypes.arrayOf(PropTypes.object).isRequired,
-  type: PropTypes.oneOf(['rapport', 'etudiant', 'mes_rapports', 'other', 'alerte']).isRequired,
+  type: PropTypes.oneOf(['rapport', 'etudiant', 'mes_rapports', 'other', 'alerte', 'mission']).isRequired,
 };

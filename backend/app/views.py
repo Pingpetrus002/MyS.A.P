@@ -4,7 +4,7 @@ from flask import Blueprint, request, jsonify, render_template, make_response
 from flask_mail import Message, Mail
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity, set_access_cookies, unset_jwt_cookies
 from werkzeug.security import generate_password_hash, check_password_hash
-from .models import Utilisateur, db, Document, Entreprise, Alert
+from .models import Utilisateur, db, Document, Entreprise, Alert, Mission
 
 import re 
 import random  
@@ -410,3 +410,59 @@ def get_alerts():
     ]
 
     return jsonify(alerts_dict), 200
+
+
+# Route pour ajouter une mission
+@auth.route('/add_mission', methods=['POST'])
+@jwt_required()
+def add_mission():
+    data = request.get_json()
+    current_user = get_jwt_identity()
+
+    # Vérification des champs du formulaire
+    fields = ['libellé', 'description', 'date_debut', 'date_fin']
+    if check_fields(data, fields) != 0:
+        return check_fields(data, fields)
+
+    libellé = data.get('nom')
+    description = data.get('description')
+    date_debut = data.get('date_debut')
+    date_fin = data.get('date_fin')
+
+    # Création d'une mission pour l'utilisateur spécifié
+    new_mission = Mission(nom=libellé, description=description, date_debut=date_debut, date_fin=date_fin, id_user=current_user)
+    db.session.add(new_mission)
+    db.session.commit()
+
+    return jsonify({'message': 'Mission added'}), 200
+
+# Route pour récupérer toutes les missions
+@auth.route('/get_missions', methods=['GET'])
+@jwt_required()
+def get_missions():
+    # Recherche de toutes les missions
+
+    # Check des roles
+    if check_role(Utilisateur.query.get(get_jwt_identity()), 1) or check_role(Utilisateur.query.get(get_jwt_identity()), 2):
+        missions = Mission.query.all()
+    
+    elif check_role(Utilisateur.query.get(get_jwt_identity()), 3):
+        missions = Utilisateur.query.get(id_user_1=get_jwt_identity()).missions.all()
+    
+    elif check_role(Utilisateur.query.get(get_jwt_identity()), 4):
+        missions = Mission.query.filter_by(id_user=get_jwt_identity()).all()
+    
+
+
+    missions_dict = [
+        {
+            'id_mission': mission.id_mission,
+            'libelle': mission.libelle,
+            'description': mission.description,
+            'datedebut': mission.datedebut,
+            'datefin': mission.datefin,
+            'id_user': Utilisateur.query.get(mission.id_user).nom + ' ' + Utilisateur.query.get(mission.id_user).prenom
+        } for mission in missions
+    ]
+
+    return jsonify({'missions': missions_dict}), 200
