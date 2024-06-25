@@ -78,34 +78,18 @@ export default function Profil() {
 
     return (
         <>
-            <NavBar idRole={user.id_role} />
-            <Grid container direction="row" justifyContent="center" alignItems="flex-start" spacing={4} marginTop={4}>
-                <Grid item>
-                    <HeaderProfile Nom={user ? user.nom : <LinearProgress />} Prenom={user ? user.prenom : <LinearProgress />} Mail={user ? user.mail : <LinearProgress />} Classe={user ? user.classe : <LinearProgress />} Role={user ? user.id_role : <LinearProgress />} />
-                    <Grid item sx={{ marginLeft: "auto", marginTop: 4 }}>
-                        <UploadRapport args={{ id_user: user ? user.id_user : null }} />
-                    </Grid>
-                </Grid>
-                <Grid item>
-                    <Grid container direction="row">
-                        <Grid item sx={{ marginLeft: "auto" }}>
-                            <Grid container direction="row">
-                                <Grid item>
-                                    <h1>{tableTitle}</h1>
-                                </Grid>
-                                <Grid item alignContent="center">
-                                    <IconButton sx={{ color: '#000000' }} onClick={handleShowSecondTable}>{showSecondTable ? '<-' : '->'}</IconButton>
-                                </Grid>
-                            </Grid>
-                        </Grid>
-                    </Grid>
-                    {showSecondTable ? (
-                        <DataTable rows={otherRapports} type="other" />
-                    ) : (
-                        <DataTable rows={filteredRapports} type="rapport" />
-                    )}
+        <NavBar idRole={user.id_role} />
+        <Grid container direction="row" justifyContent="center" alignItems="flex-start" spacing={4} marginTop={4}>
+            <Grid item>
+                <HeaderProfile Nom={user ? user.nom : <LinearProgress />} Prenom={user ? user.prenom : <LinearProgress />} Mail={user ? user.mail : <LinearProgress />} Classe={user ? user.classe : <LinearProgress />} Status={user ? user.statut : <LinearProgress />} Role={user ? user.id_role : <LinearProgress />} />
+                <Grid item sx={{ marginLeft: "auto", marginTop: 4 }}>
+                    <UploadRapport args={{ id_user: user ? user.id_user : null }} />
                 </Grid>
             </Grid>
-        </>
+            <Grid item>
+                <DataTable rows={filteredRapports} type="mes_rapports" />
+            </Grid>
+        </Grid>
+    </>
     );
 }
