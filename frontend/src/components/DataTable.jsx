@@ -11,7 +11,7 @@ import AddIcon from '@mui/icons-material/Add';
 
 import FetchWraper from '../utils/FetchWraper';
 import ModalWrapper from './ButtonRapports';
-import useMediaQuery from '../hooks/useMediaQuery';
+import useMediaQuery from '../utils/useMediaQuery';
 
 const handleDownload = async (md5) => {
   const url = `http://localhost:5000/auth/get_rapport/${md5}`;
