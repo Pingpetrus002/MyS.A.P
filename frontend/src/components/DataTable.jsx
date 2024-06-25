@@ -176,6 +176,8 @@ function getTitle(type) {
       return 'Tous les étudiants';
     case 'mes_rapports':
       return 'Mes rapports';
+    case 'other':
+      return 'Mes Documents';
     default:
       return '';
   }
@@ -212,5 +214,5 @@ export default function DataTable({ rows, type }) {
 
 DataTable.propTypes = {
   rows: PropTypes.arrayOf(PropTypes.object).isRequired,
-  type: PropTypes.oneOf(['rapport', 'etudiant', 'mes_rapports']).isRequired,
+  type: PropTypes.oneOf(['rapport', 'etudiant', 'mes_rapports', 'other']).isRequired,
 };

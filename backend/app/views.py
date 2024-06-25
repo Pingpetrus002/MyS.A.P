@@ -256,7 +256,10 @@ def get_rapport_info():
     # Récupération de tous les rapports de type 'rapport' pour les administrateurs et RRE
     if check_role(user, 1) or check_role(user, 2):
         rapports = Document.query.filter_by(type='rapport').all()
+        autre = Document.query.filter_by(id_user=current_user, type='autre').all()
         rapports_dict = [document_to_dict(rapport) for rapport in rapports]
+        autre_dict = [document_to_dict(rapport) for rapport in autre]
+        rapports_dict.extend(autre_dict)
         return jsonify({'rapports': rapports_dict}), 200
 
     # Récupération des rapports de type 'autre' de l'utilisateur actuel, quel que soit le rôle
