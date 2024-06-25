@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { DataGrid } from '@mui/x-data-grid';
 import { styled } from '@mui/material/styles';
 import Button from '@mui/material/Button';
@@ -11,6 +12,7 @@ import AddIcon from '@mui/icons-material/Add';
 
 import FetchWraper from '../utils/FetchWraper';
 import ButtonRapports from './ButtonRapports';
+import StudentModal from './EtudiantModal';
 import AddMissionModal from './ButtonMissions';
 
 const handleDownload = async (md5) => {
@@ -53,7 +55,6 @@ const CustomDataGrid = styled(DataGrid)(({ theme, isSmallScreen }) => ({
     textAlign: 'center',
     '& .MuiDataGrid-columnHeaderTitleContainer': {
       justifyContent: 'center',
-      width: '100%',
     },
     '&:hover': {
       backgroundColor: '#FFC039',
@@ -88,7 +89,7 @@ const adjustColumns = (columns, isLargeScreen) => {
   return columns.map(col => {
     if (!isLargeScreen) {
       const { width, minWidth, ...rest } = col;
-      return rest ;
+      return rest;
     }
     return col;
   });
@@ -184,11 +185,11 @@ function getColumns(type, isLargeScreen) {
     ],
     // Définir les colonnes pour le type Mission
     mission: [
-        { field: 'libelle', headerName: 'Libellé', width: 200 },
-        { field: 'description', headerName: 'Description', width: 200 },
-        { field: 'datedebut', headerName: 'Date début', width: 150 },
-        { field: 'datefin', headerName: 'Date fin', width: 150 },
-        { field: 'id_user', headerName: 'Utilisateur', width: 150 },
+      { field: 'libelle', headerName: 'Libellé', width: 200 },
+      { field: 'description', headerName: 'Description', width: 200 },
+      { field: 'datedebut', headerName: 'Date début', width: 150 },
+      { field: 'datefin', headerName: 'Date fin', width: 150 },
+      { field: 'id_user', headerName: 'Utilisateur', width: 150 },
     ]
   };
 
@@ -203,32 +204,37 @@ function getTitle(type) {
       return 'Tous les étudiants';
     case 'mes_rapports':
       return 'Mes rapports';
-    case 'other':
-      return 'Mes Documents';
+    case 'documents':
+      return 'Mes documents';
     case 'alerte':
       return 'Toutes les alertes';
     case 'mission':
-      return 'Toutes mes missions';
+      return 'Mes missions';
     default:
       return '';
   }
 }
 
 export default function DataTable({ rows, type }) {
+  const [openModal, setOpenModal] = useState(false);
   const isLargeScreen = useMediaQuery('(min-width: 1024px)');
   const isSmallScreen = useMediaQuery('(max-width: 768px)');
 
   const handleOpen = () => {
-    // TODO: Open étudiant modal
+    setOpenModal(true);
+  };
+
+  const handleClose = () => {
+    setOpenModal(false);
   };
 
   const handleExportCSV = () => {
     // Récupérer les colonnes
     const columns = getColumns(type, isLargeScreen);
-  
+
     // Créer l'en-tête CSV à partir des noms de colonne
     const header = columns.map(col => col.headerName).join(',') + '\n';
-  
+
     // Créer les lignes CSV à partir des données
     const csv = rows.map(row => {
       return columns.map(col => {
@@ -237,15 +243,15 @@ export default function DataTable({ rows, type }) {
         return typeof cell === 'string' && cell.includes(',') ? `"${cell}"` : cell;
       }).join(',');
     }).join('\n');
-  
+
     // Concaténer l'en-tête et les lignes pour former le contenu CSV complet
     const csvData = header + csv;
-  
+
     // Convertir en Blob et enregistrer en tant que fichier CSV
     const blob = new Blob([csvData], { type: 'text/csv;charset=utf-8;' });
     saveAs(blob, `${getTitle(type)}.csv`);
   };
-  
+
 
   return (
     <>
@@ -300,7 +306,7 @@ export default function DataTable({ rows, type }) {
             </Button>
           </Tooltip>
         )}
-        
+
         {type === 'mission' && <AddMissionModal />}
 
 
@@ -309,6 +315,7 @@ export default function DataTable({ rows, type }) {
         autoHeight
         rows={rows}
         columns={getColumns(type, isLargeScreen)}
+        pageSizeOptions={[5, 10, 25]}
         initialState={{
           pagination: {
             paginationModel: { page: 0, pageSize: 5 },
@@ -316,30 +323,31 @@ export default function DataTable({ rows, type }) {
         }}
         isSmallScreen={isSmallScreen}
       />
-       {/* Bouton Exporter en CSV */}
-       <Button
-          variant="outlined"
-          onClick={handleExportCSV}
-          sx={{
-            color: '#000000',
-            borderColor: '#F0C975',
-            backgroundColor: '#FDD47C',
-            marginTop: '1em',
-            mb: 1,
-            alignItems: 'right',
-            '&:hover': {
-              backgroundColor: '#FFC039',
-              borderColor: '#FFC039',
-            }
-          }}
-        >
-          Exporter en CSV
-        </Button>
+      {/* Bouton Exporter en CSV */}
+      <Button
+        variant="outlined"
+        onClick={handleExportCSV}
+        sx={{
+          color: '#000000',
+          borderColor: '#F0C975',
+          backgroundColor: '#FDD47C',
+          marginTop: '1em',
+          mb: 1,
+          alignItems: 'right',
+          '&:hover': {
+            backgroundColor: '#FFC039',
+            borderColor: '#FFC039',
+          }
+        }}
+      >
+        Exporter en CSV
+      </Button>
+      <StudentModal open={openModal} onClose={handleClose} />
     </>
   );
 }
 
 DataTable.propTypes = {
   rows: PropTypes.arrayOf(PropTypes.object).isRequired,
-  type: PropTypes.oneOf(['rapport', 'etudiant', 'mes_rapports', 'other', 'alerte', 'mission']).isRequired,
+  type: PropTypes.oneOf(['rapport', 'etudiant', 'mes_rapports', 'documents', 'alerte', 'mission']).isRequired,
 };

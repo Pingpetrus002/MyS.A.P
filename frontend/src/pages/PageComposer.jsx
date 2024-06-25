@@ -18,7 +18,7 @@ const Pages = {
     "accueil": Accueil,
     "DefaultPage": Login,
     "alertes": Alertes,
-    "mission": MissionPage
+    "missions": MissionPage
 };
 
 async function IsConnected() {
