@@ -11,6 +11,7 @@ import AddIcon from '@mui/icons-material/Add';
 
 import FetchWraper from '../utils/FetchWraper';
 import ModalWrapper from './ButtonRapports';
+import useMediaQuery from '../hooks/useMediaQuery';
 
 const handleDownload = async (md5) => {
   const url = `http://localhost:5000/auth/get_rapport/${md5}`;
@@ -57,6 +58,14 @@ const CustomDataGrid = styled(DataGrid)({
     '&:hover': {
       backgroundColor: '#FFC039',
     },
+    '& .MuiDataGrid-columnHeaderDraggableContainer': {
+      '& .MuiDataGrid-iconButtonContainer': {
+        display: 'none',
+      },
+    },
+    '&:hover .MuiDataGrid-columnHeaderDraggableContainer .MuiDataGrid-iconButtonContainer': {
+      display: 'flex',
+    },
   },
   '& .MuiDataGrid-cell': {
     textAlign: 'center',
@@ -75,109 +84,105 @@ const CustomDataGrid = styled(DataGrid)({
   },
 });
 
-const columnsRapport = [
-  { field: 'id_user', headerName: 'Étudiant', width: 180, minWidth: 180, maxWidth: 300 },
-  { field: 'nom', headerName: 'Sujet', width: 180, minWidth: 180, maxWidth: 300 },
-  { field: 'concernes', headerName: 'Concernés', width: 220, minWidth: 220 },
-  { field: 'id_user_1', headerName: 'Suiveur', width: 180, minWidth: 180, maxWidth: 300 },
-  {
-    field: 'télécharger',
-    headerName: 'Télécharger',
-    width: 150,
-    minWidth: 150,
-    maxWidth: 150,
-    renderCell: (params) => (
-      <Tooltip title="Télécharger" placement="right">
-        <CustomButton variant="contained" onClick={() => handleDownload(params.row.md5)}>
-          <PictureAsPdfIcon />
-        </CustomButton>
-      </Tooltip>
-    ),
-  },
-];
+const adjustColumns = (columns, isLargeScreen) => {
+  return columns.map(col => {
+    if (!isLargeScreen) {
+      const { width, minWidth, ...rest } = col;
+      return rest;
+    }
+    return col;
+  });
+};
 
-const columnsMesRapports = [
-  { field: 'sujet', headerName: 'Sujet', width: 180, minWidth: 180, maxWidth: 300 },
-  { field: 'concernes', headerName: 'Concernés', width: 220 },
-  { field: 'suiveur', headerName: 'Suiveur', width: 180, minWidth: 180, maxWidth: 300 },
-  {
-    field: 'télécharger',
-    headerName: 'Télécharger',
-    width: 150,
-    minWidth: 150,
-    maxWidth: 150,
-    renderCell: (params) => (
-      <Tooltip title="Télécharger" placement="right">
-        <CustomButton variant="contained" onClick={() => handleDownload(params.row.md5)}>
-          <PictureAsPdfIcon />
-        </CustomButton>
-      </Tooltip>
-    ),
-  },
-];
+function getColumns(type, isLargeScreen) {
+  const columns = {
+    rapport: [
+      { field: 'id_user', headerName: 'Étudiant', width: 180, minWidth: 180, maxWidth: 300 },
+      { field: 'nom', headerName: 'Sujet', width: 180, minWidth: 180, maxWidth: 300 },
+      { field: 'concernes', headerName: 'Concernés', width: 220, minWidth: 220, maxWidth: 300 },
+      { field: 'id_user_1', headerName: 'Suiveur', width: 180, minWidth: 180, maxWidth: 300 },
+      {
+        field: 'télécharger',
+        headerName: 'Télécharger',
+        width: 150,
+        minWidth: 150,
+        maxWidth: 150,
+        renderCell: (params) => (
+          <Tooltip title="Télécharger" placement="right">
+            <CustomButton variant="contained" onClick={() => handleDownload(params.row.md5)}>
+              <PictureAsPdfIcon />
+            </CustomButton>
+          </Tooltip>
+        ),
+      },
+    ],
+    mes_rapports: [
+      { field: 'sujet', headerName: 'Sujet', maxWidth: 300 },
+      { field: 'concernes', headerName: 'Concernés', maxWidth: 300 },
+      { field: 'suiveur', headerName: 'Suiveur', maxWidth: 300 },
+      {
+        field: 'télécharger',
+        headerName: 'Télécharger',
+        maxWidth: 150,
+        renderCell: (params) => (
+          <Tooltip title="Télécharger" placement="right">
+            <CustomButton variant="contained" onClick={() => handleDownload(params.row.md5)}>
+              <PictureAsPdfIcon />
+            </CustomButton>
+          </Tooltip>
+        ),
+      },
+    ],
+    etudiant: [
+      { field: 'nom_prenom', headerName: 'Nom Prénom', width: 180, minWidth: 180, maxWidth: 300 },
+      { field: 'classe', headerName: 'Classe', width: 220, minWidth: 220, maxWidth: 300 },
+      { field: 'statut', headerName: 'Statut', width: 180, minWidth: 180, maxWidth: 300 },
+      { field: 'duree', headerName: 'Durée', width: 180, minWidth: 180, maxWidth: 300 },
+      { field: 'contract', headerName: 'Contract', width: 180, minWidth: 180, maxWidth: 300 },
+      {
+        field: 'voir',
+        headerName: 'Voir',
+        width: 120,
+        minWidth: 120,
+        maxWidth: 120,
+        renderCell: (params) => (
+          <CustomButton onClick={() => onButtonClick(params)} style={{ backgroundColor: '#1976d2', color: 'white' }}>
+            Voir
+          </CustomButton>
+        ),
+      },
+    ],
+    alerte: [
+      { field: 'commentaires', headerName: 'Commentaire', width: 800, minWidth: 220, maxWidth: 900 },
+      { field: 'id_user_source', headerName: 'ID utilisateur source', width: 180, minWidth: 180, maxWidth: 300 },
+      {
+        field: 'voir',
+        headerName: 'Voir',
+        width: 120,
+        minWidth: 120,
+        maxWidth: 120,
+        renderCell: (params) => (
+          <CustomButton onClick={() => console.log(params.row)} style={{ backgroundColor: '#1976d2', color: 'white' }}>
+            Voir
+          </CustomButton>
+        ),
+      },
+      {
+        field: 'supprimer',
+        headerName: 'Supprimer',
+        width: 150,
+        minWidth: 150,
+        maxWidth: 150,
+        renderCell: (params) => (
+          <CustomButton onClick={() => console.log('Supprimer', params.row)} style={{ backgroundColor: '#bb2124', color: 'white' }}>
+            Supprimer
+          </CustomButton>
+        ),
+      },
+    ]
+  };
 
-const columnsEtudiant = [
-  { field: 'nom_prenom', headerName: 'Nom Prénom', width: 180, minWidth: 180, maxWidth: 300 },
-  { field: 'classe', headerName: 'Classe', width: 220, minWidth: 220, maxWidth: 300 },
-  { field: 'statut', headerName: 'Status', width: 180, minWidth: 180, maxWidth: 300 },
-  { field: 'duree', headerName: 'Durée', width: 180, minWidth: 180, maxWidth: 300 },
-  { field: 'contract', headerName: 'Contract', width: 180, minWidth: 180, maxWidth: 300 },
-  {
-    field: 'voir',
-    headerName: 'Voir',
-    width: 120,
-    minWidth: 120,
-    maxWidth: 120,
-    renderCell: (params) => (
-      <CustomButton onClick={() => onButtonClick(params)} style={{ backgroundColor: '#1976d2', color: 'white' }}>
-        Voir
-      </CustomButton>
-    ),
-  },
-];
-
-const columnsAlertes = [
-  { field: 'commentaires', headerName: 'Commentaire', width: 800, minWidth: 220, maxWidth: 900 },
-  { field: 'id_user_source', headerName: 'ID utilisateur source', width: 180, minWidth: 180, maxWidth: 300 },
-  {
-    field: 'voir',
-    headerName: 'Voir',
-    width: 120,
-    minWidth: 120,
-    maxWidth: 120,
-    renderCell: (params) => (
-      <CustomButton onClick={() => console.log(params.row)} style={{ backgroundColor: '#1976d2', color: 'white' }}>
-        Voir
-      </CustomButton>
-    ),
-  },
-  {
-    field: 'supprimer',
-    headerName: 'Supprimer',
-    width: 150,
-    minWidth: 150,
-    maxWidth: 150,
-    renderCell: (params) => (
-      <CustomButton onClick={() => console.log('Supprimer', params.row)} style={{ backgroundColor: '#bb2124', color: 'white' }}>
-        Supprimer
-      </CustomButton>
-    ),
-  },
-];
-
-function getColumns(type) {
-  switch (type) {
-    case 'rapport':
-      return columnsRapport;
-    case 'etudiant':
-      return columnsEtudiant;
-    case 'mes_rapports':
-      return columnsMesRapports;
-    case 'alerte':
-      return columnsAlertes;
-    default:
-      return [];
-  }
+  return adjustColumns(columns[type] || [], isLargeScreen);
 }
 
 function getTitle(type) {
@@ -196,6 +201,7 @@ function getTitle(type) {
 }
 
 export default function DataTable({ rows, type }) {
+  const isLargeScreen = useMediaQuery('(min-width: 1024px)');
 
   const handleOpen = () => {
     // TODO: Open étudiant modal
@@ -258,7 +264,7 @@ export default function DataTable({ rows, type }) {
       <CustomDataGrid
         autoHeight
         rows={rows}
-        columns={getColumns(type)}
+        columns={getColumns(type, isLargeScreen)}
         initialState={{
           pagination: {
             paginationModel: { page: 0, pageSize: 5 },
