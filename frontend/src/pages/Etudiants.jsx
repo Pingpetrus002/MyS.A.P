@@ -63,7 +63,7 @@ export default function Etudiants() {
   // Rendu du composant
   return (
     <>
-    <Navbar />
+      <Navbar />
       {loading ? (
         <LinearProgress />
       ) : (

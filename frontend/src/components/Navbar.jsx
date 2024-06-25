@@ -20,11 +20,11 @@ import { getAlerts } from '../utils/AlertCreator';
 import { darken } from '@mui/system';
 
 const pages = {
-    1: ['Accueil', 'Rapports', 'Étudiants', 'Rendez-Vous', 'Mission'],
-    2: ['Accueil', 'Rapports', 'Étudiants', 'Rendez-Vous', 'Mission'],
-    3: ['Accueil', 'Rapports', 'Étudiants', 'Rendez-Vous', 'Mission'],
-    4: ['Accueil', 'Mission', 'Rendez-Vous'],
-    5: ['Accueil', 'Mission', 'Rendez-Vous'],
+    1: ['Accueil', 'Rapports', 'Étudiants', 'Rendez-Vous', 'Missions'],
+    2: ['Accueil', 'Rapports', 'Étudiants', 'Rendez-Vous', 'Missions'],
+    3: ['Accueil', 'Rapports', 'Étudiants', 'Rendez-Vous', 'Missions'],
+    4: ['Accueil', 'Missions', 'Rendez-Vous'],
+    5: ['Accueil', 'Missions', 'Rendez-Vous'],
 };
 
 async function IsConnected() {
