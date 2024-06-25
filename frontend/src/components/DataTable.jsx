@@ -97,9 +97,9 @@ const columnsRapport = [
 ];
 
 const columnsMesRapports = [
-  { field: 'sujet', headerName: 'Sujet', width: 180, minWidth: 180, maxWidth: 300 },
-  { field: 'concernes', headerName: 'Concernés', width: 220 },
-  { field: 'suiveur', headerName: 'Suiveur', width: 180, minWidth: 180, maxWidth: 300 },
+  { field: 'nom', headerName: 'Sujet', width: 180, minWidth: 180, maxWidth: 300 },
+  { field: 'id_user', headerName: 'Concernés', width: 220 },
+  { field: 'id_user_1', headerName: 'Suiveur', width: 180, minWidth: 180, maxWidth: 300 },
   {
     field: 'télécharger',
     headerName: 'Télécharger',
