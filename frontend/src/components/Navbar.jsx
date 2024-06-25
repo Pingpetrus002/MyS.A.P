@@ -407,15 +407,7 @@ const Navbar = () => {
             </Toolbar>
         </Container>
     );
-    const [anchorElProfile, setAnchorElProfile] = useState(null);
 
-        const handleCloseProfileMenu = () => {
-            setAnchorElProfile(null);
-        };
-
-        const handleOpenProfileMenu = (event) => {
-            setAnchorElProfile(event.currentTarget);
-        };
 
     return (
         <>

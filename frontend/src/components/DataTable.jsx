@@ -5,13 +5,12 @@ import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
 import Typography from '@mui/material/Typography';
 import PropTypes from 'prop-types';
 import { saveAs } from 'file-saver';
-import { Tooltip, Link } from '@mui/material';
+import { Tooltip, Link, useMediaQuery } from '@mui/material';
 import EastIcon from '@mui/icons-material/East';
 import AddIcon from '@mui/icons-material/Add';
 
 import FetchWraper from '../utils/FetchWraper';
 import ButtonRapports from './ButtonRapports';
-import useMediaQuery from '../utils/useMediaQuery';
 import AddMissionModal from './ButtonMissions';
 
 const handleDownload = async (md5) => {
