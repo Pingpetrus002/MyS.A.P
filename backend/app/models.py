@@ -1,4 +1,5 @@
 from flask_sqlalchemy import SQLAlchemy
+from datetime import datetime
 
 db = SQLAlchemy()
 
@@ -106,3 +107,5 @@ class Alert(db.Model):
     commentaires = db.Column(db.String(250))
     id_user_cible = db.Column(db.Integer, db.ForeignKey('utilisateur.id_user'))
     id_user_source = db.Column(db.Integer, db.ForeignKey('utilisateur.id_user'))
+    id_entreprise = db.Column(db.Integer, db.ForeignKey('entreprise.id_entreprise'))
+    date = db.Column(db.DateTime, default=datetime.now)
