@@ -15,6 +15,8 @@ import ButtonRapports from './ButtonRapports';
 import StudentModal from './EtudiantModal';
 import AddMissionModal from './ButtonMissions';
 
+import { usersManagementGridCallback } from '../pages/UsersManagement';
+
 const handleDownload = async (md5) => {
   const url = `http://localhost:5000/auth/get_rapport/${md5}`;
 
@@ -192,6 +194,44 @@ function getColumns(type, isLargeScreen) {
       { field: 'datedebut', headerName: 'Date début', width: 150 },
       { field: 'datefin', headerName: 'Date fin', width: 150 },
       { field: 'id_user', headerName: 'Utilisateur', width: 150 },
+    ],
+    users_management: [
+      { field: 'id', headerName: 'ID', width: 90 },
+      { field: 'mail', headerName: 'Email', width: 150 },
+      { field: 'role', headerName: 'Role', width: 150 },
+      { field: 'nom', headerName: 'Prénom', width: 150 },
+      { field: 'prenom', headerName: 'Nom', width: 150 },
+      { field: 'date_naissance_formatted', headerName: 'Date de naissance', width: 250 },
+      {
+        field: 'actions',
+        headerName: 'Actions',
+        width: 150,
+        renderCell: (params) => (
+          <strong>
+            <Button
+              sx={{
+                marginTop: 1.8,
+                marginLeft: 4,
+                color: '#000000',
+                borderColor: '#F0C975',
+                backgroundColor: '#FDD47C',
+                mb: 1,
+                '&:hover': {
+                  backgroundColor: '#FFC039',
+                  borderColor: '#FFC039',
+                },
+              }}
+              variant="contained"
+              color="primary"
+              size="small"
+              style={{ marginLeft: 16 }}
+              onClick={() => usersManagementGridCallback(params.row)}
+            >
+              Action
+            </Button>
+          </strong>
+        ),
+      },
     ]
   };
 

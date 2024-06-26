@@ -2,7 +2,8 @@ import FetchWraper from '../utils/FetchWraper';
 import { useEffect, useState } from 'react';
 
 import { Stack, Box, Grid, Modal, Button, TextField, Select, MenuItem } from '@mui/material';
-import { DataGrid } from "@mui/x-data-grid";
+//import { DataGrid } from "@mui/x-data-grid";
+import DataTable from '../components/DataTable.jsx'; // pas de callback pour les boutons...
 import NavBar from '../components/Navbar.jsx';
 import PropTypes from "prop-types";
 
@@ -144,6 +145,12 @@ AddUserModal.propTypes = {
 };
 
 
+export function usersManagementGridCallback(e) {
+    console.log("Callback:", e);
+}
+
+
+
 async function getUsers() {
     let fetchWraper = new FetchWraper();
     fetchWraper.url = "http://localhost:5000/auth/users/list";
@@ -227,47 +234,33 @@ function UsersManagement() {
                 <Grid item xs={12} sx={{ textAlign: 'center' }}>
                     <h1>Gestion des utilisateurs</h1>
                 </Grid>
-                <Grid item xs={12} sx={{ textAlign: 'center' }}>
+
+                <Grid item xs={12} sx={{ textAlign: 'center' , paddingLeft: 6, paddingRight: 6}}>
+
+                    <DataTable
+                        rows={users}
+                        type='users_management'
+                    />
+
                     <Button
+                        sx={{
+                            marginTop: 1.8,
+                            marginLeft: 4,
+                            color: '#000000',
+                            borderColor: '#F0C975',
+                            backgroundColor: '#FDD47C',
+                            mb: 1,
+                            '&:hover': {
+                                backgroundColor: '#FFC039',
+                                borderColor: '#FFC039',
+                            },
+                        }}
                         variant="contained"
                         color="primary"
                         onClick={() => handleOpen()}
                     >
                         Ajouter un utilisateur
                     </Button>
-                </Grid>
-                <Grid item xs={12} sx={{ textAlign: 'center', p: 8 }}>
-                    <DataGrid
-                        sx={{ height: 350, width: '100%' }}
-                        rows={users}
-                        columns={[
-                            { field: 'id', headerName: 'ID', width: 90 },
-                            { field: 'mail', headerName: 'Email', width: 150 },
-                            { field: 'role', headerName: 'Role', width: 150 },
-                            { field: 'nom', headerName: 'Prénom', width: 150 },
-                            { field: 'prenom', headerName: 'Nom', width: 150 },
-                            { field: 'date_naissance_formatted', headerName: 'Date de naissance', width: 250 },
-                            {
-                                field: 'actions',
-                                headerName: 'Actions',
-                                width: 150,
-                                renderCell: (params) => (
-                                    <strong>
-                                        <Button
-                                            variant="contained"
-                                            color="primary"
-                                            size="small"
-                                            style={{ marginLeft: 16 }}
-                                            onClick={() => console.log("TODO:", params.row)}
-                                        >
-                                            Action
-                                        </Button>
-                                    </strong>
-                                ),
-                            },
-                        ]}
-                        pageSize={10}
-                    />
 
                 </Grid>
             </Grid>
