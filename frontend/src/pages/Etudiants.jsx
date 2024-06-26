@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { LinearProgress, Grid } from '@mui/material';
+import { LinearProgress, Grid, useMediaQuery } from '@mui/material';
 
 // Importations personnalisées
 import Navbar from '../components/Navbar';
@@ -29,6 +29,7 @@ export default function Etudiants() {
   const [loading, setLoading] = useState(true);
   const [selectedStudent, setSelectedStudent] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
+  const isMobile = useMediaQuery('(max-width:600px)');
 
   // Effet pour charger les données des étudiants au chargement du composant
   useEffect(() => {
@@ -63,7 +64,7 @@ export default function Etudiants() {
   // Rendu du composant
   return (
     <>
-      <Navbar />
+      {!isMobile && <Navbar />}
       {loading ? (
         <LinearProgress />
       ) : (
@@ -76,6 +77,7 @@ export default function Etudiants() {
       {selectedStudent && (
         <StudentModal student={selectedStudent} open={modalOpen} onClose={handleCloseModal} />
       )}
+      {isMobile && <Navbar />}
     </>
   );
 }

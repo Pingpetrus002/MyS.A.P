@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react';
-import Grid from '@mui/material/Grid';
+import { useState, useEffect } from 'react';
+import { Grid, useMediaQuery} from '@mui/material';
 import { InlineWidget } from 'react-calendly';
+
 import FetchWraper from '../utils/FetchWraper';
-import Navbar from '../components/Navbar';
+import NavBar from '../components/Navbar';
 
 async function getDatas() {
     let fetchWraper = new FetchWraper();
@@ -21,10 +22,11 @@ async function getDatas() {
 
 function RendezVous() {
     const [userData, setUserData] = useState(null);
+    const isMobile = useMediaQuery('(max-width:600px)');
 
     useEffect(() => {
         const fetchData = async () => {
-            const user = await getDatas();
+            const user = await getDatas(); // Assumer que getDatas est une fonction définie ailleurs pour récupérer les données utilisateur
             setUserData(user);
         };
 
@@ -40,17 +42,18 @@ function RendezVous() {
 
     return (
         <>
-            <Navbar />
-        <div>
-            <h1>Planifier un rendez-vous</h1>
-            <form>
-                <Grid container spacing={2}>
-                    <Grid item xs={12}>
-                        <InlineWidget url={userData.url_calendly} />
+            {!isMobile && <NavBar />}
+            <div>
+                <h1>Planifier un rendez-vous</h1>
+                <form>
+                    <Grid container spacing={2}>
+                        <Grid item xs={12}>
+                            <InlineWidget url={userData.url_calendly} />
+                        </Grid>
                     </Grid>
-                </Grid>
-            </form>
-        </div>
+                </form>
+            </div>
+            {isMobile && <NavBar />}
         </>
     );
 }
