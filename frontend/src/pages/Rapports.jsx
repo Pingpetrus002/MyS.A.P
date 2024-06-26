@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { LinearProgress, Grid } from '@mui/material';
+import { LinearProgress, Grid, useMediaQuery } from '@mui/material';
 
 import FetchWraper from '../utils/FetchWraper';
 import DataTable from '../components/DataTable';
@@ -15,7 +15,6 @@ async function getRapports() {
     fetchWraper.headers.append("Access-Control-Allow-Origin", window.location.origin);
     fetchWraper.headers.append("Access-Control-Allow-Credentials", "true");
 
-
     let result = await fetchWraper.fetchw();
     let data = await result.json();
     
@@ -24,7 +23,6 @@ async function getRapports() {
     
     return filteredRapports;
 }
-
 
 export default function Rapports() {
     const [rapports, setRapports] = useState([]);
@@ -35,7 +33,6 @@ export default function Rapports() {
             try {
                 const rapportsData = await getRapports();
                 setRapports(rapportsData);
-
                 setLoading(false);
             } catch (error) {
                 console.error('Error fetching data:', error);
@@ -46,13 +43,11 @@ export default function Rapports() {
         fetchData();
     }, []);
 
-    if (loading) {
-        return <LinearProgress />;
-    }
+    const isMobile = useMediaQuery('(max-width:600px)');
 
     return (
         <>
-            <NavBar />
+            {!isMobile && <NavBar />}
             {loading ? (
                 <LinearProgress />
             ) : (
@@ -62,6 +57,7 @@ export default function Rapports() {
                     </Grid>
                 </Grid>
             )}
+            {isMobile && <NavBar />}
         </>
     );
 }
