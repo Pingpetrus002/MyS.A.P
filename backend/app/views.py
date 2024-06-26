@@ -76,9 +76,9 @@ def register():
     firstname = data.get('firstname')
     lastname = data.get('lastname')
     date_naissance = data.get('date_naissance')
+    password = data.get('password', generate_random_password()) # Génération d'un mot de passe aléatoire si non fourni
     role = data.get('role')
     
-    password = generate_random_password()  # Génération d'un mot de passe aléatoire
 
     # Vérification du rôle de l'utilisateur actuel 
     if not check_role(Utilisateur.query.get(current_identity), 1) and not check_role(Utilisateur.query.get(current_identity), 2):

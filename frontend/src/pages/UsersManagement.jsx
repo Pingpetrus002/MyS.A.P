@@ -19,6 +19,11 @@ function AddUserModal({
     };
 
     const handleSubmit = async () => {
+
+        if (user.password === "") {
+            delete user.password;
+        }
+
         let fetchWraper = new FetchWraper();
         fetchWraper.url = "http://localhost:5000/auth/register";
         fetchWraper.method = "POST";
@@ -83,14 +88,36 @@ function AddUserModal({
                         name="username"
                         onChange={handleChange}
                     />
-                    <TextField
-                        id="password"
-                        label="Mot de passe"
-                        variant="outlined"
-                        name="password"
-                        type='password'
-                        onChange={handleChange}
-                    />
+
+                    <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+
+                        <Grid item xs={8} sx={{ textAlign: 'center' }}>
+                            <TextField
+                                id="password"
+                                label="Mot de passe (optionnel)"
+                                placeholder="(optionnel)"
+                                variant="outlined"
+                                fullWidth
+                                value={user.password || ""}
+                                name="password"
+                                type='text'
+                                onChange={handleChange}
+                            />
+                        </Grid>
+                        <Grid item xs={4} sx={{ textAlign: 'center', alignSelf: 'center', alignItems: 'center' }}>
+                            <Button
+                                variant="contained"
+                                color="primary"
+                                onClick={() => {
+                                    let password = Math.random().toString(36).slice(-12);
+                                    setUser({ ...user, password: password });
+                                }}
+                            >
+                                Générer
+                            </Button>
+                        </Grid>
+
+                    </Box>
                     <Select
                         label="role"
                         value={user.role}
@@ -164,6 +191,7 @@ function UsersManagement() {
     }
 
     const handleClose = () => {
+        triggerReload();
         setOpen(false);
     }
 
@@ -175,11 +203,12 @@ function UsersManagement() {
         async function fetchData() {
             const result = await getUsers();
             const formattedUsers = result.data.map(user => (
-                { 
+                {
                     id: user.id_user,
                     role: roleNames(user.id_role),
                     date_naissance_formatted: new Date(user.date_naissance).toLocaleDateString(),
-                    ...user }));
+                    ...user
+                }));
             setUsers(formattedUsers);
             //console.log(formattedUsers);
         }
@@ -207,9 +236,9 @@ function UsersManagement() {
                         Ajouter un utilisateur
                     </Button>
                 </Grid>
-                <Grid item xs={12} sx={{ textAlign: 'center', p:8}}>
+                <Grid item xs={12} sx={{ textAlign: 'center', p: 8 }}>
                     <DataGrid
-                        sx={{ height: 300, width: '100%'}}
+                        sx={{ height: 350, width: '100%' }}
                         rows={users}
                         columns={[
                             { field: 'id', headerName: 'ID', width: 90 },
@@ -229,7 +258,7 @@ function UsersManagement() {
                                             color="primary"
                                             size="small"
                                             style={{ marginLeft: 16 }}
-                                            onClick={() => console.log("TODO:",params.row)}
+                                            onClick={() => console.log("TODO:", params.row)}
                                         >
                                             Action
                                         </Button>
