@@ -521,32 +521,50 @@ def ajoutEtudiants():
 
 
 # Route pour ajouter des étudiants automatiquement à partir d'un fichier CSV
-@auth.route('/ajout_etudiants_automatique', methods=['POST'])
+@auth.route('/ajout_etudiants_fichier', methods=['POST'])
 @jwt_required()
 def ajoutEtudiantsCsv():
-    data = request.get_json()
+    data = request.get_json().get('data')
 
     if not data:
         return jsonify({'message': 'No data provided'}), 400
 
+    erreurs = False
     for data_intividuel in data:
-        if data_intividuel == "":
-            ajoutEtudiantsFonction(data_intividuel)
+        if data_intividuel != "":
+            ajout = ajoutEtudiantsFonction(data_intividuel, options='csv')
+            if ajout != 200:
+                erreurs = True
+
+    if erreurs:
+        return jsonify({'message': 'Étudiants ajoutés avec quelques erreurs'}), 500
+    return jsonify({'message': 'Étudiants ajoutés avec succès'}), 200
 
 
-def ajoutEtudiantsFonction(data):
-    etudiant_nom = data.get('nom')
-    etudiant_prenom = data.get('prenom')
-    etudiant_email = data.get('email')
-    etudiant_date_naissance = data.get('date_naissance')
-    etudiant_classe = data.get('classe')
-    etudiant_suiveur = data.get('suiveur')
-    etudiant_tuteur = data.get('tuteur')
-    etudiant_ecole = data.get('ecole')
-    etudiant_entreprise = data.get('entreprise')
+def ajoutEtudiantsFonction(data, options=None):
+    if options is None:
+        etudiant_nom = data.get('nom')
+        etudiant_prenom = data.get('prenom')
+        etudiant_email = data.get('email')
+        etudiant_date_naissance = data.get('date_naissance')
+        etudiant_classe = data.get('classe')
+        etudiant_suiveur = data.get('suiveur')
+        etudiant_tuteur = data.get('tuteur')
+        etudiant_ecole = data.get('ecole')
+        etudiant_entreprise = data.get('entreprise')
+    else:
+        etudiant_nom = data.get('Nom')
+        etudiant_prenom = data.get('Prenom')
+        etudiant_email = data.get('Email')
+        etudiant_date_naissance = data.get('Date de naissance')
+        etudiant_classe = data.get('Classe')
+        etudiant_suiveur = data.get('Suiveur')
+        etudiant_tuteur = data.get('Tuteur')
+        etudiant_ecole = data.get('École')
+        etudiant_entreprise = data.get('Entreprise')
 
     if not etudiant_nom or not etudiant_prenom or not etudiant_email or not etudiant_date_naissance or not etudiant_classe:
-            return jsonify({'message': 'Missing étudiant data'}), 400
+        return jsonify({'message': 'Missing étudiant data'}), 400
 
     password = generate_random_password()  # Génération d'un mot de passe aléatoire
 
@@ -564,12 +582,25 @@ def ajoutEtudiantsFonction(data):
     # Regarde si une variable est vide, si oui, la remplace par None
     if etudiant_suiveur == "":
         etudiant_suiveur = None
+    if type(etudiant_suiveur) != int:
+        etudiant_suiveur = None
+
     if etudiant_tuteur == "":
         etudiant_tuteur = None
+    if type(etudiant_tuteur) != int:
+        etudiant_tuteur = None
+
     if etudiant_ecole == "":
         etudiant_ecole = None
+    if type(etudiant_ecole) != int:
+        etudiant_ecole = None
+        #etudiant_ecole = Ecole.query.filter_by(raison_sociale=etudiant_ecole).first().id_ecole
+
     if etudiant_entreprise == "":
         etudiant_entreprise = None
+    if type(etudiant_entreprise) != int:
+        etudiant_entreprise = None
+        #etudiant_entreprise = Entreprise.query.filter_by(raison_sociale=etudiant_entreprise).first().id_entreprise
 
     # Create a new etudiant object
     new_etudiant = Utilisateur(

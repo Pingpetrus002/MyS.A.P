@@ -14,6 +14,7 @@ import FetchWraper from '../utils/FetchWraper';
 import ButtonRapports from './ButtonRapports';
 import StudentModal from './EtudiantModal';
 import AddMissionModal from './ButtonMissions';
+import UploadEtudiants from './UploadEtudiants';
 
 const handleDownload = async (md5) => {
   const url = `http://localhost:5000/auth/get_rapport/${md5}`;
@@ -287,24 +288,7 @@ export default function DataTable({ rows, type }) {
 
         {/* Bouton type Etudiant */}
         {type === 'etudiant' && (
-          <Tooltip title="Ajouter un étudiant" placement="top">
-            <Button
-              variant="outlined"
-              onClick={handleOpen}
-              sx={{
-                color: '#000000',
-                borderColor: '#F0C975',
-                backgroundColor: '#FDD47C',
-                mb: 1,
-                '&:hover': {
-                  backgroundColor: '#FFC039',
-                  borderColor: '#FFC039',
-                }
-              }}
-            >
-              <AddIcon />
-            </Button>
-          </Tooltip>
+          <UploadEtudiants />
         )}
 
         {type === 'mission' && <AddMissionModal />}
@@ -323,6 +307,27 @@ export default function DataTable({ rows, type }) {
         }}
         isSmallScreen={isSmallScreen}
       />
+      {/* Bouton Importer en CSV Étudiants */}
+      {type === 'etudiant' && (
+          <Button
+              variant="outlined"
+              onClick={handleExportCSV}
+              sx={{
+                color: '#000000',
+                borderColor: '#F0C975',
+                backgroundColor: '#FDD47C',
+                marginTop: '1em',
+                mb: 1,
+                alignItems: 'right',
+                '&:hover': {
+                  backgroundColor: '#FFC039',
+                  borderColor: '#FFC039',
+                }
+              }}
+          >
+            Importer en CSV
+          </Button>
+      )}
       {/* Bouton Exporter en CSV */}
       <Button
         variant="outlined"

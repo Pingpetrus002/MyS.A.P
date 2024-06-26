@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { Button, LinearProgress, Grid } from '@mui/material';
+import {Button, LinearProgress, Grid, MenuItem, Link, Box, Divider, Menu} from '@mui/material';
 
 // Importations personnalisées
 import FetchWraper from '../utils/FetchWraper';
 import DataTable from '../components/DataTable';
 import StudentModal from '../components/EtudiantModal';
+import Typography from "@mui/material/Typography";
+import EastIcon from "@mui/icons-material/East.js";
 
 // Fonction asynchrone pour récupérer les données des étudiants
 async function getDatas() {
@@ -57,6 +59,16 @@ export default function Etudiants() {
   // Gestionnaire pour fermer le modal
   const handleCloseModal = () => {
     setModalOpen(false);
+  };
+
+  const [anchorElAjout, setAnchorElAjout] = useState(null);
+
+  const handleOpenAjoutMenu = (event) => {
+      setAnchorElAjout(event.currentTarget);
+  };
+
+  const handleCloseAjoutMenu = () => {
+      setAnchorElAjout(null);
   };
 
   // Rendu du composant

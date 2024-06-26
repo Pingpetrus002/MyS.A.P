@@ -20,7 +20,6 @@ function App() {
 
     return (
         <div className="App">
-            <Navbar/>
             <PageComposer page={page} />
         </div>
     );

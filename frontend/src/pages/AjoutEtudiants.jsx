@@ -9,6 +9,7 @@ import studentImage from "../assets/students.jpg";
 import Logo from "../assets/logoFull.svg";
 import {alpha, styled} from "@mui/material/styles";
 import JObject from "../utils/JObject.js";
+import Navbar from "../components/Navbar.jsx";
 
 async function SubmitFormAjout() {
     const form = document.getElementById('ajout-etudiant-form');
@@ -87,10 +88,11 @@ function FormAjout() {
             getTuteurs(result);
             if (result && result.users) {
                 let users = Array.isArray(result.users) ? result.users : [result.users];
-                const values = users.map(user => ({ key: user.id, value: user.nom.toUpperCase() + " " + user.prenom }));
+                const values = users.map(user => ({key: user.id, value: user.nom.toUpperCase() + " " + user.prenom}));
                 setTuteursNames(values);
             }
         }
+
         fetchTuteurs();
     }, [])
 
@@ -100,10 +102,11 @@ function FormAjout() {
             getSuiveurs(result);
             if (result && result.users) {
                 let users = Array.isArray(result.users) ? result.users : [result.users];
-                const values = users.map(user => ({ key: user.id, value: user.nom.toUpperCase() + " " + user.prenom }));
+                const values = users.map(user => ({key: user.id, value: user.nom.toUpperCase() + " " + user.prenom}));
                 setSuiveurNames(values);
             }
         }
+
         fetchSuiveurs();
     }, [])
 
@@ -113,10 +116,11 @@ function FormAjout() {
             getEcoles(result);
             if (result && result.ecoles) {
                 let ecoles = Array.isArray(result.ecoles) ? result.ecoles : [result.ecoles];
-                const values = ecoles.map(ecole => ({ key: ecole.id, value: ecole.nom + " | " + ecole.adresse }));
+                const values = ecoles.map(ecole => ({key: ecole.id, value: ecole.nom + " | " + ecole.adresse}));
                 setEcoleNames(values);
             }
         }
+
         fetchEcoles();
     }, [])
 
@@ -126,10 +130,14 @@ function FormAjout() {
             getEntreprises(result);
             if (result && result.entreprises) {
                 let entreprises = Array.isArray(result.entreprises) ? result.entreprises : [result.entreprises];
-                const values = entreprises.map(entreprise => ({ key: entreprise.id, value: entreprise.nom + " | " + entreprise.adresse }));
+                const values = entreprises.map(entreprise => ({
+                    key: entreprise.id,
+                    value: entreprise.nom + " | " + entreprise.adresse
+                }));
                 setEntrepriseNames(values);
             }
         }
+
         fetchEntreprises();
     }, [])
 
@@ -137,64 +145,78 @@ function FormAjout() {
     console.log(entrepriseNames);
 
     const fields = [
-        { id: 'nom', label: 'Nom', type: 'text' },
-        { id: 'prenom', label: 'Prenom', type: 'text' },
-        { id: 'email', label: 'Email', type: 'email' },
-        { id: 'date_naissance', label: 'Date de naissance', type: 'date' },
-        { id: 'classe', label: 'Classe', type: 'select', data: ['B1', 'B2', 'B3'].map(value => ({ key: value, value })) },
-        { id: 'suiveur', label: 'Suiveur', type: 'select', data: suiveurNames },
-        { id: 'tuteur', label: 'Tuteur', type: 'select', data: tuteursNames },
-        { id: 'ecole', label: 'École', type: 'select', data: ecoleNames },
-        { id: 'entreprise', label: 'Entreprise', type: 'select', data: entrepriseNames },
+        {id: 'nom', label: 'Nom', type: 'text'},
+        {id: 'prenom', label: 'Prenom', type: 'text'},
+        {id: 'email', label: 'Email', type: 'email'},
+        {id: 'date_naissance', label: 'Date de naissance', type: 'date'},
+        {id: 'status', label: 'Statut', type: 'select', data: ['Alternance en cours', 'Pas d\'alternance'].map(value => {
+                let mappedValue;
+                if (value === 'Alternance en cours') {
+                    mappedValue = 1;
+                } else if (value === 'Pas d\'alternance') {
+                    mappedValue = 0;
+                } else {
+                    mappedValue = null;
+                }
+                return {key: mappedValue, value};
+            })},
+        {id: 'classe', label: 'Classe', type: 'select', data: ['B1', 'B2', 'B3'].map(value => ({key: value, value}))},
+        {id: 'ecole', label: 'École', type: 'select', data: ecoleNames},
+        {id: 'suiveur', label: 'Suiveur', type: 'select', data: suiveurNames},
+        {id: 'tuteur', label: 'Tuteur', type: 'select', data: tuteursNames},
+        {id: 'entreprise', label: 'Entreprise', type: 'select', data: entrepriseNames},
     ];
 
     return (
-        <div style={{
-            color: 'white',
-            position: 'fixed',
-            left: '50%',
-            top: '50%',
-            transform: 'translate(-50%, -50%)'
-        }}>
-            <form id='ajout-etudiant-form' style={{ display: 'grid', borderRadius: "90" }}>
-                <Grid container spacing={5}>
-                    {fields.map(field => (
-                        <Grid item xs={6} key={field.id}>
-                            {field.type === 'select' ? (
-                                <FormControl style={{ width: '100%' }}>
-                                    <InputLabel id={field.id + "-label"}>{field.label}</InputLabel>
-                                    <CustomSelectField
+        <>
+            <Navbar />
+            <div style={{
+                color: 'white',
+                position: 'fixed',
+                left: '50%',
+                top: '50%',
+                transform: 'translate(-50%, -50%)'
+            }}>
+                <form id='ajout-etudiant-form' style={{display: 'grid', borderRadius: "90"}}>
+                    <Grid container spacing={5}>
+                        {fields.map(field => (
+                            <Grid item xs={6} key={field.id}>
+                                {field.type === 'select' ? (
+                                    <FormControl style={{width: '100%'}}>
+                                        <InputLabel id={field.id + "-label"}>{field.label}</InputLabel>
+                                        <CustomSelectField
+                                            id={field.id}
+                                            label={field.label}
+                                            type={field.type}
+                                            variant="outlined"
+                                            name={field.id}
+                                        >
+                                            {field.data.map((option, index) => (
+                                                <MenuItem key={option.key} value={option.key}>{option.value}</MenuItem>
+                                            ))}
+                                        </CustomSelectField>
+                                    </FormControl>
+                                ) : (
+                                    <CustomTextField
                                         id={field.id}
                                         label={field.label}
                                         type={field.type}
                                         variant="outlined"
                                         name={field.id}
-                                    >
-                                        {field.data.map((option, index) => (
-                                            <MenuItem key={option.key} value={option.key}>{option.value}</MenuItem>
-                                        ))}
-                                    </CustomSelectField>
-                                </FormControl>
-                            ) : (
-                                <CustomTextField
-                                    id={field.id}
-                                    label={field.label}
-                                    type={field.type}
-                                    variant="outlined"
-                                    name={field.id}
-                                    InputLabelProps={field.id.includes('date') ? { shrink: true } : {}}
-                                    sx={{ width: '100%' }}
-                                />
-                            )}
+                                        InputLabelProps={field.id.includes('date') ? {shrink: true} : {}}
+                                        sx={{width: '100%'}}
+                                    />
+                                )}
+                            </Grid>
+                        ))}
+                        <Grid item xs={12}>
+                            <CustomButton variant="outlined" color="inherit"
+                                          onClick={SubmitFormAjout}>Ajouter</CustomButton>
                         </Grid>
-                    ))}
-                    <Grid item xs={12}>
-                        <CustomButton variant="outlined" color="inherit"
-                                      onClick={SubmitFormAjout}>Ajouter</CustomButton>
                     </Grid>
-                </Grid>
-            </form>
-        </div>
+                </form>
+            </div>
+        </>
     )
 }
 
@@ -258,7 +280,7 @@ export default function AjoutEtudiants() {
     // Rendu du composant
     return (
         <Grid container justifyContent="center">
-            <FormAjout />
+            <FormAjout/>
         </Grid>
     );
 }
