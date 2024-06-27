@@ -57,6 +57,9 @@ const Navbar = () => {
         const fetchRole = async () => {
             let result = await IsConnected();
             setRole(result.role);
+            if ((result.role.role === 1 || result.role.role === 2) && !settings.find((setting) => setting.name === 'Gestion des utilisateurs')) {
+                settings.push({ name: 'Gestion des utilisateurs', url: '/?page=users-management', type: 'lien' });
+            }
         };
 
         fetchRole();

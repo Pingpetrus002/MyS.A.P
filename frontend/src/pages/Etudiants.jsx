@@ -78,6 +78,7 @@ export default function Etudiants() {
   return (
     <>
       {!isMobile && <NavBar />}
+      {!isMobile && <NavBar />}
       {loading ? (
         <LinearProgress />
       ) : (
@@ -95,7 +96,8 @@ export default function Etudiants() {
                         <StudentModal student={selectedStudent} open={modalOpen} onClose={handleCloseModal}/>
                     )}
                 </Grid>
-            </Grid>)}
+            </Grid>
+        )}
       {isMobile && <NavBar />}
     </>
   );
