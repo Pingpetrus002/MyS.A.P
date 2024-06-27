@@ -1,114 +1,94 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import {Button, LinearProgress, Grid, MenuItem, Link, Box, Divider, Menu} from '@mui/material';
 
 // Importations personnalisées
 import FetchWraper from '../utils/FetchWraper';
 import DataTable from '../components/DataTable';
 import StudentModal from '../components/EtudiantModal';
-import Typography from "@mui/material/Typography";
-import EastIcon from "@mui/icons-material/East.js";
+import NavBar from '../components/Navbar';
 
 // Fonction asynchrone pour récupérer les données des étudiants
 async function getDatas() {
-  let fetchWraper = new FetchWraper();
-  fetchWraper.url = "http://localhost:5000/auth/get_students";
-  fetchWraper.method = "GET";
-  fetchWraper.headers.append("Content-Type", "application/json");
-  fetchWraper.headers.append("Accept", "application/json");
-  fetchWraper.headers.append("Access-Control-Allow-Origin", window.location.origin);
-  fetchWraper.headers.append("Access-Control-Allow-Credentials", "true");
-  let result = await fetchWraper.fetchw();
+    let fetchWraper = new FetchWraper();
+    fetchWraper.url = "http://localhost:5000/auth/get_students";
+    fetchWraper.method = "GET";
+    fetchWraper.headers.append("Content-Type", "application/json");
+    fetchWraper.headers.append("Accept", "application/json");
+    fetchWraper.headers.append("Access-Control-Allow-Origin", window.location.origin);
+    fetchWraper.headers.append("Access-Control-Allow-Credentials", "true");
+    let result = await fetchWraper.fetchw();
 
-  let data = await result.json();
-  console.log(data);
-  return data;
+    let data = await result.json();
+    console.log(data);
+    return data;
 }
 
 export default function Etudiants() {
-  // État local pour stocker les étudiants, le chargement, l'étudiant sélectionné et l'état modal
-  const [students, setStudents] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [selectedStudent, setSelectedStudent] = useState(null);
-  const [modalOpen, setModalOpen] = useState(false);
+    // État local pour stocker les étudiants, le chargement, l'étudiant sélectionné et l'état modal
+    const [students, setStudents] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [selectedStudent, setSelectedStudent] = useState(null);
+    const [modalOpen, setModalOpen] = useState(false);
 
-  // Effet pour charger les données des étudiants au chargement du composant
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const data = await getDatas();
-        setStudents(data.students); // Assuming data.students is an array of students
-        setLoading(false);
-      } catch (error) {
-        console.error('Error:', error);
-        setLoading(false);
-      }
+    // Effet pour charger les données des étudiants au chargement du composant
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const data = await getDatas();
+                setStudents(data.students); // Assuming data.students is an array of students
+                setLoading(false);
+            } catch (error) {
+                console.error('Error:', error);
+                setLoading(false);
+            }
+        };
+
+        fetchData();
+    }, []);
+
+    // Fonction pour obtenir l'ID d'une ligne d'étudiant
+    const getRowId = (student) => student.id;
+
+    // Gestionnaire pour ouvrir le modal lors du clic sur une ligne d'étudiant
+    const handleRowClick = (student) => {
+        setSelectedStudent(student);
+        setModalOpen(true);
     };
 
-    fetchData();
-  }, []);
+    // Gestionnaire pour fermer le modal
+    const handleCloseModal = () => {
+        setModalOpen(false);
+    };
 
-  // Fonction pour obtenir l'ID d'une ligne d'étudiant
-  const getRowId = (student) => student.id;
+    const [anchorElAjout, setAnchorElAjout] = useState(null);
 
-  // Gestionnaire pour ouvrir le modal lors du clic sur une ligne d'étudiant
-  const handleRowClick = (student) => {
-    setSelectedStudent(student);
-    setModalOpen(true);
-  };
+    const handleOpenAjoutMenu = (event) => {
+        setAnchorElAjout(event.currentTarget);
+    };
 
-  // Gestionnaire pour fermer le modal
-  const handleCloseModal = () => {
-    setModalOpen(false);
-  };
+    const handleCloseAjoutMenu = () => {
+        setAnchorElAjout(null);
+    };
 
-  const [anchorElAjout, setAnchorElAjout] = useState(null);
-
-  const handleOpenAjoutMenu = (event) => {
-      setAnchorElAjout(event.currentTarget);
-  };
-
-  const handleCloseAjoutMenu = () => {
-      setAnchorElAjout(null);
-  };
-
-  // Rendu du composant
-  return (
-    <Grid container justifyContent="center">
-      <Grid item xs={10} sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '3rem' }}>
-        <h1>Tous les Étudiants</h1>
-        <Button 
-          variant="contained" 
-          sx={{ 
-            backgroundColor: '#FDD47C', 
-            color: 'black', 
-            size: 'large',
-            borderRadius: '4px',
-            border: '2.5px solid #000000',
-            width: '40px', 
-            minWidth: '40px', 
-            height: '40px', 
-            fontSize: '24px', // Augmenter la taille du texte
-            '&:hover': {
-              backgroundColor: '#FFC039'
-            } 
-          }}
-          href={`/?page=ajout_etudiants`}
-        >
-          +
-        </Button>
-      </Grid>
-      <Grid item xs={10}>
-        {loading ? (
-          <LinearProgress />
-        ) : (
-          <DataTable rows={students} type="etudiant" onRowButtonClick={handleRowClick} getRowId={getRowId} />
-        )}
-      </Grid>
-      <Grid item xs={10}>
-        {selectedStudent && (
-          <StudentModal student={selectedStudent} open={modalOpen} onClose={handleCloseModal} />
-        )}
-      </Grid>
-    </Grid>
-  );
+    // Rendu du composant
+    return (
+        <>
+            <NavBar/>
+            <Grid container justifyContent="center" sx={{ marginTop: '30px' }}>
+                <Grid item xs={10}>
+                    {loading ? (
+                        <LinearProgress/>
+                    ) : (
+                        <DataTable rows={students} type="etudiant" onRowButtonClick={handleRowClick}
+                                   getRowId={getRowId}/>
+                    )}
+                </Grid>
+                <Grid item xs={10}>
+                    {selectedStudent && (
+                        <StudentModal student={selectedStudent} open={modalOpen} onClose={handleCloseModal}/>
+                    )}
+                </Grid>
+            </Grid>
+        </>
+    );
 }

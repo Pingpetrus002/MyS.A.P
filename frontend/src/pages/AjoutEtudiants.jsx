@@ -10,6 +10,7 @@ import Logo from "../assets/logoFull.svg";
 import {alpha, styled} from "@mui/material/styles";
 import JObject from "../utils/JObject.js";
 import Navbar from "../components/Navbar.jsx";
+import UploadEtudiants from "../components/UploadEtudiants.jsx";
 
 async function SubmitFormAjout() {
     const form = document.getElementById('ajout-etudiant-form');
@@ -216,6 +217,7 @@ function FormAjout() {
                     </Grid>
                 </form>
             </div>
+            <UploadEtudiants />
         </>
     )
 }

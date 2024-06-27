@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { DataGrid } from '@mui/x-data-grid';
 import { styled } from '@mui/material/styles';
 import Button from '@mui/material/Button';
@@ -14,7 +14,6 @@ import FetchWraper from '../utils/FetchWraper';
 import ButtonRapports from './ButtonRapports';
 import StudentModal from './EtudiantModal';
 import AddMissionModal from './ButtonMissions';
-import UploadEtudiants from './UploadEtudiants';
 
 const handleDownload = async (md5) => {
   const url = `http://localhost:5000/auth/get_rapport/${md5}`;
@@ -138,11 +137,10 @@ function getColumns(type, isLargeScreen) {
       },
     ],
     etudiant: [
-      { field: 'nom_prenom', headerName: 'Nom Prénom', width: 180, minWidth: 180, maxWidth: 300 },
+      { field: 'nom', headerName: 'Nom', width: 180, minWidth: 180, maxWidth: 300 },
+      { field: 'prenom', headerName: 'Prénom', width: 180, minWidth: 180, maxWidth: 300 },
       { field: 'classe', headerName: 'Classe', width: 220, minWidth: 220, maxWidth: 300 },
       { field: 'statut', headerName: 'Statut', width: 180, minWidth: 180, maxWidth: 300 },
-      { field: 'duree', headerName: 'Durée', width: 180, minWidth: 180, maxWidth: 300 },
-      { field: 'contract', headerName: 'Contract', width: 180, minWidth: 180, maxWidth: 300 },
       {
         field: 'voir',
         headerName: 'Voir',
@@ -286,12 +284,30 @@ export default function DataTable({ rows, type }) {
           <EastIcon fontSize="medium" className="icon-hover" sx={{ transition: 'transform 0.3s ease', ml: '0.3em' }} />
         </Link>)}
 
-        {/* Bouton type Etudiant */}
-        {type === 'etudiant' && (
-          <UploadEtudiants />
-        )}
-
         {type === 'mission' && <AddMissionModal />}
+
+        {/* Bouton type Etudiant */}
+        {type === 'etudiant' &&
+            <Button
+            variant="contained"
+            sx={{
+              backgroundColor: '#FDD47C',
+              color: 'black',
+              size: 'large',
+              borderRadius: '4px',
+              width: '40px',
+              minWidth: '40px',
+              height: '40px',
+              fontSize: '24px', // Augmenter la taille du texte
+              '&:hover': {
+                backgroundColor: '#FFC039'
+              }
+            }}
+            href={`/?page=ajout_etudiants`}
+        >
+          +
+        </Button>
+        }
 
 
       </div>
