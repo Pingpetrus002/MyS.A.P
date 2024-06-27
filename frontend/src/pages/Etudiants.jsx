@@ -10,14 +10,15 @@ import NavBar from '../components/Navbar';
 
 // Fonction asynchrone pour récupérer les données des étudiants
 async function getDatas() {
-    let fetchWraper = new FetchWraper();
-    fetchWraper.url = "http://localhost:5000/auth/get_students";
-    fetchWraper.method = "GET";
-    fetchWraper.headers.append("Content-Type", "application/json");
-    fetchWraper.headers.append("Accept", "application/json");
-    fetchWraper.headers.append("Access-Control-Allow-Origin", window.location.origin);
-    fetchWraper.headers.append("Access-Control-Allow-Credentials", "true");
-    let result = await fetchWraper.fetchw();
+  let fetchWraper = new FetchWraper();
+  fetchWraper.url = "http://localhost:5000/auth/get_students";
+  fetchWraper.method = "GET";
+  fetchWraper.headers.append("Content-Type", "application/json");
+  fetchWraper.headers.append("Accept", "application/json");
+  fetchWraper.headers.append("Access-Control-Allow-Origin", window.location.origin);
+  fetchWraper.headers.append("Access-Control-Allow-Credentials", "true");
+  let result = await fetchWraper.fetchw();
+
 
     let data = await result.json();
     console.log(data);
@@ -30,7 +31,7 @@ export default function Etudiants() {
     const [loading, setLoading] = useState(true);
     const [selectedStudent, setSelectedStudent] = useState(null);
     const [modalOpen, setModalOpen] = useState(false);
-    const isMobile = useMediaQuery('(max-width:600px)');
+        const isMobile = useMediaQuery('(max-width:600px)');
 
 
     // Effet pour charger les données des étudiants au chargement du composant
@@ -76,7 +77,7 @@ export default function Etudiants() {
   // Rendu du composant
   return (
     <>
-      {!isMobile && <Navbar />}
+      {!isMobile && <NavBar />}
       {loading ? (
         <LinearProgress />
       ) : (
@@ -94,8 +95,8 @@ export default function Etudiants() {
                         <StudentModal student={selectedStudent} open={modalOpen} onClose={handleCloseModal}/>
                     )}
                 </Grid>
-            </Grid>
-      {isMobile && <Navbar />}
+            </Grid>)}
+      {isMobile && <NavBar />}
     </>
   );
 }
