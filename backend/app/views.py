@@ -547,6 +547,7 @@ def ajoutEtudiantsFonction(data, options=None):
         etudiant_prenom = data.get('prenom')
         etudiant_email = data.get('email')
         etudiant_date_naissance = data.get('date_naissance')
+        etudiant_statut = 1 if data.get('statut') == 1 else 0
         etudiant_classe = data.get('classe')
         etudiant_suiveur = data.get('suiveur')
         etudiant_tuteur = data.get('tuteur')
@@ -557,6 +558,7 @@ def ajoutEtudiantsFonction(data, options=None):
         etudiant_prenom = data.get('Prenom')
         etudiant_email = data.get('Email')
         etudiant_date_naissance = data.get('Date de naissance')
+        etudiant_statut = 1 if data.get('Statut') == "Alternant" else 0
         etudiant_classe = data.get('Classe')
         etudiant_suiveur = data.get('Suiveur')
         etudiant_tuteur = data.get('Tuteur')
@@ -582,25 +584,27 @@ def ajoutEtudiantsFonction(data, options=None):
     # Regarde si une variable est vide, si oui, la remplace par None
     if etudiant_suiveur == "":
         etudiant_suiveur = None
-    if type(etudiant_suiveur) != int:
-        etudiant_suiveur = None
+    if type(etudiant_suiveur) == str and len(etudiant_suiveur) > 1:
+        suiveur_nom, suiveur_prenom = etudiant_suiveur.split(' ')
+        etudiant_suiveur = Utilisateur.query.filter_by(nom=suiveur_nom, prenom=suiveur_prenom).first().id_user
 
     if etudiant_tuteur == "":
         etudiant_tuteur = None
-    if type(etudiant_tuteur) != int:
-        etudiant_tuteur = None
+    if type(etudiant_tuteur) == str and len(etudiant_tuteur) > 1:
+        tuteur_nom, tuteur_prenom = etudiant_tuteur.split(' ')
+        etudiant_tuteur = Utilisateur.query.filter_by(nom=tuteur_nom, prenom=tuteur_prenom).first().id_user
 
     if etudiant_ecole == "":
         etudiant_ecole = None
-    if type(etudiant_ecole) != int:
-        etudiant_ecole = None
-        #etudiant_ecole = Ecole.query.filter_by(raison_sociale=etudiant_ecole).first().id_ecole
+    if type(etudiant_ecole) == str and len(etudiant_ecole) > 1:
+        #etudiant_ecole = None
+        etudiant_ecole = Ecole.query.filter_by(raison_sociale=etudiant_ecole).first().id_ecole
 
     if etudiant_entreprise == "":
         etudiant_entreprise = None
-    if type(etudiant_entreprise) != int:
-        etudiant_entreprise = None
-        #etudiant_entreprise = Entreprise.query.filter_by(raison_sociale=etudiant_entreprise).first().id_entreprise
+    if type(etudiant_entreprise) == str and len(etudiant_entreprise) > 1:
+        #etudiant_entreprise = None
+        etudiant_entreprise = Entreprise.query.filter_by(raison_sociale=etudiant_entreprise).first().id_entreprise
 
     # Create a new etudiant object
     new_etudiant = Utilisateur(
@@ -609,6 +613,7 @@ def ajoutEtudiantsFonction(data, options=None):
         mail=etudiant_email,
         password=hashed_password,
         date_naissance=etudiant_date_naissance,
+        statut=etudiant_statut,
         classe=etudiant_classe,
         id_role=4,
         id_user_1=etudiant_suiveur,

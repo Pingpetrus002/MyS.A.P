@@ -307,27 +307,6 @@ export default function DataTable({ rows, type }) {
         }}
         isSmallScreen={isSmallScreen}
       />
-      {/* Bouton Importer en CSV Étudiants */}
-      {type === 'etudiant' && (
-          <Button
-              variant="outlined"
-              onClick={handleExportCSV}
-              sx={{
-                color: '#000000',
-                borderColor: '#F0C975',
-                backgroundColor: '#FDD47C',
-                marginTop: '1em',
-                mb: 1,
-                alignItems: 'right',
-                '&:hover': {
-                  backgroundColor: '#FFC039',
-                  borderColor: '#FFC039',
-                }
-              }}
-          >
-            Importer en CSV
-          </Button>
-      )}
       {/* Bouton Exporter en CSV */}
       <Button
         variant="outlined"

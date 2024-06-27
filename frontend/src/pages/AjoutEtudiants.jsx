@@ -149,7 +149,7 @@ function FormAjout() {
         {id: 'prenom', label: 'Prenom', type: 'text'},
         {id: 'email', label: 'Email', type: 'email'},
         {id: 'date_naissance', label: 'Date de naissance', type: 'date'},
-        {id: 'status', label: 'Statut', type: 'select', data: ['Alternance en cours', 'Pas d\'alternance'].map(value => {
+        {id: 'statut', label: 'Statut', type: 'select', data: ['Non défini', 'Alternance en cours', 'Pas d\'alternance'].map(value => {
                 let mappedValue;
                 if (value === 'Alternance en cours') {
                     mappedValue = 1;
