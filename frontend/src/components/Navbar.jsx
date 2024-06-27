@@ -372,7 +372,7 @@ const Navbar = () => {
             <Box sx={{ flexGrow: 0, marginLeft: 2 }}>
                 <Tooltip title="Open settings">
                     <IconButton onClick={handleOpenProfileMenu} sx={{ p: 0 }}>
-                        <Avatar alt="Remy Sharp" src={profil} />
+                        <Avatar alt="Remy Sharp" src={profilSelect} />
                     </IconButton>
                 </Tooltip>
                 <Menu
