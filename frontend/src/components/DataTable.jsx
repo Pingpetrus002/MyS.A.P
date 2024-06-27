@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { DataGrid } from '@mui/x-data-grid';
 import { styled } from '@mui/material/styles';
 import Button from '@mui/material/Button';
@@ -13,7 +13,9 @@ import AddIcon from '@mui/icons-material/Add';
 import FetchWraper from '../utils/FetchWraper';
 import ButtonRapports from './ButtonRapports';
 import StudentModal from './EtudiantModal';
+import AlertModal from './AlertModal';
 import AddMissionModal from './ButtonMissions';
+
 
 const handleDownload = async (md5) => {
   const url = `http://localhost:5000/auth/get_rapport/${md5}`;
@@ -95,7 +97,7 @@ const adjustColumns = (columns, isLargeScreen) => {
   });
 };
 
-function getColumns(type, isLargeScreen) {
+function getColumns(type, isLargeScreen, onButtonClick = () => {}, onRowButtonClick) {
   const columns = {
     rapport: [
       { field: 'id_user', headerName: 'Étudiant', width: 180, minWidth: 180, maxWidth: 300 },
@@ -137,10 +139,10 @@ function getColumns(type, isLargeScreen) {
       },
     ],
     etudiant: [
-      { field: 'nom', headerName: 'Nom', width: 180, minWidth: 180, maxWidth: 300 },
-      { field: 'prenom', headerName: 'Prénom', width: 180, minWidth: 180, maxWidth: 300 },
-      { field: 'classe', headerName: 'Classe', width: 220, minWidth: 220, maxWidth: 300 },
+      { field: 'prenom_nom', headerName: 'Prénom Nom', width: 180, minWidth: 180, maxWidth: 300 },
+      { field: 'classe', headerName: 'Classe', width: 300, minWidth: 300, maxWidth: 400 },
       { field: 'statut', headerName: 'Statut', width: 180, minWidth: 180, maxWidth: 300 },
+      { field: 'contrat', headerName: 'Contrat', width: 180, minWidth: 180, maxWidth: 300 },
       {
         field: 'voir',
         headerName: 'Voir',
@@ -148,14 +150,14 @@ function getColumns(type, isLargeScreen) {
         minWidth: 120,
         maxWidth: 120,
         renderCell: (params) => (
-          <CustomButton onClick={() => onButtonClick(params)} style={{ backgroundColor: '#1976d2', color: 'white' }}>
+          <CustomButton onClick={() => onRowButtonClick(params.row)} style={{ backgroundColor: '#1976d2', color: 'white' }}>
             Voir
           </CustomButton>
         ),
       },
     ],
     alerte: [
-      { field: 'commentaires', headerName: 'Commentaire', width: 800, minWidth: 220, maxWidth: 900 },
+      { field: 'commentaires', headerName: 'Commentaire', width: 400, minWidth: 220, maxWidth: 900 },
       { field: 'user_source', headerName: 'Utilisateur source', width: 180, minWidth: 180, maxWidth: 300 },
       { field: 'raison_social', headerName: 'Entreprise', width: 180, minWidth: 180, maxWidth: 300 },
       { field: 'date', headerName: 'Date', width: 180, minWidth: 180, maxWidth: 300 },
@@ -166,20 +168,8 @@ function getColumns(type, isLargeScreen) {
         minWidth: 120,
         maxWidth: 120,
         renderCell: (params) => (
-          <CustomButton onClick={() => console.log(params.row)} style={{ backgroundColor: '#1976d2', color: 'white' }}>
+          <CustomButton onClick={() => onRowButtonClick(params.row)} style={{ backgroundColor: '#1976d2', color: 'white' }}>
             Voir
-          </CustomButton>
-        ),
-      },
-      {
-        field: 'Résoudre',
-        headerName: 'Résoudre',
-        width: 150,
-        minWidth: 150,
-        maxWidth: 150,
-        renderCell: (params) => (
-          <CustomButton onClick={() => console.log('Résoudre', params.row)} style={{ backgroundColor: '#34b233', color: 'white' }}>
-            Résoudre
           </CustomButton>
         ),
       },
@@ -191,6 +181,45 @@ function getColumns(type, isLargeScreen) {
       { field: 'datedebut', headerName: 'Date début', width: 150 },
       { field: 'datefin', headerName: 'Date fin', width: 150 },
       { field: 'id_user', headerName: 'Utilisateur', width: 150 },
+    ],
+    users_management: [
+      { field: 'id', headerName: 'ID', width: 90 },
+      { field: 'status', headerName: 'Active', width: 100},
+      { field: 'mail', headerName: 'Email', width: 150 },
+      { field: 'role', headerName: 'Role', width: 150 },
+      { field: 'nom', headerName: 'Prénom', width: 150 },
+      { field: 'prenom', headerName: 'Nom', width: 150 },
+      { field: 'date_naissance_formatted', headerName: 'Date de naissance', width: 250 },
+      {
+        field: 'actions',
+        headerName: 'Actions',
+        width: 150,
+        renderCell: (params) => (
+          <strong>
+            <Button
+              sx={{
+                marginTop: 1.8,
+                marginLeft: 4,
+                color: '#000000',
+                borderColor: '#F0C975',
+                backgroundColor: '#FDD47C',
+                mb: 1,
+                '&:hover': {
+                  backgroundColor: '#FFC039',
+                  borderColor: '#FFC039',
+                },
+              }}
+              variant="contained"
+              color="primary"
+              size="small"
+              style={{ marginLeft: 16 }}
+              onClick={() => onButtonClick(params.row)}
+            >
+              Action
+            </Button>
+          </strong>
+        ),
+      },
     ]
   };
 
@@ -211,15 +240,29 @@ function getTitle(type) {
       return 'Toutes les alertes';
     case 'mission':
       return 'Mes missions';
+    case 'users_management':
+      return 'Gestion des utilisateurs';
     default:
       return '';
   }
 }
 
-export default function DataTable({ rows, type }) {
+export default function DataTable({ rows, type, callback=()=>{}, onRowButtonClick }) {
   const [openModal, setOpenModal] = useState(false);
+  const [selectedAlert, setSelectedAlert] = useState(null);
+  const [modalOpen, setModalOpen] = useState(false);
+
   const isLargeScreen = useMediaQuery('(min-width: 1024px)');
   const isSmallScreen = useMediaQuery('(max-width: 768px)');
+
+  const handleRowButtonClick = (row) => {
+    setSelectedAlert(row);
+    setModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setModalOpen(false);
+  };
 
   const handleOpen = () => {
     setOpenModal(true);
@@ -231,7 +274,7 @@ export default function DataTable({ rows, type }) {
 
   const handleExportCSV = () => {
     // Récupérer les colonnes
-    const columns = getColumns(type, isLargeScreen);
+    const columns = getColumns(type, isLargeScreen, callback);
 
     // Créer l'en-tête CSV à partir des noms de colonne
     const header = columns.map(col => col.headerName).join(',') + '\n';
@@ -253,18 +296,13 @@ export default function DataTable({ rows, type }) {
     saveAs(blob, `${getTitle(type)}.csv`);
   };
 
-
   return (
     <>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <Typography variant="h4" gutterBottom style={{ textAlign: 'left' }}>
           {getTitle(type)}
         </Typography>
-
-        {/* Bouton type Rapport */}
         {type === 'rapport' && <ButtonRapports />}
-
-        {/* Bouton type Mes Rapports */}
         {type === 'mes_rapports' && (<Link
           href={'/?page=rapports'}
           underline="none"
@@ -285,38 +323,32 @@ export default function DataTable({ rows, type }) {
           </Typography>
           <EastIcon fontSize="medium" className="icon-hover" sx={{ transition: 'transform 0.3s ease', ml: '0.3em' }} />
         </Link>)}
-
-        {type === 'mission' && <AddMissionModal />}
-
-        {/* Bouton type Etudiant */}
-        {type === 'etudiant' &&
+        {type === 'etudiant' && (
+          <Tooltip title="Ajouter un étudiant" placement="top">
             <Button
-            variant="contained"
-            sx={{
-              backgroundColor: '#FDD47C',
-              color: 'black',
-              size: 'large',
-              borderRadius: '4px',
-              width: '40px',
-              minWidth: '40px',
-              height: '40px',
-              fontSize: '24px', // Augmenter la taille du texte
-              '&:hover': {
-                backgroundColor: '#FFC039'
-              }
-            }}
-            href={`/?page=ajout_etudiants`}
-        >
-          +
-        </Button>
-        }
-
-
+              variant="outlined"
+              onClick={handleOpen}
+              sx={{
+                color: '#000000',
+                borderColor: '#F0C975',
+                backgroundColor: '#FDD47C',
+                mb: 1,
+                '&:hover': {
+                  backgroundColor: '#FFC039',
+                  borderColor: '#FFC039',
+                }
+              }}
+            >
+              <AddIcon />
+            </Button>
+          </Tooltip>
+        )}
+        {type === 'mission' && <AddMissionModal />}
       </div>
       <CustomDataGrid
         autoHeight
         rows={rows}
-        columns={getColumns(type, isLargeScreen)}
+        columns={getColumns(type, isLargeScreen, callback, handleRowButtonClick)}
         pageSizeOptions={[5, 10, 25]}
         initialState={{
           pagination: {
@@ -325,7 +357,6 @@ export default function DataTable({ rows, type }) {
         }}
         isSmallScreen={isSmallScreen}
       />
-      {/* Bouton Exporter en CSV */}
       <Button
         variant="outlined"
         onClick={handleExportCSV}
@@ -345,11 +376,16 @@ export default function DataTable({ rows, type }) {
         Exporter en CSV
       </Button>
       <StudentModal open={openModal} onClose={handleClose} />
+      {selectedAlert && (
+        <AlertModal alert={selectedAlert} open={modalOpen} onClose={handleCloseModal} />
+      )}
     </>
   );
 }
 
 DataTable.propTypes = {
   rows: PropTypes.arrayOf(PropTypes.object).isRequired,
-  type: PropTypes.oneOf(['rapport', 'etudiant', 'mes_rapports', 'documents', 'alerte', 'mission']).isRequired,
+  type: PropTypes.oneOf(['rapport', 'etudiant', 'mes_rapports', 'documents', 'alerte', 'mission', 'users_management']).isRequired,
+  callback: PropTypes.func,
+  onRowButtonClick: PropTypes.func.isRequired,
 };

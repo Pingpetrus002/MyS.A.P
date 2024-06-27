@@ -27,8 +27,8 @@ const pages = {
     1: ['Accueil', 'Rapports', 'Étudiants', 'Rendez-Vous', 'Missions'],
     2: ['Accueil', 'Rapports', 'Étudiants', 'Rendez-Vous', 'Missions'],
     3: ['Accueil', 'Rapports', 'Étudiants', 'Rendez-Vous', 'Missions'],
-    4: ['Accueil', 'Missions', 'Rendez-Vous'],
-    5: ['Accueil', 'Missions', 'Rendez-Vous'],
+    4: ['Missions', 'Rendez-Vous'],
+    5: ['Missions', 'Rendez-Vous'],
 };
 
 async function IsConnected() {
@@ -57,6 +57,9 @@ const Navbar = () => {
         const fetchRole = async () => {
             let result = await IsConnected();
             setRole(result.role);
+            if ((result.role.role === 1 || result.role.role === 2) && !settings.find((setting) => setting.name === 'Gestion des utilisateurs')) {
+                settings.push({ name: 'Gestion des utilisateurs', url: '/?page=users-management', type: 'lien' });
+            }
         };
 
         fetchRole();

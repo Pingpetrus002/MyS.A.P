@@ -19,7 +19,7 @@ import studentImage from "../assets/students.jpg";
 import Logo from "../assets/logoFull.svg";
 import {alpha, styled} from "@mui/material/styles";
 import JObject from "../utils/JObject.js";
-import Navbar from "../components/Navbar.jsx";
+import NavBar from "../components/Navbar.jsx";
 import UploadEtudiants from "../components/UploadEtudiants.jsx";
 import Typography from "@mui/material/Typography";
 
@@ -344,7 +344,7 @@ export default function AjoutEtudiants() {
     // Rendu du composant
     return (
         <>
-            <Navbar/>
+            <NavBar/>
             <Grid container justifyContent="start" sx={{p: '25px'}}>
                 <FormAjout/>
             </Grid>

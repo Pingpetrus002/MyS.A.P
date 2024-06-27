@@ -66,7 +66,8 @@ export default function UploadRapport(params) {
     const handleConfirm = async () => {
         setOpen(false);
         try {
-            let base64 = await getLocalFile(file);
+            const b64 = await getLocalFile(file);
+            const base64 = b64.split(',')[1];
             if (base64) {
                 const body = {
                     "sujet": fileTitle || "Rapport de stage",
