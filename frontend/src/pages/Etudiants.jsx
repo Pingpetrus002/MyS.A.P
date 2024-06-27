@@ -11,7 +11,7 @@ import NavBar from '../components/Navbar';
 // Fonction asynchrone pour récupérer les données des étudiants
 async function getDatas() {
   let fetchWraper = new FetchWraper();
-  fetchWraper.url = "http://10.1.1.44:5000/auth/get_students";
+  fetchWraper.url = "http://localhost:5000/auth/get_students";
   fetchWraper.method = "GET";
   fetchWraper.headers.append("Content-Type", "application/json");
   fetchWraper.headers.append("Accept", "application/json");

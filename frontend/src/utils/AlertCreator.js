@@ -17,7 +17,7 @@ export default class AlertCreator {
 
     async createAlert(type, commentaire) {
         let fetchWraper = new FetchWraper();
-        fetchWraper.url = "http://10.1.1.44:5000/auth/create_alert";
+        fetchWraper.url = "http://localhost:5000/auth/create_alert";
         fetchWraper.method = "POST";
         fetchWraper.headers.append("Content-Type", "application/json");
         fetchWraper.headers.append("Accept", "application/json");
@@ -46,7 +46,7 @@ export default class AlertCreator {
 
 export async function getAlerts() {
     let fetchWraper = new FetchWraper();
-    fetchWraper.url = "http://10.1.1.44:5000/auth/get_alerts";
+    fetchWraper.url = "http://localhost:5000/auth/get_alerts";
     fetchWraper.method = "GET";
     fetchWraper.headers.append("Content-Type", "application/json");
     fetchWraper.headers.append("Accept", "application/json");
