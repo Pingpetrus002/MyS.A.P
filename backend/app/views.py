@@ -4,7 +4,7 @@ from flask import Blueprint, request, jsonify, render_template, make_response
 from flask_mail import Message, Mail
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity, set_access_cookies, unset_jwt_cookies
 from werkzeug.security import generate_password_hash, check_password_hash
-from .models import Utilisateur, db, Document, Entreprise, Alert, Mission, Role
+from .models import Utilisateur, db, Document, Entreprise, Alert, Mission, Role, Contrat, Ecole
 
 import locale
 import re
@@ -17,6 +17,13 @@ import hashlib
 auth = Blueprint('auth', __name__)
 mail = Mail()  # Initialisation de l'extension Flask-Mail pour l'envoi de mails
 
+ROLES_ACCESS = {
+    1: ['*'],  # Admin has access to all pages
+    2: ['*'],  # RRE has access to specific pages
+    3: ['dashboard', 'profil', 'rapports', 'etudiants'],  # Suiveur has access to profile and their reports
+    4: ['profil', 'rdv'],  # Etudiant has access to profile and concerned reports
+    5: ['profil', 'rdv'],  # Tuteur has access to profile, their students, and their students' reports
+}
 
 
 # Fonction pour générer un mot de passe aléatoire
@@ -54,6 +61,32 @@ def check_fields(data, fields):
     else:
         return 0
     
+
+# Fonction pour avoir les utilisateurs (avec un paramètre facultatif pour filtrer par rôle)
+@auth.route('/get_users/<int:role>', methods=['GET'])
+@jwt_required()
+def get_users_by_role(role):
+    current_user = get_jwt_identity()
+    user = Utilisateur.query.get(current_user)
+
+    # Cas Admin et RRE - Recupération de tous les utilisateurs
+    if check_role(user, 1) or check_role(user, 2):
+        result = Utilisateur.query.all()
+
+        user_list = []
+
+        for u in result:
+            if check_role(u, role):
+                user_dict = {
+                'id': u.id_user,
+                'nom': u.nom,
+                'prenom': u.prenom,
+                'mail': u.mail
+                }
+                user_list.append(user_dict)
+
+        return jsonify({"users":user_list}), 200
+
 
 # Fonction pour vérifier le rôle d'un utilisateur
 def check_role(user, role):
@@ -147,7 +180,90 @@ def protected():
     user = Utilisateur.query.get(current_user)
 
     # Vérification du rôle de l'utilisateur pour l'accès à la page
-    return jsonify({'message': 'Protected page', 'role': user.id_role,}), 200
+    return jsonify({'message': 'Protected page', 'role': user.id_role, 'access': ROLES_ACCESS[user.id_role]}), 200
+
+
+@auth.route('/users/list', methods=['GET'])
+@jwt_required()
+def get_users_list():
+    current_user = get_jwt_identity()
+    user = Utilisateur.query.get(current_user)
+
+    # Vérification du rôle de l'utilisateur pour l'accès à la liste des utilisateurs
+    if not check_role(user, 1) and not check_role(user, 2):
+        return jsonify({'message': 'Unauthorized'}), 403
+
+    # Récupération de la liste de tous les utilisateurs
+    users = Utilisateur.query.all()
+    users_dict = [{
+        'id_user': user.id_user,
+        'nom': user.nom,
+        'prenom': user.prenom,
+        'mail': user.mail,
+        'date_naissance': user.date_naissance,
+        'statut': user.statut,
+        'classe': user.classe,
+        'id_user_1': user.id_user_1,
+        'id_user_2': user.id_user_2,
+        'id_ecole': user.id_ecole,
+        'id_ecole_1': user.id_ecole_1,
+        'id_ecole_2': user.id_ecole_2,
+        'id_entreprise': user.id_entreprise,
+        'id_entreprise_1': user.id_entreprise_1,
+        'id_role': user.id_role,
+        'id_user_3': user.id_user_3,
+        'id_planning': user.id_planning
+    } for user in users]
+
+    return jsonify({'users': users_dict}), 200
+    
+
+@auth.route('/users/edit', methods=['POST'])
+@jwt_required()
+def user_edit():
+    current_user = get_jwt_identity()
+    user = Utilisateur.query.get(current_user)
+
+    # Vérification du rôle de l'utilisateur pour l'accès à la liste des rôles
+    if not check_role(user, 1) and not check_role(user, 2):
+        return jsonify({'message': 'Unauthorized'}), 403
+    
+    data = request.get_json()
+    
+    # Verification des champs du formulaire
+    fields = ['id_user', 'id_role', 'statut']
+    if check_fields(data, fields) != 0:
+        return check_fields(data, fields)
+    
+    user = Utilisateur.query.get(data.get('id_user'))
+    user.id_role = data.get('id_role')
+    user.statut = data.get('statut')
+    db.session.commit()
+
+    return jsonify({'message': 'User updated'}), 200
+
+
+
+
+
+@auth.route('/roles/list', methods=['GET'])
+@jwt_required()
+def get_roles_list():
+    current_user = get_jwt_identity()
+    user = Utilisateur.query.get(current_user)
+
+    # Vérification du rôle de l'utilisateur pour l'accès à la liste des rôles
+    if not check_role(user, 1) and not check_role(user, 2):
+        return jsonify({'message': 'Unauthorized'}), 403
+
+    # Récupération de la liste de tous les rôles
+    roles = Role.query.all()
+    roles_dict = [{
+        'id_role': role.id_role,
+        'nom': role.nom
+    } for role in roles]
+
+    return jsonify({'roles': roles_dict}), 200
 
 
 @auth.route('/users/list', methods=['GET'])
@@ -292,7 +408,7 @@ def set_rapport():
     current_user = get_jwt_identity()
     data: dict = request.get_json()
 
-    fields = ['id_user', 'sujet', 'rapport','type']
+    fields = ['id_user', 'sujet', 'rapport']
     if check_fields(data, fields) != 0:
         return check_fields(data, fields)
     
@@ -301,7 +417,6 @@ def set_rapport():
     id_user = data.get('id_user')
     sujet = data.get('sujet')
     rapport = data.get('rapport')
-    type = data.get('type')
     date = datetime.datetime.now()
     
     #Recup de hash MD5 du rapport
@@ -320,7 +435,7 @@ def set_rapport():
         else:
             return jsonify({'message': 'Unauthorized'}), 403
     
-    
+
     #Ajout du rapport
 
     new_rapport = Document(nom=sujet, id_user=id_user, id_user_1=id_suiveur, rapport=rapport.encode('utf-8'), datecreation=date, md5=MD5, type=type)
@@ -352,7 +467,7 @@ def get_rapport_info():
             rapports = Document.query.filter_by(id_user=current_user, type='autre').all()
         else:
             rapports = Document.query.filter_by(type='rapport').all()  # Récupération de tous les rapports de type 'rapport'
-        rapports_dict = [document_to_dict(rapport) for rapport in rapports]        
+        rapports_dict = [document_to_dict(rapport) for rapport in rapports]
         return jsonify({'rapports': rapports_dict}), 200
     # Cas Etudiant - Recupération des rapports de l'étudiant
     elif check_role(user, 4):
@@ -379,6 +494,7 @@ def get_students():
             'prenom': student.prenom,
             'statut': "Pas d'alternance" if student.statut == 0 else "Alternance en cours",
             'classe': student.classe,
+            'contrat': Contrat.query.get(student.id_user).libelle if student.statut == 1 else "Pas de contrat",
             # Nom de l'entreprise si l'étudiant est en alternance
             'entreprise': "Aucune entreprise" if student.statut == 0 else Entreprise.query.get(student.id_entreprise).raison_sociale,
         } for student in students]
@@ -481,9 +597,8 @@ def create_alert():
 @auth.route('/get_alerts', methods=['GET'])
 @jwt_required()
 def get_alerts():
-    #TODO: Installer la localisation pour la date
-    # locale.setlocale(locale.LC_TIME, 'fr_FR')  # Définit la localisation pour le français
-    alerts = Alert.query.all()
+    alerts = Alert.query.filter_by(etat=1).all()  # Filtrer les alertes par leur état actif (1)
+
     alerts_dict = [
         {
             'id': alert.id_alerte,
@@ -496,8 +611,25 @@ def get_alerts():
         }
         for alert in alerts
     ]
+
     return jsonify(alerts_dict), 200
 
+# Route pour désactiver une alerte
+@auth.route('/disable_alert/<int:id_alert>', methods=['GET'])
+@jwt_required()
+def disable_alert(id_alert):
+    alert = Alert.query.get(id_alert)
+
+    if not check_role(Utilisateur.query.get(get_jwt_identity()), 1) and not check_role(Utilisateur.query.get(get_jwt_identity()), 2):
+        return jsonify({'message': 'Unauthorized'}), 403
+
+    if not alert:
+        return jsonify({'message': 'Alert not found'}), 404
+
+    alert.etat = 0
+    db.session.commit()
+
+    return jsonify({'message': 'Alert disabled'}), 200
 
 
 # Route pour ajouter une mission
@@ -533,13 +665,13 @@ def get_missions():
     # Check des roles
     if check_role(Utilisateur.query.get(get_jwt_identity()), 1) or check_role(Utilisateur.query.get(get_jwt_identity()), 2):
         missions = Mission.query.all()
-    
+
     elif check_role(Utilisateur.query.get(get_jwt_identity()), 3):
         missions = Utilisateur.query.get(id_user_1=get_jwt_identity()).missions.all()
-    
+
     elif check_role(Utilisateur.query.get(get_jwt_identity()), 4):
         missions = Mission.query.filter_by(id_user=get_jwt_identity()).all()
-    
+
 
 
     missions_dict = [
@@ -549,8 +681,187 @@ def get_missions():
             'description': mission.description,
             'datedebut': mission.datedebut,
             'datefin': mission.datefin,
-            'id_user': Utilisateur.query.get(mission.id_user).nom + ' ' + Utilisateur.query.get(mission.id_user).prenom
+            'id_user': Utilisateur.query.get(mission.id_user).prenom + ' ' + Utilisateur.query.get(mission.id_user).nom
         } for mission in missions
     ]
 
     return jsonify({'missions': missions_dict}), 200
+
+
+# Route pour ajouter un étudiant
+@auth.route('/ajout_etudiants', methods=['POST'])
+@jwt_required()
+def ajoutEtudiants():
+    data = request.get_json()
+
+    if not data:
+        return jsonify({'message': 'No data provided'}), 400
+
+    fields = ['nom', 'prenom', 'email', 'date_naissance', 'classe', 'suiveur', 'tuteur', 'ecole', 'entreprise']
+    if check_fields(data, fields) != 0:
+        return check_fields(data, fields)
+
+    # Validate the étudiant data
+    ajout = ajoutEtudiantsFonction(data)
+
+    return ajout
+
+
+
+# Route pour ajouter des étudiants automatiquement à partir d'un fichier CSV
+@auth.route('/ajout_etudiants_fichier', methods=['POST'])
+@jwt_required()
+def ajoutEtudiantsCsv():
+    data = request.get_json().get('data')
+
+    if not data:
+        return jsonify({'message': 'No data provided'}), 400
+
+    erreurs = False
+    for data_intividuel in data:
+        if data_intividuel != "":
+            ajout = ajoutEtudiantsFonction(data_intividuel, options='csv')
+            if ajout != 200:
+                erreurs = True
+
+    if erreurs:
+        return jsonify({'message': 'Étudiants ajoutés avec quelques erreurs'}), 500
+    return jsonify({'message': 'Étudiants ajoutés avec succès'}), 200
+
+
+def ajoutEtudiantsFonction(data, options=None):
+    if options is None:
+        etudiant_nom = data.get('nom')
+        etudiant_prenom = data.get('prenom')
+        etudiant_email = data.get('email')
+        etudiant_date_naissance = data.get('date_naissance')
+        etudiant_statut = 1 if data.get('statut') == 1 else 0
+        etudiant_classe = data.get('classe')
+        etudiant_suiveur = data.get('suiveur')
+        etudiant_tuteur = data.get('tuteur')
+        etudiant_ecole = data.get('ecole')
+        etudiant_entreprise = data.get('entreprise')
+    else:
+        etudiant_nom = data.get('Nom')
+        etudiant_prenom = data.get('Prenom')
+        etudiant_email = data.get('Email')
+        etudiant_date_naissance = data.get('Date de naissance')
+        etudiant_statut = 1 if data.get('Statut') == "Alternant" else 0
+        etudiant_classe = data.get('Classe')
+        etudiant_suiveur = data.get('Suiveur')
+        etudiant_tuteur = data.get('Tuteur')
+        etudiant_ecole = data.get('École')
+        etudiant_entreprise = data.get('Entreprise')
+
+    if not etudiant_nom or not etudiant_prenom or not etudiant_email or not etudiant_date_naissance or not etudiant_classe:
+        return jsonify({'message': 'Missing étudiant data'}), 400
+
+    password = generate_random_password()  # Génération d'un mot de passe aléatoire
+
+    # Validation de l'adresse email avec une expression régulière
+    if not re.match(r"[^@]+@[^@]+\.[^@]+", etudiant_email):
+        return jsonify({'message': 'Invalid email address'}), 400
+
+    # Vérification de l'unicité de l'adresse email
+    if Utilisateur.query.filter_by(mail=etudiant_email).first():
+        return jsonify({'message': 'User already exists'}), 409
+
+    # Hachage du mot de passe avant de le stocker dans la base de données
+    hashed_password = generate_password_hash(password)
+
+    # Regarde si une variable est vide, si oui, la remplace par None
+    if etudiant_suiveur == "":
+        etudiant_suiveur = None
+    if type(etudiant_suiveur) == str and len(etudiant_suiveur) > 1:
+        suiveur_nom, suiveur_prenom = etudiant_suiveur.split(' ')
+        etudiant_suiveur = Utilisateur.query.filter_by(nom=suiveur_nom, prenom=suiveur_prenom).first().id_user
+
+    if etudiant_tuteur == "":
+        etudiant_tuteur = None
+    if type(etudiant_tuteur) == str and len(etudiant_tuteur) > 1:
+        tuteur_nom, tuteur_prenom = etudiant_tuteur.split(' ')
+        etudiant_tuteur = Utilisateur.query.filter_by(nom=tuteur_nom, prenom=tuteur_prenom).first().id_user
+
+    if etudiant_ecole == "":
+        etudiant_ecole = None
+    if type(etudiant_ecole) == str and len(etudiant_ecole) > 1:
+        #etudiant_ecole = None
+        etudiant_ecole = Ecole.query.filter_by(raison_sociale=etudiant_ecole).first().id_ecole
+
+    if etudiant_entreprise == "":
+        etudiant_entreprise = None
+    if type(etudiant_entreprise) == str and len(etudiant_entreprise) > 1:
+        #etudiant_entreprise = None
+        etudiant_entreprise = Entreprise.query.filter_by(raison_sociale=etudiant_entreprise).first().id_entreprise
+
+    # Create a new etudiant object
+    new_etudiant = Utilisateur(
+        nom=etudiant_nom,
+        prenom=etudiant_prenom,
+        mail=etudiant_email,
+        password=hashed_password,
+        date_naissance=etudiant_date_naissance,
+        statut=etudiant_statut,
+        classe=etudiant_classe,
+        id_role=4,
+        id_user_1=etudiant_suiveur,
+        id_user_2=etudiant_tuteur,
+        id_ecole=etudiant_ecole,
+        id_entreprise=etudiant_entreprise,
+        url_calendly=None,
+        id_user_3=None,
+        id_planning=None
+    )
+
+    # Add the new etudiant to the database
+    db.session.add(new_etudiant)
+    db.session.commit()
+
+    send_welcome_email(etudiant_email, password)
+
+    return jsonify({'message': 'Étudiant added successfully'}), 200
+
+
+# Route pour récupérer les informations suivant le nom donné
+@auth.route('/get_info/<string:nom>', methods=['GET'])
+@jwt_required()
+def get_info(nom):
+    current_user = get_jwt_identity()
+    user = Utilisateur.query.get(current_user)
+    if not user:
+        return jsonify({'message': 'User not found'}), 404
+
+    # Cas Admin et RRE - Recupération de tous les infos suivant le nom donné
+    if check_role(user, 1) or check_role(user, 2):
+        if nom == "entreprise":
+            result = Entreprise.query.all()
+
+            entreprise_list = []
+
+            for e in result:
+                entreprise_dict = {
+                'id': e.id_entreprise,
+                'nom': e.raison_sociale,
+                'adresse': e.adresse,
+                'id_ecole': e.id_ecole
+                }
+                entreprise_list.append(entreprise_dict)
+
+            return jsonify({"entreprises":entreprise_list}), 200
+
+        elif nom == "ecole":
+            result = Ecole.query.all()
+
+            ecole_list = []
+
+            for e in result:
+                ecole_dict = {
+                'id': e.id_ecole,
+                'nom': e.raison_sociale,
+                'adresse': e.adresse,
+                }
+                ecole_list.append(ecole_dict)
+
+            return jsonify({"ecoles":ecole_list}), 200
+        else:
+            return jsonify({'message': 'Nom invalide'}), 400

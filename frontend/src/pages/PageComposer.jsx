@@ -7,6 +7,7 @@ import Accueil from "./Accueil";
 import Alertes from "./Alertes";
 import MissionPage from "./Mission";
 import UsersManagement from "./UsersManagement";
+import AjoutEtudiants from "./AjoutEtudiants.jsx";
 import FetchWraper from "../utils/FetchWraper";
 import { useEffect, useState } from 'react';
 
@@ -19,8 +20,9 @@ const Pages = {
     "accueil": Accueil,
     "users-management": UsersManagement,
     "alertes": Alertes,
-    "DefaultPage": Login,
-    "missions": MissionPage
+    "missions": MissionPage,
+    "ajout_etudiants": AjoutEtudiants,
+    "DefaultPage": Login
 };
 
 async function IsConnected() {
