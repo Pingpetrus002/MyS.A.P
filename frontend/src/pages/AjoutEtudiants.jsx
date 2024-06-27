@@ -161,7 +161,7 @@ function FormAjout() {
                 }
                 return {key: mappedValue, value};
             })},
-        {id: 'classe', label: 'Classe', type: 'select', data: ['B1', 'B2', 'B3'].map(value => ({key: value, value}))},
+        {id: 'classe', label: 'Classe', type: 'text'},
         {id: 'ecole', label: 'École', type: 'select', data: ecoleNames},
         {id: 'suiveur', label: 'Suiveur', type: 'select', data: suiveurNames},
         {id: 'tuteur', label: 'Tuteur', type: 'select', data: tuteursNames},
