@@ -4,7 +4,7 @@ from flask import Blueprint, request, jsonify, render_template, make_response
 from flask_mail import Message, Mail
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity, set_access_cookies, unset_jwt_cookies
 from werkzeug.security import generate_password_hash, check_password_hash
-from .models import Utilisateur, db, Document, Entreprise, Alert, Mission, Role, Contrat, Ecole
+from .models import Utilisateur, db, Document, Entreprise, Alert, Mission, Role, Contrat, Ecole, Planning
 
 import locale
 import re
@@ -183,6 +183,56 @@ def protected():
     return jsonify({'message': 'Protected page', 'role': user.id_role, 'access': ROLES_ACCESS[user.id_role]}), 200
 
 
+
+
+@auth.route('/users/edit', methods=['POST'])
+@jwt_required()
+def user_edit():
+    current_user = get_jwt_identity()
+    user = Utilisateur.query.get(current_user)
+
+    # Vérification du rôle de l'utilisateur pour l'accès à la liste des rôles
+    if not check_role(user, 1) and not check_role(user, 2):
+        return jsonify({'message': 'Unauthorized'}), 403
+    
+    data = request.get_json()
+    
+    # Verification des champs du formulaire
+    fields = ['id_user', 'id_role', 'statut']
+    if check_fields(data, fields) != 0:
+        return check_fields(data, fields)
+    
+    user = Utilisateur.query.get(data.get('id_user'))
+    user.id_role = data.get('id_role')
+    user.statut = data.get('statut')
+    db.session.commit()
+
+    return jsonify({'message': 'User updated'}), 200
+
+
+
+
+
+@auth.route('/roles/list', methods=['GET'])
+@jwt_required()
+def get_roles_list():
+    current_user = get_jwt_identity()
+    user = Utilisateur.query.get(current_user)
+
+    # Vérification du rôle de l'utilisateur pour l'accès à la liste des rôles
+    if not check_role(user, 1) and not check_role(user, 2):
+        return jsonify({'message': 'Unauthorized'}), 403
+
+    # Récupération de la liste de tous les rôles
+    roles = Role.query.all()
+    roles_dict = [{
+        'id_role': role.id_role,
+        'nom': role.nom
+    } for role in roles]
+
+    return jsonify({'roles': roles_dict}), 200
+
+
 @auth.route('/users/list', methods=['GET'])
 @jwt_required()
 def get_users_list():
@@ -218,51 +268,9 @@ def get_users_list():
     return jsonify({'users': users_dict}), 200
     
 
-@auth.route('/users/edit', methods=['POST'])
-@jwt_required()
-def user_edit():
-    current_user = get_jwt_identity()
-    user = Utilisateur.query.get(current_user)
-
-    # Vérification du rôle de l'utilisateur pour l'accès à la liste des rôles
-    if not check_role(user, 1) and not check_role(user, 2):
-        return jsonify({'message': 'Unauthorized'}), 403
-    
-    data = request.get_json()
-    
-    # Verification des champs du formulaire
-    fields = ['id_user', 'id_role', 'statut']
-    if check_fields(data, fields) != 0:
-        return check_fields(data, fields)
-    
-    user = Utilisateur.query.get(data.get('id_user'))
-    user.id_role = data.get('id_role')
-    user.statut = data.get('statut')
-    db.session.commit()
-
-    return jsonify({'message': 'User updated'}), 200
 
 
 
-
-@auth.route('/roles/list', methods=['GET'])
-@jwt_required()
-def get_roles_list():
-    current_user = get_jwt_identity()
-    user = Utilisateur.query.get(current_user)
-
-    # Vérification du rôle de l'utilisateur pour l'accès à la liste des rôles
-    if not check_role(user, 1) and not check_role(user, 2):
-        return jsonify({'message': 'Unauthorized'}), 403
-
-    # Récupération de la liste de tous les rôles
-    roles = Role.query.all()
-    roles_dict = [{
-        'id_role': role.id_role,
-        'nom': role.nom
-    } for role in roles]
-
-    return jsonify({'roles': roles_dict}), 200
 
 # Route pour récupérer le profil de l'utilisateur actuellement authentifié
 @auth.route('/get_profil', methods=['GET'])
@@ -671,17 +679,17 @@ def ajoutEtudiantsFonction(data, options=None):
         etudiant_entreprise = data.get('Entreprise')
 
     if not etudiant_nom or not etudiant_prenom or not etudiant_email or not etudiant_date_naissance or not etudiant_classe:
-        return jsonify({'message': 'Missing étudiant data'}), 400
+        return jsonify({'message': 'Données essentielles de l\'étudiant manquant'}), 400
 
     password = generate_random_password()  # Génération d'un mot de passe aléatoire
 
     # Validation de l'adresse email avec une expression régulière
     if not re.match(r"[^@]+@[^@]+\.[^@]+", etudiant_email):
-        return jsonify({'message': 'Invalid email address'}), 400
+        return jsonify({'message': 'Mail non valide'}), 400
 
     # Vérification de l'unicité de l'adresse email
     if Utilisateur.query.filter_by(mail=etudiant_email).first():
-        return jsonify({'message': 'User already exists'}), 409
+        return jsonify({'message': 'Mail déjà utilisé'}), 409
 
     # Hachage du mot de passe avant de le stocker dans la base de données
     hashed_password = generate_password_hash(password)
@@ -780,5 +788,21 @@ def get_info(nom):
                 ecole_list.append(ecole_dict)
 
             return jsonify({"ecoles":ecole_list}), 200
+        elif nom == "planning":
+            result = Planning.query.all()
+
+            planning_list = []
+
+            for p in result:
+                planning_dict = {
+                'id': p.id_planning,
+                'diplome': p.diplome,
+                'annee': p.annee,
+                'classe': p.classe,
+                }
+                planning_list.append(planning_dict)
+
+            print(planning_list)
+            return jsonify({"plannings":planning_list}), 200
         else:
             return jsonify({'message': 'Nom invalide'}), 400
