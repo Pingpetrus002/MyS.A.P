@@ -137,6 +137,7 @@ CREATE TABLE IF NOT EXISTS alerte (
    id_user_cible INT,
    id_user_source INT,
    id_entreprise INT,
+   etat BOOLEAN,
    date DATETIME DEFAULT CURRENT_TIMESTAMP,
    PRIMARY KEY(id_alerte),
    FOREIGN KEY(id_user_cible) REFERENCES utilisateur(id_user),
