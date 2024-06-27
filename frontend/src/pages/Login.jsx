@@ -15,7 +15,7 @@ async function SubmitLogin() {
     //console.log(jObject.toJSON());
 
     let fetchWraper = new FetchWraper();
-    fetchWraper.url = "http://localhost:5000/auth/login";
+    fetchWraper.url = "http://10.1.1.44:5000/auth/login";
     fetchWraper.method = "POST";
     fetchWraper.headers.append("Content-Type", "application/json");
     fetchWraper.headers.append("Accept", "application/json");
@@ -37,7 +37,7 @@ async function SubmitLogin() {
 
 async function SubmitLogout() {
     let fetchWraper = new FetchWraper();
-    fetchWraper.url = "http://localhost:5000/auth/logout";
+    fetchWraper.url = "http://10.1.1.44:5000/auth/logout";
     fetchWraper.method = "GET";
     fetchWraper.headers.append("Content-Type", "application/json");
     fetchWraper.headers.append("Accept", "application/json");

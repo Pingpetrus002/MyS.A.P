@@ -92,7 +92,7 @@ const PdfGenerator = (props) => {
 
         // Prepare the request to send the encoded PDF
         let fetchWraper = new FetchWraper();
-        fetchWraper.url = "http://localhost:5000/auth/set_rapport";
+        fetchWraper.url = "http://10.1.1.44:5000/auth/set_rapport";
         fetchWraper.method = "POST";
         fetchWraper.headers.append("Content-Type", "application/json");
         fetchWraper.headers.append("Accept", "application/json");

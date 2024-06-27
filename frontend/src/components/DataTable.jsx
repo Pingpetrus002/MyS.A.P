@@ -16,7 +16,7 @@ import StudentModal from './EtudiantModal';
 import AddMissionModal from './ButtonMissions';
 
 const handleDownload = async (md5) => {
-  const url = `http://localhost:5000/auth/get_rapport/${md5}`;
+  const url = `http://10.1.1.44:5000/auth/get_rapport/${md5}`;
 
   const fetchWraper = new FetchWraper();
   fetchWraper.url = url;
