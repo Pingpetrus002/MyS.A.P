@@ -327,7 +327,7 @@ export default function DataTable({ rows, type, callback=()=>{}, onRowButtonClic
           <Tooltip title="Ajouter un étudiant" placement="top">
             <Button
               variant="outlined"
-              onClick={handleOpen}
+              href='/?page=ajout_etudiants'
               sx={{
                 color: '#000000',
                 borderColor: '#F0C975',
