@@ -268,30 +268,6 @@ def get_users_list():
     return jsonify({'users': users_dict}), 200
     
 
-@auth.route('/users/edit', methods=['POST'])
-@jwt_required()
-def user_edit():
-    current_user = get_jwt_identity()
-    user = Utilisateur.query.get(current_user)
-
-    # Vérification du rôle de l'utilisateur pour l'accès à la liste des rôles
-    if not check_role(user, 1) and not check_role(user, 2):
-        return jsonify({'message': 'Unauthorized'}), 403
-    
-    data = request.get_json()
-    
-    # Verification des champs du formulaire
-    fields = ['id_user', 'id_role', 'statut']
-    if check_fields(data, fields) != 0:
-        return check_fields(data, fields)
-    
-    user = Utilisateur.query.get(data.get('id_user'))
-    user.id_role = data.get('id_role')
-    user.statut = data.get('statut')
-    db.session.commit()
-
-    return jsonify({'message': 'User updated'}), 200
-
 
 
 

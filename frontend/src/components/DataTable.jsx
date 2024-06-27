@@ -18,7 +18,7 @@ import AddMissionModal from './ButtonMissions';
 
 
 const handleDownload = async (md5) => {
-  const url = `https://localhost:5001/auth/get_rapport/${md5}`;
+  const url = `http://localhost:5000/auth/get_rapport/${md5}`;
 
   const fetchWraper = new FetchWraper();
   fetchWraper.url = url;
