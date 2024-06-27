@@ -64,7 +64,7 @@ export default function StudentModal({ student, open, onClose }) {
           value={editedStudent.nom}
           onChange={handleChange}
           fullWidth
-          style={{ marginBottom: '8px' }}
+          style={{ marginBlock: '8px'}}
         />
         <TextField
           name="prenom"

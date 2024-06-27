@@ -17,10 +17,10 @@ async function getRapports() {
 
     let result = await fetchWraper.fetchw();
     let data = await result.json();
-    
+
     // Filtrer les rapports avec le type 'autre'
     let filteredRapports = data.rapports.filter(rapport => rapport.type !== 'autre');
-    
+
     return filteredRapports;
 }
 
@@ -45,18 +45,18 @@ export default function Rapports() {
 
     const isMobile = useMediaQuery('(max-width:600px)');
 
+    if (loading) {
+        return <LinearProgress />;
+    }
+
     return (
         <>
             {!isMobile && <NavBar />}
-            {loading ? (
-                <LinearProgress />
-            ) : (
-                <Grid container direction="row" justifyContent="center" spacing={4} marginTop={4}>
-                    <Grid item>
-                        <DataTable rows={rapports} type="rapport" />
-                    </Grid>
+            <Grid container direction="row" justifyContent="center" spacing={4} marginTop={4}>
+                <Grid item>
+                    <DataTable rows={rapports} type="rapport" />
                 </Grid>
-            )}
+            </Grid>
             {isMobile && <NavBar />}
         </>
     );
