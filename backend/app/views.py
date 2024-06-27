@@ -183,40 +183,7 @@ def protected():
     return jsonify({'message': 'Protected page', 'role': user.id_role, 'access': ROLES_ACCESS[user.id_role]}), 200
 
 
-@auth.route('/users/list', methods=['GET'])
-@jwt_required()
-def get_users_list():
-    current_user = get_jwt_identity()
-    user = Utilisateur.query.get(current_user)
 
-    # Vérification du rôle de l'utilisateur pour l'accès à la liste des utilisateurs
-    if not check_role(user, 1) and not check_role(user, 2):
-        return jsonify({'message': 'Unauthorized'}), 403
-
-    # Récupération de la liste de tous les utilisateurs
-    users = Utilisateur.query.all()
-    users_dict = [{
-        'id_user': user.id_user,
-        'nom': user.nom,
-        'prenom': user.prenom,
-        'mail': user.mail,
-        'date_naissance': user.date_naissance,
-        'statut': user.statut,
-        'classe': user.classe,
-        'id_user_1': user.id_user_1,
-        'id_user_2': user.id_user_2,
-        'id_ecole': user.id_ecole,
-        'id_ecole_1': user.id_ecole_1,
-        'id_ecole_2': user.id_ecole_2,
-        'id_entreprise': user.id_entreprise,
-        'id_entreprise_1': user.id_entreprise_1,
-        'id_role': user.id_role,
-        'id_user_3': user.id_user_3,
-        'id_planning': user.id_planning
-    } for user in users]
-
-    return jsonify({'users': users_dict}), 200
-    
 
 @auth.route('/users/edit', methods=['POST'])
 @jwt_required()
@@ -300,53 +267,6 @@ def get_users_list():
 
     return jsonify({'users': users_dict}), 200
     
-
-@auth.route('/users/edit', methods=['POST'])
-@jwt_required()
-def user_edit():
-    current_user = get_jwt_identity()
-    user = Utilisateur.query.get(current_user)
-
-    # Vérification du rôle de l'utilisateur pour l'accès à la liste des rôles
-    if not check_role(user, 1) and not check_role(user, 2):
-        return jsonify({'message': 'Unauthorized'}), 403
-    
-    data = request.get_json()
-    
-    # Verification des champs du formulaire
-    fields = ['id_user', 'id_role', 'statut']
-    if check_fields(data, fields) != 0:
-        return check_fields(data, fields)
-    
-    user = Utilisateur.query.get(data.get('id_user'))
-    user.id_role = data.get('id_role')
-    user.statut = data.get('statut')
-    db.session.commit()
-
-    return jsonify({'message': 'User updated'}), 200
-
-
-
-
-
-@auth.route('/roles/list', methods=['GET'])
-@jwt_required()
-def get_roles_list():
-    current_user = get_jwt_identity()
-    user = Utilisateur.query.get(current_user)
-
-    # Vérification du rôle de l'utilisateur pour l'accès à la liste des rôles
-    if not check_role(user, 1) and not check_role(user, 2):
-        return jsonify({'message': 'Unauthorized'}), 403
-
-    # Récupération de la liste de tous les rôles
-    roles = Role.query.all()
-    roles_dict = [{
-        'id_role': role.id_role,
-        'nom': role.nom
-    } for role in roles]
-
-    return jsonify({'roles': roles_dict}), 200
 
 # Route pour récupérer le profil de l'utilisateur actuellement authentifié
 @auth.route('/get_profil', methods=['GET'])
