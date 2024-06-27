@@ -6,6 +6,7 @@ import Rapports from "./Rapports";
 import Accueil from "./Accueil";
 import Alertes from "./Alertes";
 import MissionPage from "./Mission";
+import AjoutEtudiants from "./AjoutEtudiants.jsx";
 import FetchWraper from "../utils/FetchWraper";
 import { useEffect, useState } from 'react';
 
@@ -16,9 +17,10 @@ const Pages = {
     "etudiants": Etudiants,
     "rapports": Rapports,
     "accueil": Accueil,
-    "DefaultPage": Login,
     "alertes": Alertes,
-    "missions": MissionPage
+    "missions": MissionPage,
+    "ajout_etudiants": AjoutEtudiants,
+    "DefaultPage": Login
 };
 
 async function IsConnected() {

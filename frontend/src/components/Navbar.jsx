@@ -249,8 +249,8 @@ const Navbar = () => {
             }}>
                 <Toolbar disableGutters>
                     <IconButton size="large" aria-label="account of current user" aria-controls="menu-appbar"
-                        aria-haspopup="true" onClick={handleOpenNavMenu} color="black"
-                        sx={{ display: { xs: 'block', md: 'none' } }}>
+                                aria-haspopup="true" onClick={handleOpenNavMenu} color="black"
+                                sx={{ display: { xs: 'block', md: 'none' } }}>
                         <MenuIcon />
                     </IconButton>
                     <Box sx={{
@@ -282,7 +282,7 @@ const Navbar = () => {
         return (
             <Box sx={{ justifyContent: 'end' }}>
                 <IconButton size='large' aria-label="show new notifications" color="black"
-                    onClick={handleOpenNotificationMenu}>
+                            onClick={handleOpenNotificationMenu}>
                     <Badge badgeContent={alerts.length} color="error">
                         <Icons.Notifications />
                     </Badge>
@@ -372,7 +372,7 @@ const Navbar = () => {
             <Box sx={{ flexGrow: 0, marginLeft: 2 }}>
                 <Tooltip title="Open settings">
                     <IconButton onClick={handleOpenProfileMenu} sx={{ p: 0 }}>
-                        <Avatar alt="Remy Sharp" src={profil} />
+                        <Avatar alt="Remy Sharp" src={profilSelect} />
                     </IconButton>
                 </Tooltip>
                 <Menu
