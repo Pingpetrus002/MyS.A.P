@@ -242,7 +242,7 @@ def set_rapport():
     current_user = get_jwt_identity()
     data: dict = request.get_json()
 
-    fields = ['id_user', 'sujet', 'rapport']
+    fields = ['id_user', 'sujet', 'rapport', 'type']
     if check_fields(data, fields) != 0:
         return check_fields(data, fields)
     
@@ -251,6 +251,7 @@ def set_rapport():
     id_user = data.get('id_user')
     sujet = data.get('sujet')
     rapport = data.get('rapport')
+    typeOfDoc = data.get('type')
     date = datetime.datetime.now()
     
     #Recup de hash MD5 du rapport
@@ -264,7 +265,7 @@ def set_rapport():
     user = Utilisateur.query.get(current_user)
 
     if not check_role(user, 1) and not check_role(user, 2) and not check_role(user, 3):
-        if(type != 'rapport' and check_role(user, 4) or check_role(user, 5)):
+        if(typeOfDoc != 'rapport' and check_role(user, 4) or check_role(user, 5)):
             pass
         else:
             return jsonify({'message': 'Unauthorized'}), 403
@@ -272,7 +273,7 @@ def set_rapport():
 
     #Ajout du rapport
 
-    new_rapport = Document(nom=sujet, id_user=id_user, id_user_1=id_suiveur, rapport=rapport.encode('utf-8'), datecreation=date, md5=MD5, type=type)
+    new_rapport = Document(nom=sujet, id_user=id_user, id_user_1=id_suiveur, rapport=rapport.encode('utf-8'), datecreation=date, md5=MD5, type=typeOfDoc)
     db.session.add(new_rapport)
 
     db.session.commit()
