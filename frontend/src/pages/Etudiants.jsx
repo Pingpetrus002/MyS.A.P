@@ -76,7 +76,7 @@ export default function Etudiants() {
   // Rendu du composant
   return (
     <>
-      {!isMobile && <Navbar />}
+      {!isMobile && <NavBar />}
       {loading ? (
         <LinearProgress />
       ) : (
@@ -95,7 +95,8 @@ export default function Etudiants() {
                     )}
                 </Grid>
             </Grid>
-      {isMobile && <Navbar />}
+        )}
+      {isMobile && <NavBar />}
     </>
   );
 }
