@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { LinearProgress, Grid, useMediaQuery } from '@mui/material';
-import NavBar from '../components/Navbar.jsx';
+import Navbar from '../components/Navbar.jsx';
 import DataTable from '../components/DataTable';
 import AlertModal from '../components/AlertModal';
 import { getAlerts } from '../utils/AlertCreator.js';
@@ -48,12 +48,18 @@ export default function Alerts() {
     }
 
     if (alerts.length === 0) {
-        return <p>Aucune alerte pour le moment</p>;
+        return (
+            <>
+                {!isMobile && <Navbar />}
+                <p>Aucune alerte pour le moment</p>;
+                {isMobile && <Navbar />}
+            </>
+        )
     }
 
     return (
         <>
-            {!isMobile && <NavBar />}
+            {!isMobile && <Navbar />}
             <Grid container direction="row" justifyContent="center" spacing={4} marginTop={4}>
                 <Grid item>
                     <DataTable
@@ -67,7 +73,7 @@ export default function Alerts() {
             {selectedAlert && (
                 <AlertModal alert={selectedAlert} open={modalOpen} onClose={handleCloseModal} />
             )}
-            {isMobile && <NavBar />}
+            {isMobile && <Navbar />}
         </>
     );
 }
