@@ -172,9 +172,9 @@ INSERT INTO entreprise (raison_sociale, adresse, id_ecole) VALUES
 
 -- Insert data into utilisateur
 INSERT INTO utilisateur (nom, prenom, mail, date_naissance, statut, password, url_calendly, id_user_1, id_user_2, id_ecole, id_ecole_1, id_ecole_2, id_entreprise, id_entreprise_1, id_role, id_user_3, id_planning) VALUES
-('Dupont', 'Jean', 'a@a.com', '1990-01-01', true, 'scrypt:32768:8:1$rBOKy7d3L5U5bdnJ$2b2457b7a9d8d7b5efb0eff4b3b531868d777750dc91fefc96bbedaa478dc483c60cf519d73c8ede40235dde8068ef434daea760c99d1ebc0465db4bd9ab91b8', 'http://calendly.com/jean', NULL, NULL, 1, NULL, NULL, 1, NULL, 1, NULL, 1),
-('Martin', 'Sophie', 'b@b.com', '1992-02-02', true, 'scrypt:32768:8:1$rBOKy7d3L5U5bdnJ$2b2457b7a9d8d7b5efb0eff4b3b531868d777750dc91fefc96bbedaa478dc483c60cf519d73c8ede40235dde8068ef434daea760c99d1ebc0465db4bd9ab91b8', 'http://calendly.com/sophie', 1, NULL, 2, NULL, NULL, 2, NULL, 2, NULL, 2),
-('Leclerc', 'Paul', 'c@c.com', '1994-03-03', false, 'scrypt:32768:8:1$rBOKy7d3L5U5bdnJ$2b2457b7a9d8d7b5efb0eff4b3b531868d777750dc91fefc96bbedaa478dc483c60cf519d73c8ede40235dde8068ef434daea760c99d1ebc0465db4bd9ab91b8', 'http://calendly.com/paul', 1, 2, NULL, NULL, NULL, NULL, NULL, 3, NULL, 3);
+('Dupont', 'Jean', 'a@a.com', '1990-01-01', true, 'scrypt:32768:8:1$rBOKy7d3L5U5bdnJ$2b2457b7a9d8d7b5efb0eff4b3b531868d777750dc91fefc96bbedaa478dc483c60cf519d73c8ede40235dde8068ef434daea760c99d1ebc0465db4bd9ab91b8', 'https://calendly.com/jean', NULL, NULL, 1, NULL, NULL, 1, NULL, 1, NULL, 1),
+('Martin', 'Sophie', 'b@b.com', '1992-02-02', true, 'scrypt:32768:8:1$rBOKy7d3L5U5bdnJ$2b2457b7a9d8d7b5efb0eff4b3b531868d777750dc91fefc96bbedaa478dc483c60cf519d73c8ede40235dde8068ef434daea760c99d1ebc0465db4bd9ab91b8', 'https://calendly.com/sophie', 1, NULL, 2, NULL, NULL, 2, NULL, 2, NULL, 2),
+('Leclerc', 'Paul', 'c@c.com', '1994-03-03', false, 'scrypt:32768:8:1$rBOKy7d3L5U5bdnJ$2b2457b7a9d8d7b5efb0eff4b3b531868d777750dc91fefc96bbedaa478dc483c60cf519d73c8ede40235dde8068ef434daea760c99d1ebc0465db4bd9ab91b8', 'https://calendly.com/paul', 1, 2, NULL, NULL, NULL, NULL, NULL, 3, NULL, 3);
 
 -- Insert data into mission
 INSERT INTO mission (libelle, description, datedebut, datefin, id_user) VALUES

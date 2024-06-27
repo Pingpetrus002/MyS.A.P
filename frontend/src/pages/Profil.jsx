@@ -11,7 +11,7 @@ import UploadRapport from '../components/UploadRapport';
 async function getDatas() {
     // Appel à l'API pour récupérer les données de l'utilisateur
     let fetchWraper = new FetchWraper();
-    fetchWraper.url = "http://localhost:5000/auth/get_profil";
+    fetchWraper.url = "https://localhost:5001/auth/get_profil";
     fetchWraper.method = "GET";
     fetchWraper.headers.append("Content-Type", "application/json");
     fetchWraper.headers.append("Accept", "application/json");
@@ -26,7 +26,7 @@ async function getDatas() {
 async function getRapports() {
     // Appel à l'API pour récupérer les rapports de l'utilisateur
     let fetchWraper = new FetchWraper();
-    fetchWraper.url = "http://localhost:5000/auth/get_rapport_info";
+    fetchWraper.url = "https://localhost:5001/auth/get_rapport_info";
     fetchWraper.method = "GET";
     fetchWraper.headers.append("Content-Type", "application/json");
     fetchWraper.headers.append("Accept", "application/json");
