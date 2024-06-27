@@ -1,5 +1,6 @@
 import FetchWraper from '../utils/FetchWraper';
 import { useEffect, useState } from 'react';
+import getRoles from '../utils/getRoles.js';
 
 import { Stack, Box, Grid, Modal, Button, TextField, Select, MenuItem } from '@mui/material';
 //import { DataGrid } from "@mui/x-data-grid";
@@ -145,9 +146,147 @@ AddUserModal.propTypes = {
 };
 
 
-export function usersManagementGridCallback(e) {
-    console.log("Callback:", e);
+function ActionModal({
+    open = false,
+    handleClose = () => { },
+    user = {},
+}) {
+
+    const [userData, setUserData] = useState({});
+    const [roles, setRoles] = useState([]);
+
+    const handleSubmit = async () => {
+        let fetchWraper = new FetchWraper();
+        fetchWraper.url = "http://localhost:5000/auth/users/edit";
+        fetchWraper.method = "POST";
+        fetchWraper.headers.append("Content-Type", "application/json");
+        fetchWraper.headers.append("Accept", "application/json");
+        //fetchWraper.headers.append("Access-Control-Allow-Origin", window.location.origin);
+        //fetchWraper.headers.append("Access-Control-Allow-Credentials", "true");
+        fetchWraper.body = JSON.stringify(userData);
+
+        let result = await fetchWraper.fetchw();
+
+        switch (result.status) {
+            case 200:
+                //console.log("User edited successfully");
+                break;
+            default:
+                console.warn("Error editing user:", result.status);
+                break;
+        }
+
+    
+        handleClose();
+
+
+    };
+
+    useEffect(() => {
+        async function fetchData() {
+            const result = await getRoles();
+            const formattedRoles = result.data.map(role => (
+                {
+                    id: role.id_role,
+                    role: role.nom,
+                }));
+            formattedRoles.push({ id: 0, role: "Inconnu" });
+            //console.log(formattedRoles);
+            setRoles(formattedRoles);
+        }
+        fetchData();
+    }
+        , []);
+
+    useEffect(() => {
+        setUserData(user);
+        //console.log(user);
+    }, [user]);
+
+    return (
+        <Modal
+            open={open}
+            onClose={handleClose}
+            aria-labelledby="Modifier un utilisateur"
+            aria-describedby="Modifier un utilisateur"
+        >
+            <Box sx={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: 400, bgcolor: 'background.paper', boxShadow: 24, p: 4, maxHeight: "88vh", overflow: "auto" }}>
+                <h2>Modifier un utilisateur</h2>
+                <Grid container item xs={12} sx={{ justifyContent: 'left', fullWidth: true, p: 2 }}>
+                    <Grid item xs={12} sx={{ textAlign: 'left', fullWidth: true }}>
+                        <h3>{userData.prenom} {userData.nom}</h3>
+                    </Grid>
+                    <Grid container sx={{ display: 'flex', justifyContent: 'center', fullWidth: true }}>
+                        <Grid item xs={4} sx={{ textAlign: 'center' }}>
+                            <h3>Role : </h3>
+                        </Grid>
+                        <Grid item xs={8} sx={{ textAlign: 'center', fullWidth: true }}>
+                            <Select
+                                sx={{ textAlign: 'center', width: '100%' }}
+                                //label="role"
+                                value={userData.id_role || user.id_role}
+                                name="role"
+                                inputProps={{ 'aria-label': 'Without label' }}
+                                onChange={(e) => setUserData({ ...userData, id_role: e.target.value })}
+                            >
+                                {roles.map(role => (
+                                    <MenuItem key={role.id} value={role.id} disabled={role.id === 0}>{role.role}</MenuItem>
+                                ))}
+
+                            </Select>
+                        </Grid>
+                    </Grid>
+
+                    <Grid container sx={{ display: 'flex', justifyContent: 'center', fullWidth: true }}>
+                        <Grid item xs={4} sx={{ textAlign: 'center' }}>
+                            <h3>Status : </h3>
+                        </Grid>
+                        <Grid item xs={8} sx={{ textAlign: 'center', fullWidth: true }}>
+                            <Select
+                                sx={{ textAlign: 'center', width: '100%' }}
+                                //label="Status"
+                                value={userData.statut === true ? "Actif" : userData.statut === false ? "Inactif" : "NULL"}
+                                name="Status"
+                                inputProps={{ 'aria-label': 'Without label' }}
+                                onChange={(e) => {
+                                    //console.log(e.target.value);
+                                    setUserData({ ...userData, statut: e.target.value === "Actif" ? true : e.target.value === "Inactif" ? false : null})}
+                                }
+                            >
+                                <MenuItem value="Actif">Actif</MenuItem>
+                                <MenuItem value="Inactif">Inactif</MenuItem>
+                                <MenuItem value="NULL" disabled>Inconnu</MenuItem>
+
+                            </Select>
+                        </Grid>
+                    </Grid>
+
+                    <Grid item xs={12} sx={{ textAlign: 'center', fullWidth: true, marginTop: 4 }}>
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            onClick={handleSubmit}
+                        >
+                            Appliqer
+                        </Button>
+                    </Grid>
+
+
+
+                </Grid>
+
+            </Box>
+        </Modal>
+    );
 }
+
+ActionModal.propTypes = {
+    open: PropTypes.bool,
+    handleClose: PropTypes.func,
+    user: PropTypes.object,
+};
+
+
 
 
 
@@ -168,30 +307,30 @@ async function getUsers() {
 }
 
 
-function roleNames(role) {
-    switch (role) {
-        case 1:
-            return "Admin";
-        case 2:
-            return "RRE";
-        case 3:
-            return "Suiveur";
-        case 4:
-            return "Etudiant";
-        case 5:
-            return "Tuteur";
-        default:
-            return "Inconnu";
-    }
-}
-
-
 
 function UsersManagement() {
 
     const [open, setOpen] = useState(false);
+    const [openAction, setOpenAction] = useState(false);
     const [users, setUsers] = useState([]);
+    const [user, setUser] = useState({});
     const [reload, setReload] = useState(false);
+    const [roles, setRoles] = useState([]);
+
+    useEffect(() => {
+        async function fetchData() {
+            const result = await getRoles();
+            const formattedRoles = result.data.map(role => (
+                {
+                    id: role.id_role,
+                    role: role.nom,
+                }));
+            //console.log(formattedRoles);
+            setRoles(formattedRoles);
+        }
+        fetchData();
+    }
+        , []);
 
     const handleOpen = () => {
         setOpen(true);
@@ -211,16 +350,17 @@ function UsersManagement() {
             const result = await getUsers();
             const formattedUsers = result.data.map(user => (
                 {
+                    ...user,
                     id: user.id_user,
-                    role: roleNames(user.id_role),
+                    role: roles?.find(role => role.id === user.id_role)?.role || "Inconnu",
                     date_naissance_formatted: new Date(user.date_naissance).toLocaleDateString(),
-                    ...user
+                    status: user.statut === true ? "Actif" : user.statut === false ? "Inactif" : "NULL"
                 }));
             setUsers(formattedUsers);
             //console.log(formattedUsers);
         }
         fetchData();
-    }, [reload]);
+    }, [reload, roles]);
 
 
     return (
@@ -231,15 +371,26 @@ function UsersManagement() {
                     open={open}
                     handleClose={handleClose}
                 />
-                <Grid item xs={12} sx={{ textAlign: 'center' }}>
-                    <h1>Gestion des utilisateurs</h1>
-                </Grid>
 
-                <Grid item xs={12} sx={{ textAlign: 'center' , paddingLeft: 6, paddingRight: 6}}>
+                <ActionModal
+                    open={openAction}
+                    handleClose={() => {
+                        triggerReload();
+                        setOpenAction(false)
+                    }}
+                    user={user}
+                />
+
+                <Grid item xs={12} sx={{ textAlign: 'center', paddingLeft: 6, paddingRight: 6, marginTop: 6 }}>
 
                     <DataTable
                         rows={users}
                         type='users_management'
+                        callback={(e) => {
+                            setUser(e);
+                            setOpenAction(true);
+                        }
+                        }
                     />
 
                     <Button

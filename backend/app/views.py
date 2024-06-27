@@ -4,7 +4,7 @@ from flask import Blueprint, request, jsonify, render_template, make_response
 from flask_mail import Message, Mail
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity, set_access_cookies, unset_jwt_cookies
 from werkzeug.security import generate_password_hash, check_password_hash
-from .models import Utilisateur, db, Document, Entreprise, Alert, Mission
+from .models import Utilisateur, db, Document, Entreprise, Alert, Mission, Role
 
 import locale
 import re
@@ -184,6 +184,53 @@ def get_users_list():
 
     return jsonify({'users': users_dict}), 200
     
+
+@auth.route('/users/edit', methods=['POST'])
+@jwt_required()
+def user_edit():
+    current_user = get_jwt_identity()
+    user = Utilisateur.query.get(current_user)
+
+    # Vérification du rôle de l'utilisateur pour l'accès à la liste des rôles
+    if not check_role(user, 1) and not check_role(user, 2):
+        return jsonify({'message': 'Unauthorized'}), 403
+    
+    data = request.get_json()
+    
+    # Verification des champs du formulaire
+    fields = ['id_user', 'id_role', 'statut']
+    if check_fields(data, fields) != 0:
+        return check_fields(data, fields)
+    
+    user = Utilisateur.query.get(data.get('id_user'))
+    user.id_role = data.get('id_role')
+    user.statut = data.get('statut')
+    db.session.commit()
+
+    return jsonify({'message': 'User updated'}), 200
+
+
+
+
+
+@auth.route('/roles/list', methods=['GET'])
+@jwt_required()
+def get_roles_list():
+    current_user = get_jwt_identity()
+    user = Utilisateur.query.get(current_user)
+
+    # Vérification du rôle de l'utilisateur pour l'accès à la liste des rôles
+    if not check_role(user, 1) and not check_role(user, 2):
+        return jsonify({'message': 'Unauthorized'}), 403
+
+    # Récupération de la liste de tous les rôles
+    roles = Role.query.all()
+    roles_dict = [{
+        'id_role': role.id_role,
+        'nom': role.nom
+    } for role in roles]
+
+    return jsonify({'roles': roles_dict}), 200
 
 # Route pour récupérer le profil de l'utilisateur actuellement authentifié
 @auth.route('/get_profil', methods=['GET'])

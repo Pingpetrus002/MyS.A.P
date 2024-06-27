@@ -15,7 +15,6 @@ import ButtonRapports from './ButtonRapports';
 import StudentModal from './EtudiantModal';
 import AddMissionModal from './ButtonMissions';
 
-import { usersManagementGridCallback } from '../pages/UsersManagement';
 
 const handleDownload = async (md5) => {
   const url = `http://localhost:5000/auth/get_rapport/${md5}`;
@@ -97,7 +96,7 @@ const adjustColumns = (columns, isLargeScreen) => {
   });
 };
 
-function getColumns(type, isLargeScreen) {
+function getColumns(type, isLargeScreen, onButtonClick = () => {}) {
   const columns = {
     rapport: [
       { field: 'id_user', headerName: 'Étudiant', width: 180, minWidth: 180, maxWidth: 300 },
@@ -197,6 +196,7 @@ function getColumns(type, isLargeScreen) {
     ],
     users_management: [
       { field: 'id', headerName: 'ID', width: 90 },
+      { field: 'status', headerName: 'Active', width: 100},
       { field: 'mail', headerName: 'Email', width: 150 },
       { field: 'role', headerName: 'Role', width: 150 },
       { field: 'nom', headerName: 'Prénom', width: 150 },
@@ -225,7 +225,7 @@ function getColumns(type, isLargeScreen) {
               color="primary"
               size="small"
               style={{ marginLeft: 16 }}
-              onClick={() => usersManagementGridCallback(params.row)}
+              onClick={() => onButtonClick(params.row)}
             >
               Action
             </Button>
@@ -252,12 +252,14 @@ function getTitle(type) {
       return 'Toutes les alertes';
     case 'mission':
       return 'Mes missions';
+    case 'users_management':
+      return 'Gestion des utilisateurs';
     default:
       return '';
   }
 }
 
-export default function DataTable({ rows, type }) {
+export default function DataTable({ rows, type, callback=()=>{} }) {
   const [openModal, setOpenModal] = useState(false);
   const isLargeScreen = useMediaQuery('(min-width: 1024px)');
   const isSmallScreen = useMediaQuery('(max-width: 768px)');
@@ -272,7 +274,7 @@ export default function DataTable({ rows, type }) {
 
   const handleExportCSV = () => {
     // Récupérer les colonnes
-    const columns = getColumns(type, isLargeScreen);
+    const columns = getColumns(type, isLargeScreen, callback);
 
     // Créer l'en-tête CSV à partir des noms de colonne
     const header = columns.map(col => col.headerName).join(',') + '\n';
@@ -356,7 +358,7 @@ export default function DataTable({ rows, type }) {
       <CustomDataGrid
         autoHeight
         rows={rows}
-        columns={getColumns(type, isLargeScreen)}
+        columns={getColumns(type, isLargeScreen, callback)}
         pageSizeOptions={[5, 10, 25]}
         initialState={{
           pagination: {
@@ -391,5 +393,6 @@ export default function DataTable({ rows, type }) {
 
 DataTable.propTypes = {
   rows: PropTypes.arrayOf(PropTypes.object).isRequired,
-  type: PropTypes.oneOf(['rapport', 'etudiant', 'mes_rapports', 'documents', 'alerte', 'mission']).isRequired,
+  type: PropTypes.oneOf(['rapport', 'etudiant', 'mes_rapports', 'documents', 'alerte', 'mission', 'users_management']).isRequired,
+  callback: PropTypes.func,
 };
