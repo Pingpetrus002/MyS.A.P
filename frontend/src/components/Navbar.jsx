@@ -33,7 +33,7 @@ const pages = {
 
 async function IsConnected() {
     let fetchWraper = new FetchWraper();
-    fetchWraper.url = "http://localhost:5000/auth/protected";
+    fetchWraper.url = "https://10.1.1.44:5001/auth/protected";
     fetchWraper.method = "GET";
     fetchWraper.headers.append("Content-Type", "application/json");
     fetchWraper.headers.append("Accept", "application/json");
@@ -58,7 +58,7 @@ const Navbar = () => {
             let result = await IsConnected();
             setRole(result.role);
             if ((result.role.role === 1 || result.role.role === 2) && !settings.find((setting) => setting.name === 'Gestion des utilisateurs')) {
-                settings.push({ name: 'Gestion des utilisateurs', url: '/?page=users-management', type: 'lien' });
+                settings.splice(1, 0, { name: 'Gestion des utilisateurs', url: '/?page=users-management', type: 'lien' });
             }
         };
 
@@ -106,7 +106,7 @@ const Navbar = () => {
 
     async function SubmitLogout() {
         let fetchWraper = new FetchWraper();
-        fetchWraper.url = "http://localhost:5000/auth/logout";
+        fetchWraper.url = "https://10.1.1.44:5001/auth/logout";
         fetchWraper.method = "GET";
         fetchWraper.headers.append("Content-Type", "application/json");
         fetchWraper.headers.append("Accept", "application/json");

@@ -8,11 +8,11 @@ import Slider from 'react-slick';
 const HomePage = () => {
     const charts = [
         {
-            src: 'http://localhost:3000/d/bdpdik5lysxs0b/new-dashboard?orgId=1&from=1718887196068&to=1718908796068&viewPanel=2',
+            src: 'https://10.1.1.44:3000/d/bdpdik5lysxs0b/new-dashboard?orgId=1&from=1718887196068&to=1718908796068&viewPanel=2',
             title: 'Graphique 1'
         },
         {
-            src: 'http://localhost:3000/public-dashboards/3c16abbc2dd4445299412c3f14031eec',
+            src: 'https://10.1.1.44:3000/public-dashboards/3c16abbc2dd4445299412c3f14031eec',
             title: 'Graphique 2'
         },
         {

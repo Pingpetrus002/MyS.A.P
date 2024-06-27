@@ -42,7 +42,7 @@ export default function AddMissionModal() {
     const handleAddMission = async (newMission) => {
         try {
             const fetchWraper = new FetchWraper();
-            fetchWraper.url = "http://localhost:5000/auth/add_mission";
+            fetchWraper.url = "https://10.1.1.44:5001/auth/add_mission";
             fetchWraper.method = "POST";
             fetchWraper.headers.set("Content-Type", "application/json");
             fetchWraper.headers.set("Accept", "application/json");
