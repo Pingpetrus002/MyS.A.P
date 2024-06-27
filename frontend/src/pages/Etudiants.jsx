@@ -31,7 +31,7 @@ export default function Etudiants() {
     const [loading, setLoading] = useState(true);
     const [selectedStudent, setSelectedStudent] = useState(null);
     const [modalOpen, setModalOpen] = useState(false);
-    const isMobile = useMediaQuery('(max-width:600px)');
+        const isMobile = useMediaQuery('(max-width:600px)');
 
 
     // Effet pour charger les données des étudiants au chargement du composant
@@ -77,7 +77,7 @@ export default function Etudiants() {
   // Rendu du composant
   return (
     <>
-      {!isMobile && <Navbar />}
+      {!isMobile && <NavBar />}
       {loading ? (
         <LinearProgress />
       ) : (
@@ -95,8 +95,8 @@ export default function Etudiants() {
                         <StudentModal student={selectedStudent} open={modalOpen} onClose={handleCloseModal}/>
                     )}
                 </Grid>
-            </Grid>
-      {isMobile && <Navbar />}
+            </Grid>)}
+      {isMobile && <NavBar />}
     </>
   );
 }
