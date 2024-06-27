@@ -4,7 +4,7 @@ from flask import Blueprint, request, jsonify, render_template, make_response
 from flask_mail import Message, Mail
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity, set_access_cookies, unset_jwt_cookies
 from werkzeug.security import generate_password_hash, check_password_hash
-from .models import Utilisateur, db, Document, Entreprise, Alert, Mission, Ecole
+from .models import Utilisateur, db, Document, Entreprise, Alert, Mission, Ecole, Planning
 
 import locale
 import re
@@ -571,17 +571,17 @@ def ajoutEtudiantsFonction(data, options=None):
         etudiant_entreprise = data.get('Entreprise')
 
     if not etudiant_nom or not etudiant_prenom or not etudiant_email or not etudiant_date_naissance or not etudiant_classe:
-        return jsonify({'message': 'Missing étudiant data'}), 400
+        return jsonify({'message': 'Données essentielles de l\'étudiant manquant'}), 400
 
     password = generate_random_password()  # Génération d'un mot de passe aléatoire
 
     # Validation de l'adresse email avec une expression régulière
     if not re.match(r"[^@]+@[^@]+\.[^@]+", etudiant_email):
-        return jsonify({'message': 'Invalid email address'}), 400
+        return jsonify({'message': 'Mail non valide'}), 400
 
     # Vérification de l'unicité de l'adresse email
     if Utilisateur.query.filter_by(mail=etudiant_email).first():
-        return jsonify({'message': 'User already exists'}), 409
+        return jsonify({'message': 'Mail déjà utilisé'}), 409
 
     # Hachage du mot de passe avant de le stocker dans la base de données
     hashed_password = generate_password_hash(password)
@@ -680,5 +680,21 @@ def get_info(nom):
                 ecole_list.append(ecole_dict)
 
             return jsonify({"ecoles":ecole_list}), 200
+        elif nom == "planning":
+            result = Planning.query.all()
+
+            planning_list = []
+
+            for p in result:
+                planning_dict = {
+                'id': p.id_planning,
+                'diplome': p.diplome,
+                'annee': p.annee,
+                'classe': p.classe,
+                }
+                planning_list.append(planning_dict)
+
+            print(planning_list)
+            return jsonify({"plannings":planning_list}), 200
         else:
             return jsonify({'message': 'Nom invalide'}), 400

@@ -1,5 +1,15 @@
 import React, {useEffect, useState} from 'react';
-import {Button, LinearProgress, Grid, TextField, Select, MenuItem, InputLabel, FormControl} from '@mui/material';
+import {
+    Button,
+    LinearProgress,
+    Grid,
+    TextField,
+    Select,
+    MenuItem,
+    InputLabel,
+    FormControl,
+    Divider
+} from '@mui/material';
 
 // Importations personnalisées
 import FetchWraper from '../utils/FetchWraper';
@@ -11,6 +21,7 @@ import {alpha, styled} from "@mui/material/styles";
 import JObject from "../utils/JObject.js";
 import Navbar from "../components/Navbar.jsx";
 import UploadEtudiants from "../components/UploadEtudiants.jsx";
+import Typography from "@mui/material/Typography";
 
 async function SubmitFormAjout() {
     const form = document.getElementById('ajout-etudiant-form');
@@ -74,6 +85,8 @@ async function getFieldsInfo(nom) {
 }
 
 function FormAjout() {
+    const [classes, getClasses] = useState(null);
+    const [classeNames, setClasseNames] = useState([]);
     const [tuteurs, getTuteurs] = useState(null);
     const [tuteursNames, setTuteursNames] = useState([]);
     const [suiveurs, getSuiveurs] = useState(null);
@@ -84,12 +97,28 @@ function FormAjout() {
     const [entrepriseNames, setEntrepriseNames] = useState([]);
 
     useEffect(() => {
+        async function fetchClasses() {
+            const result = await getFieldsInfo('planning');
+            getClasses(result);
+            if (result && result.plannings) {
+                let classes = Array.isArray(result.plannings) ? result.plannings : [result.plannings];
+                const values = classes.map(planning => ({key: planning.classe, value: planning.classe}));
+                values.unshift({key: '', value: "Non défini"});
+                setClasseNames(values);
+            }
+        }
+
+        fetchClasses();
+    }, [])
+
+    useEffect(() => {
         async function fetchTuteurs() {
             const result = await getFieldsDataUtilisateurs(5);
             getTuteurs(result);
             if (result && result.users) {
                 let users = Array.isArray(result.users) ? result.users : [result.users];
                 const values = users.map(user => ({key: user.id, value: user.nom.toUpperCase() + " " + user.prenom}));
+                values.unshift({key: '', value: "Non défini"});
                 setTuteursNames(values);
             }
         }
@@ -104,6 +133,7 @@ function FormAjout() {
             if (result && result.users) {
                 let users = Array.isArray(result.users) ? result.users : [result.users];
                 const values = users.map(user => ({key: user.id, value: user.nom.toUpperCase() + " " + user.prenom}));
+                values.unshift({key: '', value: "Non défini"});
                 setSuiveurNames(values);
             }
         }
@@ -118,6 +148,7 @@ function FormAjout() {
             if (result && result.ecoles) {
                 let ecoles = Array.isArray(result.ecoles) ? result.ecoles : [result.ecoles];
                 const values = ecoles.map(ecole => ({key: ecole.id, value: ecole.nom + " | " + ecole.adresse}));
+                values.unshift({key: '', value: "Non défini"})
                 setEcoleNames(values);
             }
         }
@@ -135,6 +166,7 @@ function FormAjout() {
                     key: entreprise.id,
                     value: entreprise.nom + " | " + entreprise.adresse
                 }));
+                values.unshift({key: '', value: "Non défini"});
                 setEntrepriseNames(values);
             }
         }
@@ -142,15 +174,16 @@ function FormAjout() {
         fetchEntreprises();
     }, [])
 
-    console.log(ecoleNames);
-    console.log(entrepriseNames);
-
     const fields = [
         {id: 'nom', label: 'Nom', type: 'text'},
         {id: 'prenom', label: 'Prenom', type: 'text'},
         {id: 'email', label: 'Email', type: 'email'},
         {id: 'date_naissance', label: 'Date de naissance', type: 'date'},
-        {id: 'statut', label: 'Statut', type: 'select', data: ['Non défini', 'Alternance en cours', 'Pas d\'alternance'].map(value => {
+        {
+            id: 'statut',
+            label: 'Statut',
+            type: 'select',
+            data: ['Non défini', 'Alternance en cours', 'Pas d\'alternance'].map(value => {
                 let mappedValue;
                 if (value === 'Alternance en cours') {
                     mappedValue = 1;
@@ -160,8 +193,9 @@ function FormAjout() {
                     mappedValue = null;
                 }
                 return {key: mappedValue, value};
-            })},
-        {id: 'classe', label: 'Classe', type: 'select', data: ['B1', 'B2', 'B3'].map(value => ({key: value, value}))},
+            })
+        },
+        {id: 'classe', label: 'Classe', type: 'select', data: classeNames},
         {id: 'ecole', label: 'École', type: 'select', data: ecoleNames},
         {id: 'suiveur', label: 'Suiveur', type: 'select', data: suiveurNames},
         {id: 'tuteur', label: 'Tuteur', type: 'select', data: tuteursNames},
@@ -169,56 +203,99 @@ function FormAjout() {
     ];
 
     return (
-        <>
-            <Navbar />
+        <div style={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'flex-start',
+            color: 'black',
+            margin: '5% auto',
+            width: '60%',
+        }}>
             <div style={{
-                color: 'white',
-                position: 'fixed',
-                left: '50%',
-                top: '50%',
-                transform: 'translate(-50%, -50%)'
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                width: '100%',
+                marginBottom: '2em',
             }}>
-                <form id='ajout-etudiant-form' style={{display: 'grid', borderRadius: "90"}}>
-                    <Grid container spacing={5}>
-                        {fields.map(field => (
-                            <Grid item xs={6} key={field.id}>
-                                {field.type === 'select' ? (
-                                    <FormControl style={{width: '100%'}}>
-                                        <InputLabel id={field.id + "-label"}>{field.label}</InputLabel>
-                                        <CustomSelectField
-                                            id={field.id}
-                                            label={field.label}
-                                            type={field.type}
-                                            variant="outlined"
-                                            name={field.id}
-                                        >
-                                            {field.data.map((option, index) => (
-                                                <MenuItem key={option.key} value={option.key}>{option.value}</MenuItem>
-                                            ))}
-                                        </CustomSelectField>
-                                    </FormControl>
-                                ) : (
-                                    <CustomTextField
+                <Typography variant="h6">
+                    Importez un CSV, JSON ou XML pour ajouter des étudiants :
+                </Typography>
+                <UploadEtudiants/>
+            </div>
+            <Divider flexItem variant="h6" style={{alignSelf: 'center', marginBottom: '1em', width: '100%', color: '#8e8e8e' }}>OU</Divider>
+            <Typography variant="h6" style={{marginBottom: '2em'}}>
+                Ajoutez des étudiants en utilisant le formulaire ci-dessous :
+            </Typography>
+            <div style={{
+                width: '100%',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '16px',
+                borderRadius: '90px',
+            }}>
+                <form id='ajout-etudiant-form' style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '16px',
+                    borderRadius: '90px',
+                    width: '100%',
+                    justifyContent: 'left',
+                }}>
+                    {fields.map(field => (
+                        <div key={field.id}
+                             style={{display: 'flex', flexDirection: 'column', alignContent: 'start', width: '100%'}}>
+                            {field.type === 'select' ? (
+                                <FormControl style={{width: '100%'}}>
+                                    <InputLabel id={field.id + "-label"}>{field.label}</InputLabel>
+                                    <CustomSelectField
                                         id={field.id}
                                         label={field.label}
                                         type={field.type}
                                         variant="outlined"
                                         name={field.id}
-                                        InputLabelProps={field.id.includes('date') ? {shrink: true} : {}}
-                                        sx={{width: '100%'}}
-                                    />
-                                )}
-                            </Grid>
-                        ))}
-                        <Grid item xs={12}>
-                            <CustomButton variant="outlined" color="inherit"
-                                          onClick={SubmitFormAjout}>Ajouter</CustomButton>
-                        </Grid>
-                    </Grid>
+                                    >
+                                        {field.data.map((option) => (
+                                            <MenuItem key={option.key} value={option.key}>{option.value}</MenuItem>
+                                        ))}
+                                    </CustomSelectField>
+                                </FormControl>
+                            ) : (
+                                <CustomTextField
+                                    id={field.id}
+                                    label={field.label}
+                                    type={field.type}
+                                    variant="outlined"
+                                    name={field.id}
+                                    InputLabelProps={field.id.includes('date') ? {shrink: true} : {}}
+                                    sx={{width: '100%'}}
+                                />
+                            )}
+                        </div>
+                    ))}
+                    <div style={{display: 'flex', justifyContent: 'flex-start'}}>
+                        <Button
+                            variant="outlined"
+                            onClick={SubmitFormAjout}
+                            sx={{
+                                color: '#000000',
+                                borderColor: '#F0C975',
+                                backgroundColor: '#FDD47C',
+                                marginTop: '1em',
+                                mb: 1,
+                                alignItems: 'right',
+                                '&:hover': {
+                                    backgroundColor: '#FFC039',
+                                    borderColor: '#FFC039',
+                                }
+                            }}
+                        >
+                            Ajouter
+                        </Button>
+                    </div>
                 </form>
             </div>
-            <UploadEtudiants />
-        </>
+        </div>
     )
 }
 
@@ -240,34 +317,19 @@ const CustomTextField = styled(TextField)(({theme}) => ({
     },
 }))
 
-const CustomSelectField = styled(Select)(({theme}) => ({
-    "& .MuiOutlinedInput-root": {
+const CustomSelectField = styled(Select)(({ theme }) => ({
+    "& .MuiSelect-outlined": {
         color: "#000000",
         backgroundColor: "#F2F4F8",
         "& .MuiOutlinedInput-notchedOutline": {},
-        "&.Mui-focused": {
-            "& .MuiOutlinedInput-notchedOutline": {
-                borderColor: "#000000",
-            },
-        },
-    },
-    "& .MuiInputLabel-outlined": {
-        "&.Mui-focused": {
+        "& .focus": {
+            borderColor: "#000000",
             color: "#000000",
         },
     },
-}))
-
-const CustomButton = styled(Button)(({theme}) => ({
-    backgroundColor: '#ffffff',
-    color: '#000000',
-    borderWidth: '2px',
-    marginBottom: '20px',
-    "&.MuiButton-root": {
-        "&:hover": {
-            borderColor: '#000000',
-            backgroundColor: alpha('#ffffff', 0.8),
-            borderWidth: '2px',
+    "& .MuiSelectLabel-outlined": {
+        "&.Mui-focused": {
+            color: "#000000",
         },
     },
 }));
@@ -281,8 +343,11 @@ export default function AjoutEtudiants() {
 
     // Rendu du composant
     return (
-        <Grid container justifyContent="center">
-            <FormAjout/>
-        </Grid>
+        <>
+            <Navbar/>
+            <Grid container justifyContent="start" sx={{p: '25px'}}>
+                <FormAjout/>
+            </Grid>
+        </>
     );
 }
