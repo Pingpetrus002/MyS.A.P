@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { LinearProgress, Grid } from '@mui/material';
+import { useEffect, useState } from 'react';
+import { LinearProgress, Grid, useMediaQuery } from '@mui/material';
 
 // Importations personnalisées
 import Navbar from '../components/Navbar';
@@ -30,6 +30,7 @@ export default function MissionPage() {
   // État local pour stocker les missions, le chargement, la mission sélectionnée et l'état modal
   const [missions, setMissions] = useState([]); // Assurez-vous que missions commence par un tableau vide
   const [loading, setLoading] = useState(true);
+  const isMobile = useMediaQuery('(max-width:600px)');
 
   // Effet pour charger les données des missions au chargement du composant
   useEffect(() => {
@@ -55,7 +56,7 @@ export default function MissionPage() {
   // Rendu du composant
   return (
     <>
-      <Navbar />
+      {!isMobile && <Navbar />}
       {loading ? (
         <LinearProgress />
       ) : (
@@ -65,6 +66,7 @@ export default function MissionPage() {
           </Grid>
         </Grid>
       )}
+      {isMobile && <Navbar />}
     </>
   );
 }

@@ -1,7 +1,6 @@
-import React from 'react';
 import GrafanaChart from '../components/GrafanaChart'; // Assurez-vous que le chemin est correct
 import Navbar from '../components/Navbar';
-import { Container, Typography, Box } from '@mui/material';
+import { Container, Typography, Box, useMediaQuery } from '@mui/material';
 import Slider from 'react-slick';
 
 
@@ -31,9 +30,11 @@ const HomePage = () => {
         adaptiveHeight: true
     };
 
+    const isMobile = useMediaQuery('(max-width:600px)');
+
     return (
         <>
-            <Navbar />
+            {!isMobile && <Navbar />}
             <Container>
                 <Typography variant="h4" gutterBottom align="center" sx={{ margin: '2rem 0' }}>
                     Bienvenue sur MySAP
@@ -48,6 +49,7 @@ const HomePage = () => {
                     </Slider>
                 </Box>
             </Container>
+            {isMobile && <Navbar />}
         </>
     );
 };

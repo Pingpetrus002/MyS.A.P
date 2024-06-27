@@ -1,5 +1,6 @@
-import React, {useEffect, useState} from 'react';
-import {Button, LinearProgress, Grid, MenuItem, Link, Box, Divider, Menu} from '@mui/material';
+import {useEffect, useState} from 'react';
+import {Button, LinearProgress, Grid, MenuItem, Link, Box, Divider, Menu,useMediaQuery} from '@mui/material';
+
 
 // Importations personnalisées
 import FetchWraper from '../utils/FetchWraper';
@@ -29,6 +30,8 @@ export default function Etudiants() {
     const [loading, setLoading] = useState(true);
     const [selectedStudent, setSelectedStudent] = useState(null);
     const [modalOpen, setModalOpen] = useState(false);
+    const isMobile = useMediaQuery('(max-width:600px)');
+
 
     // Effet pour charger les données des étudiants au chargement du composant
     useEffect(() => {
@@ -70,11 +73,14 @@ export default function Etudiants() {
         setAnchorElAjout(null);
     };
 
-    // Rendu du composant
-    return (
-        <>
-            <NavBar/>
-            <Grid container justifyContent="center" sx={{ marginTop: '30px' }}>
+  // Rendu du composant
+  return (
+    <>
+      {!isMobile && <Navbar />}
+      {loading ? (
+        <LinearProgress />
+      ) : (
+        <Grid container justifyContent="center" sx={{ marginTop: '30px' }}>
                 <Grid item xs={10}>
                     {loading ? (
                         <LinearProgress/>
@@ -89,6 +95,7 @@ export default function Etudiants() {
                     )}
                 </Grid>
             </Grid>
-        </>
-    );
+      {isMobile && <Navbar />}
+    </>
+  );
 }

@@ -130,15 +130,18 @@ CREATE TABLE IF NOT EXISTS programme(
    FOREIGN KEY(id_user) REFERENCES utilisateur(id_user)
 );
 
-CREATE TABLE IF NOT EXISTS alerte(
+CREATE TABLE IF NOT EXISTS alerte (
    id_alerte INTEGER NOT NULL AUTO_INCREMENT,
    type VARCHAR(50),
    commentaires VARCHAR(250),
    id_user_cible INT,
-   id_user_source INT,   
+   id_user_source INT,
+   id_entreprise INT,
+   date DATETIME DEFAULT CURRENT_TIMESTAMP,
    PRIMARY KEY(id_alerte),
    FOREIGN KEY(id_user_cible) REFERENCES utilisateur(id_user),
-   FOREIGN KEY(id_user_source) REFERENCES utilisateur(id_user)
+   FOREIGN KEY(id_user_source) REFERENCES utilisateur(id_user),
+   FOREIGN KEY(id_entreprise) REFERENCES entreprise(id_entreprise)
 );
 
 

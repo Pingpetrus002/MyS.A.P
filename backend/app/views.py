@@ -6,9 +6,10 @@ from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identi
 from werkzeug.security import generate_password_hash, check_password_hash
 from .models import Utilisateur, db, Document, Entreprise, Alert, Mission, Ecole
 
-import re 
-import random  
-import string 
+import locale
+import re
+import random
+import string
 import datetime
 import hashlib
 
@@ -424,24 +425,28 @@ def create_alert():
 
     return jsonify({'message': 'Alert created'}), 200
 
+
 # Route pour récupérer toutes les alertes
 @auth.route('/get_alerts', methods=['GET'])
 @jwt_required()
 def get_alerts():
-    # Recherche de toutes les alertes
+    #TODO: Installer la localisation pour la date
+    # locale.setlocale(locale.LC_TIME, 'fr_FR')  # Définit la localisation pour le français
     alerts = Alert.query.all()
-
     alerts_dict = [
         {
-            'id_alerte': alert.id_alerte,
+            'id': alert.id_alerte,
+            'raison_social': Entreprise.query.get(alert.id_entreprise).raison_sociale if alert.id_entreprise else None,
             'type': alert.type,
             'commentaires': alert.commentaires,
             'id_user_cible': alert.id_user_cible,
-            'id_user_source': alert.id_user_source
-        } for alert in alerts
+            'user_source': Utilisateur.query.get(alert.id_user_source).prenom + ' ' + Utilisateur.query.get(alert.id_user_source).nom,
+            'date': alert.date.strftime('%-d %B %Y')  # Formater la date pour l'affichage
+        }
+        for alert in alerts
     ]
-
     return jsonify(alerts_dict), 200
+
 
 
 # Route pour ajouter une mission

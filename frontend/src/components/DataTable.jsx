@@ -156,7 +156,9 @@ function getColumns(type, isLargeScreen) {
     ],
     alerte: [
       { field: 'commentaires', headerName: 'Commentaire', width: 800, minWidth: 220, maxWidth: 900 },
-      { field: 'id_user_source', headerName: 'ID utilisateur source', width: 180, minWidth: 180, maxWidth: 300 },
+      { field: 'user_source', headerName: 'Utilisateur source', width: 180, minWidth: 180, maxWidth: 300 },
+      { field: 'raison_social', headerName: 'Entreprise', width: 180, minWidth: 180, maxWidth: 300 },
+      { field: 'date', headerName: 'Date', width: 180, minWidth: 180, maxWidth: 300 },
       {
         field: 'voir',
         headerName: 'Voir',
@@ -170,14 +172,14 @@ function getColumns(type, isLargeScreen) {
         ),
       },
       {
-        field: 'supprimer',
-        headerName: 'Supprimer',
+        field: 'Résoudre',
+        headerName: 'Résoudre',
         width: 150,
         minWidth: 150,
         maxWidth: 150,
         renderCell: (params) => (
-          <CustomButton onClick={() => console.log('Supprimer', params.row)} style={{ backgroundColor: '#bb2124', color: 'white' }}>
-            Supprimer
+          <CustomButton onClick={() => console.log('Résoudre', params.row)} style={{ backgroundColor: '#34b233', color: 'white' }}>
+            Résoudre
           </CustomButton>
         ),
       },

@@ -1,6 +1,6 @@
 import FetchWraper from '../utils/FetchWraper';
 import { useEffect, useState } from 'react';
-import { IconButton, LinearProgress, Stack } from '@mui/material';
+import { IconButton, LinearProgress, Stack, useMediaQuery } from '@mui/material';
 import HeaderProfile from '../components/HeaderProfile';
 import DataTable from '../components/DataTable';
 import Grid from '@mui/material/Grid';
@@ -36,10 +36,10 @@ async function getRapports() {
 
     let result = await fetchWraper.fetchw();
     let data = await result.json();
-    
+
     // Filtrer les rapports avec le type 'autre'
     let filteredRapports = data.rapports.filter(rapport => rapport.type !== 'autre');
-    
+
     return { filteredRapports, otherRapports: data.rapports.filter(rapport => rapport.type === 'autre') };
 }
 
@@ -51,6 +51,7 @@ export default function Profil() {
     const [loading, setLoading] = useState(true);
     const [showSecondTable, setShowSecondTable] = useState(false);
     const [tableTitle, setTableTitle] = useState('Mes Documents');
+    const isMobile = useMediaQuery('(max-width:600px)');
 
     useEffect(() => {
         async function fetchData() {
@@ -78,18 +79,19 @@ export default function Profil() {
 
     return (
         <>
-        <NavBar idRole={user.id_role} />
-        <Grid container direction="row" justifyContent="center" alignItems="flex-start" spacing={4} marginTop={4}>
-            <Grid item>
-                <HeaderProfile Nom={user ? user.nom : <LinearProgress />} Prenom={user ? user.prenom : <LinearProgress />} Mail={user ? user.mail : <LinearProgress />} Classe={user ? user.classe : <LinearProgress />} Status={user ? user.statut : <LinearProgress />} Role={user ? user.id_role : <LinearProgress />} />
-                <Grid item sx={{ marginLeft: "auto", marginTop: 4 }}>
-                    <UploadRapport args={{ id_user: user ? user.id_user : null }} />
+            {!isMobile && <NavBar idRole={user.id_role} />}
+            <Grid container direction="row" justifyContent="center" alignItems="flex-start" spacing={4} marginTop={4}>
+                <Grid item>
+                    <HeaderProfile Nom={user ? user.nom : <LinearProgress />} Prenom={user ? user.prenom : <LinearProgress />} Mail={user ? user.mail : <LinearProgress />} Classe={user ? user.classe : <LinearProgress />} Status={user ? user.statut : <LinearProgress />} Role={user ? user.id_role : <LinearProgress />} />
+                    <Grid item sx={{ marginLeft: "auto", marginTop: 4 }}>
+                        <UploadRapport args={{ id_user: user ? user.id_user : null }} />
+                    </Grid>
+                </Grid>
+                <Grid item>
+                    <DataTable rows={filteredRapports} type="mes_rapports" />
                 </Grid>
             </Grid>
-            <Grid item>
-                <DataTable rows={filteredRapports} type="mes_rapports" />
-            </Grid>
-        </Grid>
-    </>
+            {isMobile && <NavBar idRole={user.id_role} />}
+        </>
     );
 }

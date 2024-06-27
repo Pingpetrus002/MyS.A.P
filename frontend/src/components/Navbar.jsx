@@ -1,11 +1,15 @@
 import { useEffect, useState } from 'react';
 
+import logo from '../assets/logo.svg';
 import logoSelect from '../assets/LogoSelect.svg';
 import student from '../assets/images/Student.svg';
+import studentSelect from '../assets/images/StudentSelect.svg';
 import calendar from '../assets/images/Calendar.svg';
+import calendarSelect from '../assets/images/CalendarSelect.svg';
 import profil from '../assets/images/Profil.svg';
+import profilSelect from '../assets/images/ProfilSelect.svg';
 import rapport from '../assets/images/Rapport.svg';
-import logo from '../assets/logo.svg';
+import rapportSelect from '../assets/images/RapportSelect.svg';
 
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
@@ -69,6 +73,13 @@ const Navbar = () => {
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
     const isMedium = useMediaQuery(theme.breakpoints.between('sm', 'md'));
     const isDesktop = useMediaQuery(theme.breakpoints.up('md'));
+
+    const getCurrentPage = () => {
+        const params = new URLSearchParams(window.location.search);
+        return params.get('page');
+    };
+
+    const currentPage = getCurrentPage();
 
     const handleOpenAccueilMenu = () => {
         window.location.href = '?page=accueil';
@@ -168,7 +179,7 @@ const Navbar = () => {
                 display: 'grid'
             }}>
                 <Toolbar disableGutters>
-                    <Typography variant="h6" noWrap component="a" href="/" sx={{
+                    <Typography variant="h6" noWrap component="a" href="?page=accueil" sx={{
                         mr: 2,
                         display: { xs: 'none', md: 'flex' },
                         fontWeight: 700,
@@ -176,8 +187,8 @@ const Navbar = () => {
                         color: 'inherit',
                         textDecoration: 'none'
                     }}>
-                        <img style={{ width: '6rem', borderRadius: 210.07, marginRight: '1rem' }} src={logoSelect}
-                             alt="logo" />
+                        <img style={{ width: '6rem' }} src={logoSelect}
+                            alt="logo" />
                     </Typography>
                     <Box sx={{
                         flexGrow: 1,
@@ -361,7 +372,7 @@ const Navbar = () => {
             <Box sx={{ flexGrow: 0, marginLeft: 2 }}>
                 <Tooltip title="Open settings">
                     <IconButton onClick={handleOpenProfileMenu} sx={{ p: 0 }}>
-                        <Avatar alt="Remy Sharp" src={profil} />
+                        <Avatar alt="Remy Sharp" src={profilSelect} />
                     </IconButton>
                 </Tooltip>
                 <Menu
@@ -425,46 +436,92 @@ const Navbar = () => {
     );
 
 
+    const navStyles = {
+        background: '#FDD47C',
+        height: 70,
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        position: 'sticky',
+        width: '100%',
+        zIndex: 1000,
+        top: 0
+    };
+
+    const IconNavButton = ({ onClick, src, alt, width, height, opacity }) => (
+        <IconButton onClick={onClick}>
+            <img style={{ width, height, opacity }} src={src} alt={alt} />
+        </IconButton>
+    );
+
     return (
         <>
-            {!isMobile ? (
-                <AppBar position="static">
-                    {isMedium ? (
-                        <NavMenuMedium />
-                    ) : (
-                        isDesktop && <NavMenuDesktop />
-                    )}
-                </AppBar>
+            {isDesktop ? (
+                <Box component="nav" sx={navStyles}>
+                    <NavMenuDesktop />
+                </Box>
+            ) : isMedium ? (
+                <Box component="nav" sx={navStyles}>
+                    <NavMenuMedium />
+                </Box>
             ) : (
-                <Box
-                    component="nav"
-                    sx={{
-                        background: '#FDD47C',
-                        height: 50,
-                        display: 'flex',
-                        justifyContent: 'space-around',
-                        alignItems: 'center',
-                        position: 'fixed',
-                        bottom: 0,
-                        width: '100%',
-                        zIndex: 1000
-                    }}
-                >
-                    <IconButton onClick={handleOpenAccueilMenu} sx={{ p: 0 }}>
-                        <img style={{ width: '2.5rem', borderRadius: '50%', opacity: 0.6 }} src={logo} alt="logo" />
-                    </IconButton>
-                    <IconButton onClick={handleOpenRapportMenu} sx={{ p: 0 }}>
-                        <img style={{ width: '2.5rem', borderRadius: '50%', opacity: 0.6 }} src={rapport} alt="rapport" />
-                    </IconButton>
-                    <IconButton onClick={handleOpenStudentMenu} sx={{ p: 0 }}>
-                        <img style={{ width: '2.5rem', borderRadius: '50%', opacity: 0.6 }} src={student} alt="student" />
-                    </IconButton>
-                    <IconButton onClick={handleOpenCalendarMenu} sx={{ p: 0 }}>
-                        <img style={{ width: '2.5rem', borderRadius: '50%', opacity: 0.6 }} src={calendar} alt="calendar" />
-                    </IconButton>
-                    <IconButton onClick={handleOpenProfileMenu} sx={{ p: 0 }}>
-                        <img style={{ width: '2.5rem', borderRadius: '50%', opacity: 0.6 }} src={profil} alt="profile" />
-                    </IconButton>
+                <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '30vh' }}>
+                    <Box sx={{ flexGrow: 1 }}></Box>
+                    <Box
+                        component="nav"
+                        sx={{
+                            background: '#FDD47C',
+                            height: 70,
+                            display: 'flex',
+                            justifyContent: 'space-between',
+                            alignItems: 'center',
+                            position: 'sticky',
+                            bottom: 0,
+                            width: '100%',
+                            zIndex: 1000
+                        }}
+                    >
+                        <IconNavButton
+                            onClick={handleOpenAccueilMenu}
+                            src={currentPage === 'accueil' ? logoSelect : logo}
+                            alt="logo"
+                            width="70px"
+                            height="70px"
+                            opacity={currentPage === 'accueil' ? 1 : 0.5}
+                        />
+                        <IconNavButton
+                            onClick={handleOpenRapportMenu}
+                            src={currentPage === 'rapports' ? rapportSelect : rapport}
+                            alt="rapport"
+                            width="40px"
+                            height="40px"
+                            opacity={currentPage === 'rapports' ? 1 : 0.5}
+                        />
+                        <IconNavButton
+                            onClick={handleOpenStudentMenu}
+                            src={currentPage === 'etudiants' ? studentSelect : student}
+                            alt="student"
+                            width="50px"
+                            height="50px"
+                            opacity={currentPage === 'etudiants' ? 1 : 0.5}
+                        />
+                        <IconNavButton
+                            onClick={handleOpenCalendarMenu}
+                            src={currentPage === 'rendez-vous' ? calendarSelect : calendar}
+                            alt="calendar"
+                            width="60px"
+                            height="60px"
+                            opacity={currentPage === 'rendez-vous' ? 1 : 0.5}
+                        />
+                        <IconNavButton
+                            onClick={handleOpenProfileMenu}
+                            src={currentPage === 'profil' ? profilSelect : profil}
+                            alt="profile"
+                            width="40px"
+                            height="40px"
+                            opacity={currentPage === 'profil' ? 1 : 0.5}
+                        />
+                    </Box>
                 </Box>
             )}
         </>
