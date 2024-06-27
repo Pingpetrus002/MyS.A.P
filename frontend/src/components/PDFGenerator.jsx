@@ -82,7 +82,7 @@ const PdfGenerator = (props) => {
         const pdfContent = doc.output('datauristring').split(',')[1];
 
         let fetchWraper = new FetchWraper();
-        fetchWraper.url = "https://10.1.1.44:5001/auth/set_rapport";
+        fetchWraper.url = "https://localhost:5001/auth/set_rapport";
         fetchWraper.method = "POST";
         fetchWraper.headers.append("Content-Type", "application/json");
         fetchWraper.headers.append("Accept", "application/json");

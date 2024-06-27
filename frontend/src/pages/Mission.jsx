@@ -9,7 +9,7 @@ import DataTable from '../components/DataTable';
 // Fonction asynchrone pour récupérer les données des missions
 async function getMissionData() {
   let fetchWraper = new FetchWraper();
-  fetchWraper.url = "https://10.1.1.44:5001/auth/get_missions"; // Endpoint pour récupérer les missions
+  fetchWraper.url = "https://localhost:5001/auth/get_missions"; // Endpoint pour récupérer les missions
   fetchWraper.method = "GET";
   fetchWraper.headers.append("Content-Type", "application/json");
   fetchWraper.headers.append("Accept", "application/json");

@@ -1,7 +1,7 @@
 {
   "name": "vite-project",
   "private": true,
-  "proxy": "https://10.1.1.44:5001/",
+  "proxy": "https://localhost:5001/",
   "version": "0.0.0",
   "type": "module",
   "scripts": {

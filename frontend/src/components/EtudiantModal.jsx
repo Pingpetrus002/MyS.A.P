@@ -29,7 +29,7 @@ export default function StudentModal({ student, open, onClose }) {
 
   const handleSubmit = () => {
     let fetchWraper = new FetchWraper();
-    fetchWraper.url = "https://10.1.1.44:5001/auth/update_etudiant";
+    fetchWraper.url = "https://localhost:5001/auth/update_etudiant";
     fetchWraper.method = "POST";
     fetchWraper.headers.append("Content-Type", "application/json");
     fetchWraper.headers.append("Accept", "application/json");

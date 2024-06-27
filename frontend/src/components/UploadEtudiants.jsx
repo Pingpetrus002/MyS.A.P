@@ -54,7 +54,7 @@ function getLocalFile(event) {
 
 async function sendFile(body) {
     let fetchWraper = new FetchWraper();
-    fetchWraper.url = "https://10.1.1.44:5001/auth/ajout_etudiants_fichier";
+    fetchWraper.url = "https://localhost:5001/auth/ajout_etudiants_fichier";
     fetchWraper.method = "POST";
     fetchWraper.headers.append("Content-Type", "application/json");
     fetchWraper.headers.append("Accept", "application/json");
