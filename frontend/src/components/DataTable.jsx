@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { DataGrid } from '@mui/x-data-grid';
 import { styled } from '@mui/material/styles';
 import Button from '@mui/material/Button';
@@ -137,11 +137,10 @@ function getColumns(type, isLargeScreen) {
       },
     ],
     etudiant: [
-      { field: 'nom_prenom', headerName: 'Nom Prénom', width: 180, minWidth: 180, maxWidth: 300 },
+      { field: 'nom', headerName: 'Nom', width: 180, minWidth: 180, maxWidth: 300 },
+      { field: 'prenom', headerName: 'Prénom', width: 180, minWidth: 180, maxWidth: 300 },
       { field: 'classe', headerName: 'Classe', width: 220, minWidth: 220, maxWidth: 300 },
       { field: 'statut', headerName: 'Statut', width: 180, minWidth: 180, maxWidth: 300 },
-      { field: 'duree', headerName: 'Durée', width: 180, minWidth: 180, maxWidth: 300 },
-      { field: 'contract', headerName: 'Contract', width: 180, minWidth: 180, maxWidth: 300 },
       {
         field: 'voir',
         headerName: 'Voir',
@@ -287,29 +286,30 @@ export default function DataTable({ rows, type }) {
           <EastIcon fontSize="medium" className="icon-hover" sx={{ transition: 'transform 0.3s ease', ml: '0.3em' }} />
         </Link>)}
 
-        {/* Bouton type Etudiant */}
-        {type === 'etudiant' && (
-          <Tooltip title="Ajouter un étudiant" placement="top">
-            <Button
-              variant="outlined"
-              onClick={handleOpen}
-              sx={{
-                color: '#000000',
-                borderColor: '#F0C975',
-                backgroundColor: '#FDD47C',
-                mb: 1,
-                '&:hover': {
-                  backgroundColor: '#FFC039',
-                  borderColor: '#FFC039',
-                }
-              }}
-            >
-              <AddIcon />
-            </Button>
-          </Tooltip>
-        )}
-
         {type === 'mission' && <AddMissionModal />}
+
+        {/* Bouton type Etudiant */}
+        {type === 'etudiant' &&
+            <Button
+            variant="contained"
+            sx={{
+              backgroundColor: '#FDD47C',
+              color: 'black',
+              size: 'large',
+              borderRadius: '4px',
+              width: '40px',
+              minWidth: '40px',
+              height: '40px',
+              fontSize: '24px', // Augmenter la taille du texte
+              '&:hover': {
+                backgroundColor: '#FFC039'
+              }
+            }}
+            href={`/?page=ajout_etudiants`}
+        >
+          +
+        </Button>
+        }
 
 
       </div>
