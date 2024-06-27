@@ -4,7 +4,7 @@ from flask import Blueprint, request, jsonify, render_template, make_response
 from flask_mail import Message, Mail
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity, set_access_cookies, unset_jwt_cookies
 from werkzeug.security import generate_password_hash, check_password_hash
-from .models import Utilisateur, db, Document, Entreprise, Alert, Mission, Ecole
+from .models import Utilisateur, db, Document, Entreprise, Alert, Mission, Contrat, Ecole
 
 import locale
 import re
@@ -328,6 +328,7 @@ def get_students():
             'prenom': student.prenom,
             'statut': "Pas d'alternance" if student.statut == 0 else "Alternance en cours",
             'classe': student.classe,
+            'contrat': Contrat.query.get(student.id_user).libelle if student.statut == 1 else "Pas de contrat",
             # Nom de l'entreprise si l'étudiant est en alternance
             'entreprise': "Aucune entreprise" if student.statut == 0 else Entreprise.query.get(student.id_entreprise).raison_sociale,
         } for student in students]
@@ -430,9 +431,8 @@ def create_alert():
 @auth.route('/get_alerts', methods=['GET'])
 @jwt_required()
 def get_alerts():
-    #TODO: Installer la localisation pour la date
-    # locale.setlocale(locale.LC_TIME, 'fr_FR')  # Définit la localisation pour le français
-    alerts = Alert.query.all()
+    alerts = Alert.query.filter_by(etat=1).all()  # Filtrer les alertes par leur état actif (1)
+
     alerts_dict = [
         {
             'id': alert.id_alerte,
@@ -445,8 +445,25 @@ def get_alerts():
         }
         for alert in alerts
     ]
+
     return jsonify(alerts_dict), 200
 
+# Route pour désactiver une alerte
+@auth.route('/disable_alert/<int:id_alert>', methods=['GET'])
+@jwt_required()
+def disable_alert(id_alert):
+    alert = Alert.query.get(id_alert)
+
+    if not check_role(Utilisateur.query.get(get_jwt_identity()), 1) and not check_role(Utilisateur.query.get(get_jwt_identity()), 2):
+        return jsonify({'message': 'Unauthorized'}), 403
+
+    if not alert:
+        return jsonify({'message': 'Alert not found'}), 404
+
+    alert.etat = 0
+    db.session.commit()
+
+    return jsonify({'message': 'Alert disabled'}), 200
 
 
 # Route pour ajouter une mission
@@ -498,7 +515,7 @@ def get_missions():
             'description': mission.description,
             'datedebut': mission.datedebut,
             'datefin': mission.datefin,
-            'id_user': Utilisateur.query.get(mission.id_user).nom + ' ' + Utilisateur.query.get(mission.id_user).prenom
+            'id_user': Utilisateur.query.get(mission.id_user).prenom + ' ' + Utilisateur.query.get(mission.id_user).nom
         } for mission in missions
     ]
 
