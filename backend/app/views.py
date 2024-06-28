@@ -110,6 +110,7 @@ def register():
     lastname = data.get('lastname')
     date_naissance = data.get('date_naissance')
     password = data.get('password', generate_random_password()) # Génération d'un mot de passe aléatoire si non fourni
+    url_calendly = data.get('url_calendly', None)
     role = data.get('role')
     
 
@@ -127,7 +128,19 @@ def register():
 
     # Hachage du mot de passe avant de le stocker dans la base de données
     hashed_password = generate_password_hash(password)
-    new_user = Utilisateur(mail=username, password=hashed_password, nom=lastname, prenom=firstname, date_naissance=date_naissance, id_role=role)
+    args = {
+        'mail': username,
+        'password': hashed_password,
+        'nom': lastname,
+        'prenom': firstname,
+        'date_naissance': date_naissance,
+        'id_role': role,
+    }
+    if url_calendly:
+        args['url_calendly'] = url_calendly
+
+    #new_user = Utilisateur(mail=username, password=hashed_password, nom=lastname, prenom=firstname, date_naissance=date_naissance, id_role=role)
+    new_user = Utilisateur(**args)
     db.session.add(new_user)
     db.session.commit()
 
@@ -205,6 +218,7 @@ def user_edit():
     user = Utilisateur.query.get(data.get('id_user'))
     user.id_role = data.get('id_role')
     user.statut = data.get('statut')
+    user.url_calendly = data.get('url_calendly', '')
     db.session.commit()
 
     return jsonify({'message': 'User updated'}), 200
@@ -262,7 +276,8 @@ def get_users_list():
         'id_entreprise_1': user.id_entreprise_1,
         'id_role': user.id_role,
         'id_user_3': user.id_user_3,
-        'id_planning': user.id_planning
+        'id_planning': user.id_planning,
+        'url_calendly': user.url_calendly
     } for user in users]
 
     return jsonify({'users': users_dict}), 200
