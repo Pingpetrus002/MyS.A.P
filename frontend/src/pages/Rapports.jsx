@@ -52,11 +52,15 @@ export default function Rapports() {
     return (
         <>
             {!isMobile && <NavBar />}
+            {loading ? (
+                <LinearProgress />
+            ) : (
             <Grid container direction="row" justifyContent="center" spacing={4} marginTop={4}>
                 <Grid item>
                     <DataTable rows={rapports} type="rapport" />
                 </Grid>
             </Grid>
+            )}
             {isMobile && <NavBar />}
         </>
     );

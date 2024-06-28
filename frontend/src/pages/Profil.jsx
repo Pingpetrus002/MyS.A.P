@@ -83,7 +83,6 @@ export default function Profil() {
                     <DataTable
                         rows={showSecondTable ? otherRapports : filteredRapports}
                         type={showSecondTable ? "mes_documents" : "mes_rapports"}
-                        typeTable={showSecondTable ? "mes_documents" : "mes_rapports"}
                         handleToggleTable={handleToggleTable}
                     />
                 </Grid>
