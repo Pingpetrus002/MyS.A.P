@@ -266,7 +266,7 @@ function getTitle(type) {
   }
 }
 
-export default function DataTable({ rows, type, typeTable, handleToggleTable, callback = () => { }, onRowButtonClick }) {
+export default function DataTable({ rows, type, handleToggleTable, callback = () => { }, onRowButtonClick }) {
   const [openModal, setOpenModal] = useState(false);
   const [selectedAlert, setSelectedAlert] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
@@ -293,7 +293,7 @@ export default function DataTable({ rows, type, typeTable, handleToggleTable, ca
 
   const handleExportCSV = () => {
     // Récupérer les colonnes
-    const columns = getColumns(typeTable, isLargeScreen, callback);
+    const columns = getColumns(type, isLargeScreen, callback);
 
     // Créer l'en-tête CSV à partir des noms de colonne
     const header = columns.map(col => col.headerName).join(',') + '\n';
@@ -319,7 +319,7 @@ export default function DataTable({ rows, type, typeTable, handleToggleTable, ca
     <>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <Typography variant="h4" gutterBottom style={{ textAlign: 'left' }}>
-          {getTitle(type === 'mes_rapports' ? typeTable : type)}
+          {getTitle(type)}
         </Typography>
         {type === 'rapport' && <ButtonRapports />}
         {type === 'mes_rapports'}
@@ -341,13 +341,13 @@ export default function DataTable({ rows, type, typeTable, handleToggleTable, ca
           onClick={handleToggleTable}
         >
           <Typography variant="h5">
-            {typeTable === 'mes_rapports' ? 'Voir mes documents' : 'Voir mes rapports'}
+            {type === 'mes_rapports' ? 'Voir mes documents' : type === 'mes_documents' ? 'Voir mes rapports' : ''}
           </Typography>
-          {typeTable === "mes_rapports" ? (
+          {type === "mes_rapports" ? (
             <EastIcon fontSize="medium" className="icon-hover" sx={{ transition: 'transform 0.3s ease', ml: '0.3em' }} />
-          ) : (
+          ) : type === "mes_documents" ? (
             <WestIcon fontSize="medium" className="icon-hover" sx={{ transition: 'transform 0.3s ease', ml: '0.3em' }} />
-          )}
+          ) : null}
         </Button>
 
         {type === 'etudiant' && (
@@ -375,7 +375,7 @@ export default function DataTable({ rows, type, typeTable, handleToggleTable, ca
       <CustomDataGrid
         autoHeight
         rows={rows}
-        columns={getColumns(typeTable, isLargeScreen, callback, handleRowButtonClick)}
+        columns={getColumns(type, isLargeScreen, callback, handleRowButtonClick)}
         pageSizeOptions={[5, 10, 25]}
         initialState={{
           pagination: {

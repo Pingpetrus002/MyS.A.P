@@ -1,5 +1,5 @@
-import {useEffect, useState} from 'react';
-import {Button, LinearProgress, Grid, MenuItem, Link, Box, Divider, Menu,useMediaQuery} from '@mui/material';
+import { useEffect, useState } from 'react';
+import { Button, LinearProgress, Grid, MenuItem, Link, Box, Divider, Menu, useMediaQuery } from '@mui/material';
 
 
 // Importations personnalisées
@@ -31,7 +31,7 @@ export default function Etudiants() {
     const [loading, setLoading] = useState(true);
     const [selectedStudent, setSelectedStudent] = useState(null);
     const [modalOpen, setModalOpen] = useState(false);
-        const isMobile = useMediaQuery('(max-width:600px)');
+    const isMobile = useMediaQuery('(max-width:600px)');
 
 
     // Effet pour charger les données des étudiants au chargement du composant
@@ -74,30 +74,30 @@ export default function Etudiants() {
         setAnchorElAjout(null);
     };
 
-  // Rendu du composant
-  return (
-    <>
-      {!isMobile && <NavBar />}
-      {loading ? (
-        <LinearProgress />
-      ) : (
-        <Grid container justifyContent="center" sx={{ marginTop: '30px' }}>
-                <Grid item xs={10}>
-                    {loading ? (
-                        <LinearProgress/>
-                    ) : (
-                        <DataTable rows={students} type="etudiant" onRowButtonClick={handleRowClick}
-                                   getRowId={getRowId}/>
-                    )}
+    // Rendu du composant
+    return (
+        <>
+            {!isMobile && <NavBar />}
+            {loading ? (
+                <LinearProgress />
+            ) : (
+                <Grid container justifyContent="center" sx={{ marginTop: '30px' }}>
+                    <Grid item xs={10}>
+                        {loading ? (
+                            <LinearProgress />
+                        ) : (
+                            <DataTable rows={students} type="etudiant" onRowButtonClick={handleRowClick}
+                                getRowId={getRowId} />
+                        )}
+                    </Grid>
+                    <Grid item xs={10}>
+                        {selectedStudent && (
+                            <StudentModal student={selectedStudent} open={modalOpen} onClose={handleCloseModal} />
+                        )}
+                    </Grid>
                 </Grid>
-                <Grid item xs={10}>
-                    {selectedStudent && (
-                        <StudentModal student={selectedStudent} open={modalOpen} onClose={handleCloseModal}/>
-                    )}
-                </Grid>
-            </Grid>
-      )}
-      {isMobile && <NavBar />}
-    </>
-  );
+            )}
+            {isMobile && <NavBar />}
+        </>
+    );
 }

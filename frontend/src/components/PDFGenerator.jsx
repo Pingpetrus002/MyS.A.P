@@ -119,6 +119,7 @@ const PdfGenerator = (props) => {
                 throw new Error('Erreur lors de l\'envoi du rapport');
             }
             console.log('Rapport envoyé avec succès');
+            window.location.reload();
         } catch (error) {
             console.error('Erreur:', error);
         } finally {
