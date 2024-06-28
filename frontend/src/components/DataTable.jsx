@@ -141,7 +141,7 @@ function getColumns(type, isLargeScreen, onButtonClick = () => { }, onRowButtonC
     ],
     mes_documents: [
       { field: 'nom', headerName: 'Nom', width: 180, minWidth: 180, maxWidth: 300 },
-      { field: 'date', headerName: 'Date d\'ajout', width: 220, minWidth: 220, maxWidth: 300 },
+      { field: 'datecreation', headerName: 'Date d\'ajout', width: 220, minWidth: 220, maxWidth: 300 },
       {
         field: 'télécharger',
         headerName: 'Télécharger',
