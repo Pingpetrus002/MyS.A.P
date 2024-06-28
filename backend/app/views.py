@@ -511,7 +511,7 @@ def create_alert():
     id_user_cible = data.get('id_user_cible')
 
     # Création d'une alerte pour l'utilisateur spécifié
-    new_alert = Alert(type=type, commentaires=commentaire, id_user_cible=id_user_cible, id_user_source=current_user)
+    new_alert = Alert(type=type, commentaires=commentaire, id_user_cible=id_user_cible, id_user_source=current_user, id_entreprise=Utilisateur.query.get(id_user_cible).id_entreprise, etat=1)
     db.session.add(new_alert)
     db.session.commit()
 
