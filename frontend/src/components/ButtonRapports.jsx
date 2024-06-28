@@ -26,13 +26,14 @@ function ButtonRapports() {
                     onClick={handleOpen}
                     sx={{
                         color: '#000000',
+                        alignItems: 'center',
                         borderColor: '#F0C975',
                         backgroundColor: '#FDD47C',
                         mb: 1,
                         '&:hover': {
                             backgroundColor: '#FFC039',
                             borderColor: '#FFC039',
-                        },
+                        }
                     }}
                 >
                     <AddIcon />
