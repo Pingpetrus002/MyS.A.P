@@ -33,46 +33,106 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 });
 
 function SyntheseSuiviTuteur() {
+    // États pour les checkboxes du Service Relations Entreprises
+    const [isRENonRASChecked, setIsRENonRASChecked] = useState(false);
     const [isREOtherChecked, setIsREOtherChecked] = useState(false);
     const [reOtherText, setREOtherText] = useState('');
 
+    // Gestion du changement pour Service Relations Entreprises - NON - RAS
+    const handleRENonRASChange = (event) => {
+        setIsRENonRASChecked(event.target.checked);
+        if (event.target.checked) {
+            setIsREOtherChecked(false);
+            setREOtherText('');
+        }
+    };
+
+    // Gestion du changement pour Service Relations Entreprises - Autre
     const handleREOtherChange = (event) => {
         setIsREOtherChecked(event.target.checked);
+        if (event.target.checked) {
+            setIsRENonRASChecked(false);
+        } else {
+            setREOtherText('');
+        }
     };
 
-    const handleRETextChange = (event) => {
-        setREOtherText(event.target.value);
+    const handleRETextChange = (e) => {
+        setREOtherText(e.target.value);
     };
 
+    // États pour les checkboxes du Service Pédagogique
+    const [isPedagogiqueNonRASChecked, setIsPedagogiqueNonRASChecked] = useState(false);
     const [isPedagogiqueOtherChecked, setIsPedagogiqueOtherChecked] = useState(false);
     const [PedagogiqueOtherText, setPedagogiqueOtherText] = useState('');
 
+    // Gestion du changement pour Service Pédagogique - NON - RAS
+    const handlePedagogiqueNonRASChange = (event) => {
+        setIsPedagogiqueNonRASChecked(event.target.checked);
+        if (event.target.checked) {
+            setIsPedagogiqueOtherChecked(false);
+            setPedagogiqueOtherText('');
+        }
+    };
+
+    // Gestion du changement pour Service Pédagogique - Autre
     const handlePedagogiqueOtherChange = (event) => {
         setIsPedagogiqueOtherChecked(event.target.checked);
+        if (event.target.checked) {
+            setIsPedagogiqueNonRASChecked(false);
+        } else {
+            setPedagogiqueOtherText('');
+        }
     };
 
-    const handlePedagogiqueTextChange = (event) => {
-        setPedagogiqueOtherText(event.target.value);
-    };
-
+    // États pour les checkboxes Présence
     const [isNonChecked, setIsNonChecked] = useState(false);
+    const [isOuiChecked, setIsOuiChecked] = useState(false);
+    const [isPresentChecked, setIsPresentChecked] = useState(false);
+    const [presentText, setPresentText] = useState('');
 
-    const handleNonChange = (event) => {
-        setIsNonChecked(event.target.checked);
-        if (!event.target.checked) {
+    // Gestion du changement pour Présence - NON
+    const handleNonChange = (e) => {
+        const isChecked = e.target.checked;
+        setIsNonChecked(isChecked);
+        if (isChecked) {
+            setIsOuiChecked(false);
+            setIsPresentChecked(true);
+            setCheckboxFieldPresence('NON');
+        } else {
             setIsPresentChecked(false);
         }
     };
 
-    const [isPresentChecked, setIsPresentChecked] = useState(false);
-    const [presentText, setPresentText] = useState('');
-
-    const handlePresentChange = (event) => {
-        setIsPresentChecked(event.target.checked);
+    // Gestion du changement pour Présence - OUI
+    const handleOuiChange = (e) => {
+        const isChecked = e.target.checked;
+        setIsOuiChecked(isChecked);
+        if (isChecked) {
+            setIsNonChecked(false);
+            setIsPresentChecked(false);
+            setCheckboxFieldPresence('OUI');
+        }
     };
 
-    const handlePresentTextChange = (event) => {
-        setPresentText(event.target.value);
+    // Gestion du changement pour le texte de Présence
+    const handlePresentTextChange = (e) => {
+        setPresentText(e.target.value);
+    };
+
+    const handlePedagogiqueTextChange = (e) => {
+        setPedagogiqueOtherText(e.target.value);
+    };
+
+    const champsInitiaux = {
+        'Ponctualité': '',
+        'Capacité d\'intégration': '',
+        'Sens de l\'organisation': '',
+        'Sens de la communication': '',
+        'Travail en équipe': '',
+        'Réactivité': '',
+        'Persévérance': '',
+        'Force de proposition': ''
     };
 
     const [open, setOpen] = useState(false);
@@ -101,12 +161,17 @@ function SyntheseSuiviTuteur() {
     const [textFieldPointsFort, setTextFieldPointsFort] = useState('');
     const [textFieldSujetMemoire, setTextFieldSujetMemoire] = useState('');
     const [textFieldCommentaireEntretienSuivi, setTextFieldCommentaireEntretienSuivi] = useState('');
+    const [radioFields, setRadioFields] = useState(champsInitiaux);
     const [textFieldNomSuiveur, setTextFieldNomSuiveur] = useState('');
     const [dateFieldEntretien, setDateFieldEntretien] = useState(new Date());
     const [radioFieldFormatSuivi, setRadioFieldFormatSuivi] = useState('');
     const [checkboxFieldPresence, setCheckboxFieldPresence] = useState('');
     const [radioFieldRecrutement, setRadioFieldRecrutement] = useState('');
     const [radioFieldPoursuiteEtudes, setRadioFieldPoursuiteEtudes] = useState('');
+
+    const setRadioFieldSavoirEtre = (field, value) => {
+        setRadioFields(prev => ({ ...prev, [field]: value }));
+    };
 
     // Mettre à jour la fonction handleReset pour réinitialiser tous les champs
     const handleReset = () => {
@@ -121,6 +186,8 @@ function SyntheseSuiviTuteur() {
         setTextFieldPosteEtudiant('');
         setTextFieldMissions('');
         setTextFieldCommentaireTuteur('');
+        setRadioFieldSavoirEtre('');
+        setRadioFields(champsInitiaux);
         setTextFieldProjetsSecondSemestre('');
         setTextFieldAxesAmelioration('');
         setTextFieldPointsFort('');
@@ -137,6 +204,9 @@ function SyntheseSuiviTuteur() {
         setIsPedagogiqueOtherChecked(false);
         setPedagogiqueOtherText('');
         setIsNonChecked(false);
+        setIsOuiChecked(false);
+        setIsRENonRASChecked(false);
+        setIsPedagogiqueNonRASChecked(false);
         setIsPresentChecked(false);
         setPresentText('');
 
@@ -331,34 +401,31 @@ function SyntheseSuiviTuteur() {
                 <p style={{ marginTop: 0 }}>Merci de retranscrire l&apos;évaluation du tuteur sur l&apos;ensemble des points suivants</p>
             </Typography>
 
-            {[
-                'Ponctualité',
-                'Capacité d\'intégration',
-                'Sens de l\'organisation',
-                'Sens de la communication',
-                'Travail en équipe',
-                'Réactivité',
-                'Persévérance',
-                'Force de proposition'
-            ].map((field) => (
-                <div key={field} style={{ marginTop: 40 }}>
-                    <FormControl component="fieldset" margin="normal" required>
-                        <FormLabel
-                            component="legend"
-                            sx={{ '& .MuiFormLabel-asterisk': { color: 'red' }, marginBlock: 5, fontWeight: 'bold', color: 'black' }}
-                        >{field}
-                        </FormLabel>
-                        <RadioGroup row>
-                            <Typography component="legend" sx={{ mt: 4 }}>Insatisfaisant</Typography>
-                            <FormControlLabel value="1" control={<Radio />} labelPlacement="top" label="1" />
-                            <FormControlLabel value="2" control={<Radio />} labelPlacement="top" label="2" />
-                            <FormControlLabel value="3" control={<Radio />} labelPlacement="top" label="3" />
-                            <FormControlLabel value="4" control={<Radio />} labelPlacement="top" label="4" />
-                            <Typography component="legend" sx={{ mt: 4 }}>Satisfaisant</Typography>
-                        </RadioGroup>
-                    </FormControl>
-                </div>
-            ))}
+            <div>
+                {Object.keys(champsInitiaux).map((field) => (
+                    <div key={field} style={{ marginTop: 40 }}>
+                        <FormControl component="fieldset" margin="normal" required>
+                            <FormLabel
+                                component="legend"
+                                sx={{ '& .MuiFormLabel-asterisk': { color: 'red' }, marginBlock: 5, fontWeight: 'bold', color: 'black' }}
+                            >{field}
+                            </FormLabel>
+                            <RadioGroup
+                                value={radioFields[field]}
+                                onChange={(e) => setRadioFieldSavoirEtre(field, e.target.value)}
+                                row
+                            >
+                                <Typography component="legend" sx={{ mt: 4 }}>Insatisfaisant</Typography>
+                                <FormControlLabel value="1" control={<Radio />} labelPlacement="top" label="1" />
+                                <FormControlLabel value="2" control={<Radio />} labelPlacement="top" label="2" />
+                                <FormControlLabel value="3" control={<Radio />} labelPlacement="top" label="3" />
+                                <FormControlLabel value="4" control={<Radio />} labelPlacement="top" label="4" />
+                                <Typography component="legend" sx={{ mt: 4 }}>Satisfaisant</Typography>
+                            </RadioGroup>
+                        </FormControl>
+                    </div>
+                ))}
+            </div>
 
             <Typography variant="h5" sx={{ my: 7 }}>
                 LES PROJECTIONS (tuteur)
@@ -448,15 +515,26 @@ function SyntheseSuiviTuteur() {
                     <strong>Déclarer une ALERTE au Service Relations Entreprises ?</strong>
                 </FormLabel>
                 <Typography variant="body1" sx={{ mx: 2, color: '#666666' }}>
-                    Si oui, cocher &quot;Autre&quot;, et préciser l&apos;alerte (ex : Les missions ne correspondent pas au révérenciel, les
+                    Si oui, cocher &quot;Autre&quot;, et préciser l&apos;alerte (ex : Les missions ne correspondent pas au référentiel, les
                     rapports entre l&apos;étudiant et le tuteur ou l&apos;entreprise sont compliqués, une médiation est urgente...)
                 </Typography>
                 <FormGroup sx={{ m: 5 }}>
-                    <FormControlLabel control={
-                        <Checkbox />}
-                        label="NON - RAS" />
                     <FormControlLabel
-                        control={<Checkbox checked={isREOtherChecked} onChange={handleREOtherChange} />}
+                        control={
+                            <Checkbox
+                                checked={isRENonRASChecked}
+                                onChange={handleRENonRASChange}
+                            />
+                        }
+                        label="NON - RAS"
+                    />
+                    <FormControlLabel
+                        control={
+                            <Checkbox
+                                checked={isREOtherChecked}
+                                onChange={handleREOtherChange}
+                            />
+                        }
                         label="Autre :"
                     />
                     {isREOtherChecked && (
@@ -496,9 +574,22 @@ function SyntheseSuiviTuteur() {
                     question importante : sur la planification...)
                 </Typography>
                 <FormGroup sx={{ m: 5 }}>
-                    <FormControlLabel control={<Checkbox />} label="NON - RAS" />
                     <FormControlLabel
-                        control={<Checkbox checked={isPedagogiqueOtherChecked} onChange={handlePedagogiqueOtherChange} />}
+                        control={
+                            <Checkbox
+                                checked={isPedagogiqueNonRASChecked}
+                                onChange={handlePedagogiqueNonRASChange}
+                            />
+                        }
+                        label="NON - RAS"
+                    />
+                    <FormControlLabel
+                        control={
+                            <Checkbox
+                                checked={isPedagogiqueOtherChecked}
+                                onChange={handlePedagogiqueOtherChange}
+                            />
+                        }
                         label="Autre :"
                     />
                     {isPedagogiqueOtherChecked && (
@@ -513,6 +604,7 @@ function SyntheseSuiviTuteur() {
                     )}
                 </FormGroup>
             </FormControl>
+
             <div>
                 <FormControl
                     fullWidth
@@ -679,26 +771,32 @@ function SyntheseSuiviTuteur() {
                     fullWidth
                     sx={{ m: 5 }}
                     value={checkboxFieldPresence}
-                    onChange={(e) => setCheckboxFieldPresence(e.target.value)}
                 >
-                    <FormControlLabel control={<Checkbox />} label="OUI" />
                     <FormControlLabel
-                        control={<Checkbox checked={isNonChecked} onChange={(e) => {
-                            handleNonChange(e);
-                            if (e.target.checked) {
-                                setIsPresentChecked(true);
-                            } else {
-                                setIsPresentChecked(false);
-                            }
-                        }} />}
+                        control={
+                            <Checkbox
+                                checked={isOuiChecked}
+                                onChange={handleOuiChange}
+                            />
+                        }
+                        label="OUI"
+                    />
+                    <FormControlLabel
+                        control={
+                            <Checkbox
+                                checked={isNonChecked}
+                                onChange={handleNonChange}
+                            />
+                        }
                         label="NON"
                     />
                     <FormControlLabel
-                        control={<Checkbox checked={isPresentChecked} onChange={(e) => {
-                            if (!isNonChecked || e.target.checked) {
-                                handlePresentChange(e);
-                            }
-                        }} disabled={!isNonChecked} />}
+                        control={
+                            <Checkbox
+                                checked={isPresentChecked}
+                                disabled
+                            />
+                        }
                         label="Autre :"
                     />
                     {isPresentChecked && (
@@ -732,6 +830,7 @@ function SyntheseSuiviTuteur() {
                         posteEtudiant={textFieldPosteEtudiant}
                         missions={textFieldMissions}
                         commentaireTuteur={textFieldCommentaireTuteur}
+                        savoirEtre={radioFields}
                         projetsSecondSemestre={textFieldProjetsSecondSemestre}
                         axesAmelioration={textFieldAxesAmelioration}
                         pointsFort={textFieldPointsFort}
@@ -743,12 +842,34 @@ function SyntheseSuiviTuteur() {
                         dateEntretien={dateFieldEntretien}
                         formatSuivi={radioFieldFormatSuivi}
                         presence={checkboxFieldPresence}
+                        presenceText={presentText}
                         recrutement={radioFieldRecrutement}
                         poursuiteEtudes={radioFieldPoursuiteEtudes}
                     />
                 </Grid>
                 <Grid item>
-                    <Button variant="outlined" color="secondary" type="button" sx={{ mx: 5, my: 1 }} onClick={handleClickOpen}>
+                    <Button
+                        variant="contained"
+                        type="button"
+                        sx={{
+                            backgroundColor: '#FFFFFF',
+                            border: '1px solid #F00020',
+                            color: '#000000',
+                            borderRadius: '4px',
+                            width: '16em',
+                            height: '2em',
+                            fontSize: '16px',
+                            fontFamily: 'Inter',
+                            marginInline: '1em',
+                            '&:hover': {
+                                backgroundColor: '#F00020',
+                                color: 'white'
+                            },
+                            '&:disabled': {
+                                backgroundColor: '#FDD47C',
+                                color: 'gray'
+                            }
+                        }} onClick={handleClickOpen}>
                         Effacer le formulaire
                     </Button>
 

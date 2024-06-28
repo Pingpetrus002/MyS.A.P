@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Button, CircularProgress } from '@mui/material';
 import jsPDF from 'jspdf';
 import FetchWraper from '../utils/FetchWraper';
@@ -67,6 +67,15 @@ const PdfGenerator = (props) => {
 
         addText(`Commentaires et Suivi`, 10, currentY, fontStyles.sectionTitle);
         addText(`Commentaire Tuteur : ${props.commentaireTuteur}`, 10, currentY + 10, fontStyles.text);
+
+        // Ajout des champs radio dans le PDF, une par ligne
+        if (props.radioFields) {
+            Object.keys(props.radioFields).forEach((field, index) => {
+                addText(`${field} : ${props.radioFields[field]}`, 10, currentY + 20 + index * 10, fontStyles.text);
+            });
+            currentY += 20 + Object.keys(props.radioFields).length * 10;
+        }
+
         addText(`Projets Second Semestre : ${props.projetsSecondSemestre}`, 10, currentY + 20, fontStyles.text);
         addText(`Axes Amélioration : ${props.axesAmelioration}`, 10, currentY + 30, fontStyles.text);
         addText(`Points Fort : ${props.pointsFort}`, 10, currentY + 40, fontStyles.text);
@@ -75,9 +84,15 @@ const PdfGenerator = (props) => {
         addText(`Nom Suiveur : ${props.nomSuiveur}`, 10, currentY + 70, fontStyles.text);
         addText(`Date Entretien : ${props.dateEntretien}`, 10, currentY + 80, fontStyles.text);
         addText(`Format Suivi : ${props.formatSuivi}`, 10, currentY + 90, fontStyles.text);
-        addText(`Présence : ${props.presence}`, 10, currentY + 100, fontStyles.text);
+
         addText(`Recrutement : ${props.recrutement}`, 10, currentY + 110, fontStyles.text);
         addText(`Poursuite Études : ${props.poursuiteEtudes}`, 10, currentY + 120, fontStyles.text);
+
+        let finalText = `Présence : ${props.presence}`;
+        if (props.presence === 'NON' && props.presenceText !== undefined) {
+            finalText += `, ${props.presenceText}`;
+        }
+        addText(finalText, 10, currentY + 100, fontStyles.text);
 
         const pdfContent = doc.output('datauristring').split(',')[1];
 
@@ -125,7 +140,8 @@ const PdfGenerator = (props) => {
                 fontSize: '16px',
                 fontFamily: 'Inter',
                 '&:hover': {
-                    backgroundColor: '#FFC039'
+                    backgroundColor: '#FFC039',
+                    color: '#FFFFFF'
                 },
                 '&:disabled': {
                     backgroundColor: '#FDD47C',
