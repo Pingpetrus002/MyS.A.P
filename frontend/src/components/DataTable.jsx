@@ -6,8 +6,9 @@ import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
 import Typography from '@mui/material/Typography';
 import PropTypes from 'prop-types';
 import { saveAs } from 'file-saver';
-import { Tooltip, Link, useMediaQuery } from '@mui/material';
+import { Tooltip, useMediaQuery } from '@mui/material';
 import EastIcon from '@mui/icons-material/East';
+import WestIcon from '@mui/icons-material/West';
 import AddIcon from '@mui/icons-material/Add';
 
 import FetchWraper from '../utils/FetchWraper';
@@ -97,7 +98,7 @@ const adjustColumns = (columns, isLargeScreen) => {
   });
 };
 
-function getColumns(type, isLargeScreen, onButtonClick = () => {}, onRowButtonClick) {
+function getColumns(type, isLargeScreen, onButtonClick = () => { }, onRowButtonClick) {
   const columns = {
     rapport: [
       { field: 'id_user', headerName: 'Étudiant', width: 180, minWidth: 180, maxWidth: 300 },
@@ -123,6 +124,24 @@ function getColumns(type, isLargeScreen, onButtonClick = () => {}, onRowButtonCl
       { field: 'nom', headerName: 'Sujet', width: 180, minWidth: 180, maxWidth: 300 },
       { field: 'id_user', headerName: 'Concernés', width: 220, minWidth: 220, maxWidth: 300 },
       { field: 'id_user_1', headerName: 'Suiveur', width: 180, minWidth: 180, maxWidth: 300 },
+      {
+        field: 'télécharger',
+        headerName: 'Télécharger',
+        width: 150,
+        maxWidth: 150,
+        minWidth: 150,
+        renderCell: (params) => (
+          <Tooltip title="Télécharger" placement="right">
+            <CustomButton variant="contained" onClick={() => handleDownload(params.row.md5)}>
+              <PictureAsPdfIcon />
+            </CustomButton>
+          </Tooltip>
+        ),
+      },
+    ],
+    mes_documents: [
+      { field: 'nom', headerName: 'Nom', width: 180, minWidth: 180, maxWidth: 300 },
+      { field: 'date', headerName: 'Date d\'ajout', width: 220, minWidth: 220, maxWidth: 300 },
       {
         field: 'télécharger',
         headerName: 'Télécharger',
@@ -184,7 +203,7 @@ function getColumns(type, isLargeScreen, onButtonClick = () => {}, onRowButtonCl
     ],
     users_management: [
       { field: 'id', headerName: 'ID', width: 90 },
-      { field: 'status', headerName: 'Active', width: 100},
+      { field: 'status', headerName: 'Active', width: 100 },
       { field: 'mail', headerName: 'Email', width: 150 },
       { field: 'role', headerName: 'Role', width: 150 },
       { field: 'nom', headerName: 'Prénom', width: 150 },
@@ -234,7 +253,7 @@ function getTitle(type) {
       return 'Tous les étudiants';
     case 'mes_rapports':
       return 'Mes rapports';
-    case 'documents':
+    case 'mes_documents':
       return 'Mes documents';
     case 'alerte':
       return 'Toutes les alertes';
@@ -247,7 +266,7 @@ function getTitle(type) {
   }
 }
 
-export default function DataTable({ rows, type, callback=()=>{}, onRowButtonClick }) {
+export default function DataTable({ rows, type, typeTable, handleToggleTable, callback = () => { }, onRowButtonClick }) {
   const [openModal, setOpenModal] = useState(false);
   const [selectedAlert, setSelectedAlert] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
@@ -274,7 +293,7 @@ export default function DataTable({ rows, type, callback=()=>{}, onRowButtonClic
 
   const handleExportCSV = () => {
     // Récupérer les colonnes
-    const columns = getColumns(type, isLargeScreen, callback);
+    const columns = getColumns(typeTable, isLargeScreen, callback);
 
     // Créer l'en-tête CSV à partir des noms de colonne
     const header = columns.map(col => col.headerName).join(',') + '\n';
@@ -300,11 +319,13 @@ export default function DataTable({ rows, type, callback=()=>{}, onRowButtonClic
     <>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <Typography variant="h4" gutterBottom style={{ textAlign: 'left' }}>
-          {getTitle(type)}
+          {getTitle(type === 'mes_rapports' ? typeTable : type)}
         </Typography>
         {type === 'rapport' && <ButtonRapports />}
-        {type === 'mes_rapports' && (<Link
-          href={'/?page=rapports'}
+        {type === 'mes_rapports'}
+        {type === 'mes_documents'}
+
+        <Button
           underline="none"
           color="inherit"
           sx={{
@@ -314,15 +335,21 @@ export default function DataTable({ rows, type, callback=()=>{}, onRowButtonClic
               color: 'black',
               '& .icon-hover': {
                 transform: 'translateX(4px)',
-              }
-            }
+              },
+            },
           }}
+          onClick={handleToggleTable}
         >
           <Typography variant="h5">
-            Voir tout
+            {typeTable === 'mes_rapports' ? 'Voir mes documents' : 'Voir mes rapports'}
           </Typography>
-          <EastIcon fontSize="medium" className="icon-hover" sx={{ transition: 'transform 0.3s ease', ml: '0.3em' }} />
-        </Link>)}
+          {typeTable === "mes_rapports" ? (
+            <EastIcon fontSize="medium" className="icon-hover" sx={{ transition: 'transform 0.3s ease', ml: '0.3em' }} />
+          ) : (
+            <WestIcon fontSize="medium" className="icon-hover" sx={{ transition: 'transform 0.3s ease', ml: '0.3em' }} />
+          )}
+        </Button>
+
         {type === 'etudiant' && (
           <Tooltip title="Ajouter un étudiant" placement="top">
             <Button
@@ -348,7 +375,7 @@ export default function DataTable({ rows, type, callback=()=>{}, onRowButtonClic
       <CustomDataGrid
         autoHeight
         rows={rows}
-        columns={getColumns(type, isLargeScreen, callback, handleRowButtonClick)}
+        columns={getColumns(typeTable, isLargeScreen, callback, handleRowButtonClick)}
         pageSizeOptions={[5, 10, 25]}
         initialState={{
           pagination: {
@@ -357,6 +384,7 @@ export default function DataTable({ rows, type, callback=()=>{}, onRowButtonClic
         }}
         isSmallScreen={isSmallScreen}
       />
+
       <Button
         variant="outlined"
         onClick={handleExportCSV}
@@ -385,7 +413,7 @@ export default function DataTable({ rows, type, callback=()=>{}, onRowButtonClic
 
 DataTable.propTypes = {
   rows: PropTypes.arrayOf(PropTypes.object).isRequired,
-  type: PropTypes.oneOf(['rapport', 'etudiant', 'mes_rapports', 'documents', 'alerte', 'mission', 'users_management']).isRequired,
+  type: PropTypes.oneOf(['rapport', 'etudiant', 'mes_rapports', 'mes_documents', 'alerte', 'mission', 'users_management']).isRequired,
   callback: PropTypes.func,
   onRowButtonClick: PropTypes.func.isRequired,
 };
