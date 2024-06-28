@@ -434,10 +434,12 @@ def get_students():
             'prenom': student.prenom,
             'statut': "Pas d'alternance" if student.statut == 0 else "Alternance en cours",
             'classe': student.classe,
-            'contrat': Contrat.query.get(student.id_user).libelle if student.statut == 1 else "Pas de contrat",
-            # Nom de l'entreprise si l'étudiant est en alternance
-            'entreprise': "Aucune entreprise" if student.statut == 0 else Entreprise.query.get(student.id_entreprise).raison_sociale,
-        } for student in students]
+            'contrat': "Pas de contrat" if student.statut == 0 else (
+                Contrat.query.get(student.id_user).libelle if Contrat.query.get(student.id_user) else "Pas de contrat"
+            ),            # Nom de l'entreprise si l'étudiant est en alternance
+            'entreprise': "Aucune entreprise" if student.statut == 0 else (
+                entreprise.raison_sociale if (entreprise := Entreprise.query.get(student.id_entreprise)) else "Aucune entreprise"
+            ),        } for student in students]
 
         return jsonify({'students': students_dict}), 200
 
