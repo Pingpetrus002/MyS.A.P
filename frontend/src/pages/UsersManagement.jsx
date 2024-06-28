@@ -14,6 +14,24 @@ function AddUserModal({
     handleClose = () => { },
 }) {
     const [user, setUser] = useState({});
+    const [roles, setRoles] = useState([]);
+
+
+    useEffect(() => {
+        async function fetchData() {
+            const result = await getRoles();
+            const formattedRoles = result.data.map(role => (
+                {
+                    id: role.id_role,
+                    role: role.nom,
+                }));
+            formattedRoles.push({ id: 0, role: "Inconnu" });
+            //console.log(formattedRoles);
+            setRoles(formattedRoles);
+        }
+        fetchData();
+    }
+        , []);
 
 
     const handleChange = (e) => {
@@ -52,7 +70,10 @@ function AddUserModal({
     return (
         <Modal
             open={open}
-            onClose={handleClose}
+            onClose={() => {
+                setUser({});
+                handleClose();
+            }}
             aria-labelledby="Ajouter un utilisateur"
             aria-describedby="Ajouter un utilisateur"
         >
@@ -91,6 +112,15 @@ function AddUserModal({
                         onChange={handleChange}
                     />
 
+                    <TextField
+                        id="url_calendly"
+                        label="Lien Calendly (optionnel)"
+                        placeholder="(optionnel)"
+                        variant="outlined"
+                        name="url_calendly"
+                        onChange={handleChange}
+                    />
+
                     <Box sx={{ display: 'flex', justifyContent: 'center' }}>
 
                         <Grid item xs={8} sx={{ textAlign: 'center' }}>
@@ -122,18 +152,24 @@ function AddUserModal({
                     </Box>
                     <Select
                         label="role"
-                        value={user.role}
+                        value={user.role || 0}
                         onChange={handleChange}
                         name="role"
                     >
-                        <MenuItem value="1">Admin</MenuItem>
-                        <MenuItem value="2">RRE</MenuItem>
-                        <MenuItem value="3">Suiveur</MenuItem>
-                        <MenuItem value="4">Etudiant</MenuItem>
-                        <MenuItem value="5">Tuteur</MenuItem>
+                        {roles.map(role => (
+                            <MenuItem key={role.id} value={role.id} disabled={role.id === 0}>{role.role}</MenuItem>
+                        ))}
+
                     </Select>
 
-                    <Button variant="contained" color="primary" onClick={handleSubmit}>Ajouter</Button>
+                    <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={handleSubmit}
+                        disabled={user.firstname === undefined || user.lastname === undefined || user.date_naissance === undefined || user.username === undefined || user.role === undefined}
+                    >
+                        Ajouter
+                    </Button>
                 </Stack>
             </Box>
         </Modal>
@@ -176,7 +212,7 @@ function ActionModal({
                 break;
         }
 
-    
+
         handleClose();
 
 
@@ -206,7 +242,10 @@ function ActionModal({
     return (
         <Modal
             open={open}
-            onClose={handleClose}
+            onClose={() => {
+                setUserData({});
+                handleClose();
+            }}
             aria-labelledby="Modifier un utilisateur"
             aria-describedby="Modifier un utilisateur"
         >
@@ -250,14 +289,36 @@ function ActionModal({
                                 inputProps={{ 'aria-label': 'Without label' }}
                                 onChange={(e) => {
                                     //console.log(e.target.value);
-                                    setUserData({ ...userData, statut: e.target.value === "Actif" ? true : e.target.value === "Inactif" ? false : null})}
+                                    setUserData({ ...userData, statut: e.target.value === "Actif" ? true : e.target.value === "Inactif" ? false : null })
+                                }
                                 }
                             >
                                 <MenuItem value="Actif">Actif</MenuItem>
                                 <MenuItem value="Inactif">Inactif</MenuItem>
-                                <MenuItem value="NULL" disabled>Inconnu</MenuItem>
+                                <MenuItem value="NULL" disabled>NULL</MenuItem>
 
                             </Select>
+                        </Grid>
+                    </Grid>
+
+                    <Grid container xs={12} sx={{ display: 'flex', justifyContent: 'center', fullWidth: true }}>
+                        <Grid item xs={4} sx={{ textAlign: 'center' }}>
+                            <h3>Calendly : </h3>
+                        </Grid>
+                        <Grid item xs={8} sx={{ textAlign: 'center', fullWidth: true }}>
+                            <TextField
+                                sx={{ textAlign: 'center', width: '100%' }}
+                                id="url_calendly"
+                                label="URL Calendly"
+                                variant="outlined"
+                                name="url_calendly"
+                                defaultValue={userData.url_calendly || user.url_calendly}
+                                onChange={(e) => {
+                                    console.log('Before update:', userData.url_calendly);
+                                    setUserData({ ...userData, url_calendly: e.target.value });
+                                    console.log('After update:', userData.url_calendly);
+                                }}
+                            />
                         </Grid>
                     </Grid>
 
