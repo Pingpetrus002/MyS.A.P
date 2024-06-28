@@ -8,15 +8,15 @@ import Slider from 'react-slick';
 const HomePage = () => {
     const charts = [
         {
-            src: 'https://10.1.1.44:3000/d/bdpdik5lysxs0b/new-dashboard?orgId=1&from=1718887196068&to=1718908796068&viewPanel=2',
+            src: 'http://10.1.1.44:3000/public-dashboards/b9adb3ad00944e8fa586eb51880de9d3',
             title: 'Graphique 1'
         },
         {
-            src: 'https://10.1.1.44:3000/public-dashboards/3c16abbc2dd4445299412c3f14031eec',
+            src: 'http://10.1.1.44:3000/public-dashboards/b9adb3ad00944e8fa586eb51880de9d3',
             title: 'Graphique 2'
         },
         {
-            src: 'https://grafana.yourdomain.com/d-solo/your-dashboard-id/your-panel-id?orgId=1&refresh=5s',
+            src: 'http://10.1.1.44:3000/public-dashboards/b9adb3ad00944e8fa586eb51880de9d3',
             title: 'Graphique 3'
         }
     ];
