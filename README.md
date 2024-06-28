@@ -1,4 +1,4 @@
-# S.A.P
+# MyS.A.P
 
 # Documentation de l'API MySAP
 
