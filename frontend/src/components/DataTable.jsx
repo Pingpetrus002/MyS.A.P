@@ -321,7 +321,6 @@ export default function DataTable({ rows, type, handleToggleTable, callback = ()
         <Typography variant="h4" gutterBottom style={{ textAlign: 'left' }}>
           {getTitle(type)}
         </Typography>
-        {type === 'rapport' && <ButtonRapports />}
         {type === 'mes_rapports'}
         {type === 'mes_documents'}
 
@@ -371,6 +370,7 @@ export default function DataTable({ rows, type, handleToggleTable, callback = ()
           </Tooltip>
         )}
         {type === 'mission' && <AddMissionModal />}
+        {type === 'rapport' && <ButtonRapports />}
       </div>
       <CustomDataGrid
         autoHeight
