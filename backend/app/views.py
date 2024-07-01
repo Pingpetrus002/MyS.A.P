@@ -347,7 +347,7 @@ def set_rapport():
     current_user = get_jwt_identity()
     data: dict = request.get_json()
 
-    fields = ['id_user', 'sujet', 'rapport', 'type']
+    fields = ['id_user', 'sujet', 'rapport_json', 'type']
     if check_fields(data, fields) != 0:
         return check_fields(data, fields)
     
@@ -355,7 +355,7 @@ def set_rapport():
 
     id_user = data.get('id_user')
     sujet = data.get('sujet')
-    rapport = data.get('rapport')
+    rapport_json = data.get('rapport_json')
     typeOfDoc = data.get('type')
     date = datetime.datetime.now()
     
@@ -378,7 +378,7 @@ def set_rapport():
 
     #Ajout du rapport
 
-    new_rapport = Document(nom=sujet, id_user=id_user, id_user_1=id_suiveur, rapport=rapport.encode('utf-8'), datecreation=date, md5=MD5, type=typeOfDoc)
+    new_rapport = Document(nom=sujet, id_user=id_user, id_user_1=id_suiveur, rapport_json=rapport_json.encode('utf-8'), datecreation=date, md5=MD5, type=typeOfDoc)
     db.session.add(new_rapport)
 
     db.session.commit()

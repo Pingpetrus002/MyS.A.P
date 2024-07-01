@@ -91,6 +91,7 @@ CREATE TABLE IF NOT EXISTS document_(
    nom VARCHAR(50),
    md5 VARCHAR(50),
    rapport LONGBLOB,
+   rapport_json JSON,
    type VARCHAR(50),
    datecreation DATE,
    datesuppression DATE,

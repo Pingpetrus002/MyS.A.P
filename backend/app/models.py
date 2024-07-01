@@ -1,4 +1,5 @@
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import JSON
 from datetime import datetime
 
 db = SQLAlchemy()
@@ -69,7 +70,8 @@ class Document(db.Model):
     __tablename__ = 'document_'
     id_doc = db.Column(db.Integer, primary_key=True, autoincrement=True)
     nom = db.Column(db.String(50))
-    rapport = db.Column(db.LargeBinary)
+    rapport = db.Column(db.LargeBinary)    
+    rapport_json = db.Column(JSON)
     md5 = db.Column(db.String(50))
     type = db.Column(db.String(50))
     datecreation = db.Column(db.Date)
