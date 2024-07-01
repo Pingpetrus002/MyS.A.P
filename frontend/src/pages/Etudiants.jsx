@@ -81,7 +81,7 @@ export default function Etudiants() {
             {loading ? (
                 <LinearProgress />
             ) : (
-                <Grid container justifyContent="center" sx={{ marginTop: '30px' }}>
+                <Grid container justifyContent="center" sx={{ marginTop: '70px' }}>
                     <Grid item xs={10}>
                         {loading ? (
                             <LinearProgress />
