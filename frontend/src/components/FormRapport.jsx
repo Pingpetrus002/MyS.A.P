@@ -26,7 +26,9 @@ import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFnsV3';
 import { fr } from 'date-fns/locale/fr';
 import Slide from '@mui/material/Slide';
-import PdfGenerator from './PDFGenerator';
+//import PdfGenerator from './PDFGenerator';
+import ButtonSap from './sap/ButtonSap';
+import GenPDF from '../utils/GenPDF';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
@@ -818,7 +820,7 @@ function SyntheseSuiviTuteur() {
 
             <Grid container justifyContent="center">
                 <Grid item>
-                    <PdfGenerator
+                    {/* <PdfGenerator
                         nomRapport={textFieldNomRapport}
                         idEtudiant={textFieldIdEtudiant}
                         formation={selectFieldFormation}
@@ -845,7 +847,44 @@ function SyntheseSuiviTuteur() {
                         presenceText={presentText}
                         recrutement={radioFieldRecrutement}
                         poursuiteEtudes={radioFieldPoursuiteEtudes}
+                    /> */}
+                    <ButtonSap
+                        props={{
+                            nomRapport: textFieldNomRapport,
+                            idEtudiant: textFieldIdEtudiant,
+                            formation: selectFieldFormation,
+                            nomEtudiant: textFieldNomEtudiant,
+                            prenomEtudiant: textFieldPrenomEtudiant,
+                            nomEntreprise: textFieldNomEntreprise,
+                            nomTuteurEntreprise: textFieldNomTuteurEntreprise,
+                            prenomTuteurEntreprise: textFieldPrenomTuteurEntreprise,
+                            posteEtudiant: textFieldPosteEtudiant,
+                            missions: textFieldMissions,
+                            commentaireTuteur: textFieldCommentaireTuteur,
+                            savoirEtre: radioFields,
+                            projetsSecondSemestre: textFieldProjetsSecondSemestre,
+                            axesAmelioration: textFieldAxesAmelioration,
+                            pointsFort: textFieldPointsFort,
+                            sujetMemoire: textFieldSujetMemoire,
+                            alerteRE: isREOtherChecked ? reOtherText : null,
+                            alerteSP: isPedagogiqueOtherChecked ? PedagogiqueOtherText : null,
+                            commentaireEntretienSuivi: textFieldCommentaireEntretienSuivi,
+                            nomSuiveur: textFieldNomSuiveur,
+                            dateEntretien: dateFieldEntretien,
+                            formatSuivi: radioFieldFormatSuivi,
+                            presence: checkboxFieldPresence,
+                            presenceText: presentText,
+                            recrutement: radioFieldRecrutement,
+                            poursuiteEtudes: radioFieldPoursuiteEtudes
+                        }}
+                        callback={ async (e) => {
+                            // generate pdf
+                            GenPDF(e);
+                            
+                        }
+                    }
                     />
+
                 </Grid>
                 <Grid item>
                     <Button
@@ -900,7 +939,7 @@ function SyntheseSuiviTuteur() {
     );
 }
 
-const container = document.getElementById('root');
+/* const container = document.getElementById('root');
 
 // Vérifie si un root a déjà été créé pour le conteneur.
 let root = container._reactRootContainer;
@@ -915,6 +954,6 @@ root.render(
     <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={fr}>
         <SyntheseSuiviTuteur />
     </LocalizationProvider>
-);
+); */ // why !?
 
 export default SyntheseSuiviTuteur;
