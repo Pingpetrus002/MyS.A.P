@@ -14,7 +14,6 @@ import AddIcon from '@mui/icons-material/Add';
 import moment from 'moment';
 
 import FetchWraper from '../utils/FetchWraper';
-// import ButtonRapports from './ButtonRapports';
 import SyntheseSuiviTuteur from './FormRapport';
 import StudentModal from './EtudiantModal';
 import AlertModal from './AlertModal';
