@@ -35,10 +35,10 @@ const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
 });
 
-function SyntheseSuiviTuteur() {
+function SyntheseSuiviTuteur({ student, open, onClose }) {
     const theme = useTheme();
+    const [modalOpen, setModalOpen] = useState(false); // État pour contrôler l'ouverture/fermeture du modal
     const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
-    const [open, setOpen] = useState(false); // État pour contrôler l'ouverture/fermeture du modal
     const [eraseOpen, setEraseOpen] = useState(false); // État pour contrôler l'ouverture/fermeture du modal de confirmation
 
     // Fonctions pour ouvrir et fermer le modal
@@ -46,12 +46,16 @@ function SyntheseSuiviTuteur() {
         setEraseOpen(true);
     };
 
-    const handleOpen = () => {
-        setOpen(true);
+    const handleEraseClose = () => {
+        setEraseOpen(false);
+    };
+
+    const handleModalOpen = () => {
+        setModalOpen(true);
     };
 
     const handleClose = () => {
-        setOpen(false);
+        setModalOpen(false);
     };
 
     // États pour les checkboxes du Service Relations Entreprises
@@ -221,15 +225,28 @@ function SyntheseSuiviTuteur() {
         setIsPresentChecked(false);
         setPresentText('');
 
-        handleClose();
+        handleEraseClose();
     };
+
+    // Mettre à jour les champs lorsque le student change
+    React.useEffect(() => {
+        if (student) {
+            setTextFieldIdEtudiant(student.id || '');
+            setSelectFieldFormation(student.classe || '');
+            setTextFieldNomEtudiant(student.nom || '');
+            setTextFieldPrenomEtudiant(student.prenom || '');
+            setTextFieldNomEntreprise(student.entreprise || '');
+            setTextFieldNomTuteurEntreprise(student.nom_tuteur || '');
+            setTextFieldPrenomTuteurEntreprise(student.prenom_tuteur || '');
+        }
+    }, [student]);
 
     return (
         <>
-            <Tooltip title="Ajouter un rapport" placement="top">
+            {/* <Tooltip title="Ajouter un rapport" placement="top">
                 <Button
                     variant="outlined"
-                    onClick={handleOpen}
+                    onClick={handleModalOpen}
                     sx={{
                         color: '#000000',
                         alignItems: 'center',
@@ -244,9 +261,10 @@ function SyntheseSuiviTuteur() {
                 >
                     <AddIcon />
                 </Button>
-            </Tooltip>
+            </Tooltip> */}
             <Dialog
                 open={open}
+                modalOpen={modalOpen}
                 fullScreen={fullScreen}
                 TransitionComponent={Transition}
                 keepMounted
@@ -929,7 +947,7 @@ function SyntheseSuiviTuteur() {
                                         </DialogContentText>
                                     </DialogContent>
                                     <DialogActions>
-                                        <Button onClick={handleClose}>Annuler</Button>
+                                        <Button onClick={handleEraseClose}>Annuler</Button>
                                         <Button onClick={handleReset} autoFocus>
                                             Oui, je suis sûr
                                         </Button>
@@ -938,10 +956,10 @@ function SyntheseSuiviTuteur() {
 
                             </Grid>
                         </Grid>
-                    </form>;
+                    </form>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={handleClose}>Annuler</Button>
+                    <Button onClick={onClose}>Annuler</Button>
                 </DialogActions>
             </Dialog>
         </>

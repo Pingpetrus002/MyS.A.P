@@ -173,6 +173,26 @@ function getColumns(type, isLargeScreen, onButtonClick = () => { }, onRowButtonC
       { field: 'statut', headerName: 'Statut', width: 180, minWidth: 180, maxWidth: 300 },
       { field: 'contrat', headerName: 'Contrat', width: 180, minWidth: 180, maxWidth: 300 },
       {
+        field: 'suivi',
+        headerName: 'Suivi',
+        width: 120,
+        minWidth: 120,
+        maxWidth: 120,
+        renderCell: (params) => {
+          const { rapports, datecreation_rapport } = params.row;
+          const hasReport = rapports && rapports.length > 0;
+          const recentReport = isRecentReport(datecreation_rapport);
+
+          if (!hasReport) {
+            return 'À faire';
+          } else if (recentReport) {
+            return 'Fait';
+          } else {
+            return 'Rapport trop ancien';
+          }
+        }
+      },
+      {
         field: 'rapport',
         headerName: 'Rapport',
         width: 120,
@@ -186,7 +206,7 @@ function getColumns(type, isLargeScreen, onButtonClick = () => { }, onRowButtonC
           if (!hasReport) {
             return (
               <CustomButton
-                onClick={() => onRowButtonClick(params.row)}
+                onClick={() => onButtonClick(params.row)}
                 style={{ backgroundColor: 'purple', color: 'white' }}
               >
                 Créer
@@ -195,7 +215,7 @@ function getColumns(type, isLargeScreen, onButtonClick = () => { }, onRowButtonC
           } else if (recentReport) {
             return (
               <CustomButton
-                onClick={() => onRowButtonClick(params.row)}
+                onClick={() => onButtonClick(params.row)}
                 style={{ backgroundColor: 'green', color: 'white' }}
               >
                 Modifier
@@ -205,7 +225,7 @@ function getColumns(type, isLargeScreen, onButtonClick = () => { }, onRowButtonC
             return null;
           }
         }
-      }
+      },
     ],
     alerte: [
       { field: 'commentaires', headerName: 'Commentaire', width: 400, minWidth: 220, maxWidth: 900 },
@@ -394,6 +414,7 @@ export default function DataTable({ rows, type, handleToggleTable, callback = ()
                 '&:hover': {
                   backgroundColor: '#FFC039',
                   borderColor: '#FFC039',
+                  color: '#000000',
                 }
               }}
             >
