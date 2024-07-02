@@ -215,7 +215,7 @@ function getColumns(type, isLargeScreen, onButtonClick = () => { }, onRowButtonC
           } else if (recentReport) {
             return (
               <CustomButton
-                onClick={() => onButtonClick(params.row)}
+                onClick={() => onButtonClick(console.log('Modifier'))}
                 style={{ backgroundColor: 'green', color: 'white' }}
               >
                 Modifier
