@@ -11,8 +11,10 @@ import EastIcon from '@mui/icons-material/East';
 import WestIcon from '@mui/icons-material/West';
 import AddIcon from '@mui/icons-material/Add';
 
+import moment from 'moment';
+
 import FetchWraper from '../utils/FetchWraper';
-import ButtonRapports from './ButtonRapports';
+import SyntheseSuiviTuteur from './FormRapport';
 import StudentModal from './EtudiantModal';
 import AlertModal from './AlertModal';
 import AddMissionModal from './ButtonMissions';
@@ -99,6 +101,14 @@ const adjustColumns = (columns, isLargeScreen) => {
 };
 
 function getColumns(type, isLargeScreen, onButtonClick = () => { }, onRowButtonClick) {
+
+  const isRecentReport = (datecreation) => {
+    if (!datecreation) return false;
+    const reportDate = moment(datecreation);
+    const now = moment();
+    return now.diff(reportDate, 'months') < 11;
+  };
+
   const columns = {
     rapport: [
       { field: 'id_user', headerName: 'Étudiant', width: 180, minWidth: 180, maxWidth: 300 },
@@ -163,16 +173,58 @@ function getColumns(type, isLargeScreen, onButtonClick = () => { }, onRowButtonC
       { field: 'statut', headerName: 'Statut', width: 180, minWidth: 180, maxWidth: 300 },
       { field: 'contrat', headerName: 'Contrat', width: 180, minWidth: 180, maxWidth: 300 },
       {
-        field: 'voir',
-        headerName: 'Voir',
+        field: 'suivi',
+        headerName: 'Suivi',
         width: 120,
         minWidth: 120,
         maxWidth: 120,
-        renderCell: (params) => (
-          <CustomButton onClick={() => onRowButtonClick(params.row)} style={{ backgroundColor: '#1976d2', color: 'white' }}>
-            Voir
-          </CustomButton>
-        ),
+        renderCell: (params) => {
+          const { rapports, datecreation_rapport } = params.row;
+          const hasReport = rapports && rapports.length > 0;
+          const recentReport = isRecentReport(datecreation_rapport);
+
+          if (!hasReport) {
+            return 'À faire';
+          } else if (recentReport) {
+            return 'Fait';
+          } else {
+            return 'Rapport trop ancien';
+          }
+        }
+      },
+      {
+        field: 'rapport',
+        headerName: 'Rapport',
+        width: 120,
+        minWidth: 120,
+        maxWidth: 120,
+        renderCell: (params) => {
+          const { rapports, datecreation_rapport } = params.row;
+          const hasReport = rapports && rapports.length > 0;
+          const recentReport = isRecentReport(datecreation_rapport);
+
+          if (!hasReport) {
+            return (
+              <CustomButton
+                onClick={() => onButtonClick(params.row)}
+                style={{ backgroundColor: 'purple', color: 'white' }}
+              >
+                Créer
+              </CustomButton>
+            );
+          } else if (recentReport) {
+            return (
+              <CustomButton
+                onClick={() => onButtonClick(console.log('Modifier'))}
+                style={{ backgroundColor: 'green', color: 'white' }}
+              >
+                Modifier
+              </CustomButton>
+            );
+          } else {
+            return null;
+          }
+        }
       },
     ],
     alerte: [
@@ -362,6 +414,7 @@ export default function DataTable({ rows, type, handleToggleTable, callback = ()
                 '&:hover': {
                   backgroundColor: '#FFC039',
                   borderColor: '#FFC039',
+                  color: '#000000',
                 }
               }}
             >
@@ -370,7 +423,7 @@ export default function DataTable({ rows, type, handleToggleTable, callback = ()
           </Tooltip>
         )}
         {type === 'mission' && <AddMissionModal />}
-        {type === 'rapport' && <ButtonRapports />}
+        {type === 'rapport' && <SyntheseSuiviTuteur />}
       </div>
       <CustomDataGrid
         autoHeight

@@ -1,12 +1,11 @@
 import { useEffect, useState } from 'react';
-import { Button, LinearProgress, Grid, MenuItem, Link, Box, Divider, Menu, useMediaQuery } from '@mui/material';
-
+import { LinearProgress, Grid, useMediaQuery } from '@mui/material';
 
 // Importations personnalisées
 import FetchWraper from '../utils/FetchWraper';
 import DataTable from '../components/DataTable';
-import StudentModal from '../components/EtudiantModal';
 import NavBar from '../components/Navbar';
+import SyntheseSuiviTuteur from '../components/FormRapport';  // Importation du composant SyntheseSuiviTuteur
 
 // Fonction asynchrone pour récupérer les données des étudiants
 async function getDatas() {
@@ -18,7 +17,6 @@ async function getDatas() {
     fetchWraper.headers.append("Access-Control-Allow-Origin", window.location.origin);
     fetchWraper.headers.append("Access-Control-Allow-Credentials", "true");
     let result = await fetchWraper.fetchw();
-
 
     let data = await result.json();
     console.log(data);
@@ -32,7 +30,6 @@ export default function Etudiants() {
     const [selectedStudent, setSelectedStudent] = useState(null);
     const [modalOpen, setModalOpen] = useState(false);
     const isMobile = useMediaQuery('(max-width:600px)');
-
 
     // Effet pour charger les données des étudiants au chargement du composant
     useEffect(() => {
@@ -64,16 +61,6 @@ export default function Etudiants() {
         setModalOpen(false);
     };
 
-    const [anchorElAjout, setAnchorElAjout] = useState(null);
-
-    const handleOpenAjoutMenu = (event) => {
-        setAnchorElAjout(event.currentTarget);
-    };
-
-    const handleCloseAjoutMenu = () => {
-        setAnchorElAjout(null);
-    };
-
     // Rendu du composant
     return (
         <>
@@ -81,18 +68,21 @@ export default function Etudiants() {
             {loading ? (
                 <LinearProgress />
             ) : (
-                <Grid container justifyContent="center" sx={{ marginTop: '30px' }}>
+                <Grid container justifyContent="center" sx={{ marginTop: '70px' }}>
                     <Grid item xs={10}>
                         {loading ? (
                             <LinearProgress />
                         ) : (
-                            <DataTable rows={students} type="etudiant" onRowButtonClick={handleRowClick}
-                                getRowId={getRowId} />
+                            <DataTable
+                                rows={students}
+                                type="etudiant"
+                                callback={handleRowClick}
+                            />
                         )}
                     </Grid>
                     <Grid item xs={10}>
                         {selectedStudent && (
-                            <StudentModal student={selectedStudent} open={modalOpen} onClose={handleCloseModal} />
+                            <SyntheseSuiviTuteur student={selectedStudent} open={modalOpen} onClose={handleCloseModal} />
                         )}
                     </Grid>
                 </Grid>
