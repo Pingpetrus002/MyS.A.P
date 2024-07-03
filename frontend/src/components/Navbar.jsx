@@ -13,7 +13,7 @@ import rapportSelect from '../assets/images/RapportSelect.svg';
 
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
-import { Badge, Box, Container, AppBar, Toolbar, IconButton, Menu, Avatar, Tooltip, MenuItem, Divider, Link } from "@mui/material";
+import { Badge, Box, Container, Toolbar, IconButton, Menu, Avatar, Tooltip, MenuItem, Divider, Link } from "@mui/material";
 import MenuIcon from '@mui/icons-material/Menu';
 import * as Icons from '@mui/icons-material';
 import EastIcon from '@mui/icons-material/East';
@@ -57,9 +57,14 @@ const Navbar = () => {
         const fetchRole = async () => {
             let result = await IsConnected();
             setRole(result.role);
-            if ((result.role.role === 1 || result.role.role === 2) && !settings.find((setting) => setting.name === 'Gestion des utilisateurs')) {
-                settings.splice(1, 0, { name: 'Gestion des utilisateurs', url: '/?page=users-management', type: 'lien' });
-            }
+            if ((result.role.role === 1 || result.role.role === 2)) {
+                if (!settings.find((setting) => setting.name === 'Gestion des utilisateurs')) {
+                    settings.splice(1, 0, { name: 'Gestion des utilisateurs', url: '/?page=users-management', type: 'lien' });
+                }
+                if (!settings.find((setting) => setting.name === 'Gestion des établissements')) {
+                    settings.splice(2, 0, { name: 'Gestion des établissements', url: '/?page=etablissements-management', type: 'lien' });
+                }
+            }            
         };
 
         fetchRole();
