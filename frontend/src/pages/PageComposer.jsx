@@ -7,6 +7,7 @@ import Accueil from "./Accueil";
 import Alertes from "./Alertes";
 import MissionPage from "./Mission";
 import UsersManagement from "./UsersManagement";
+import EstablishmentsManagement from "./EstablishmentsManagement.jsx"
 import AjoutEtudiants from "./AjoutEtudiants.jsx";
 import FetchWraper from "../utils/FetchWraper";
 import { useEffect, useState } from 'react';
@@ -19,6 +20,7 @@ const Pages = {
     "rapports": Rapports,
     "accueil": Accueil,
     "users-management": UsersManagement,
+    "etablissements-management": EstablishmentsManagement,
     "alertes": Alertes,
     "missions": MissionPage,
     "ajout_etudiants": AjoutEtudiants,
