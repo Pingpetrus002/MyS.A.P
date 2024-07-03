@@ -60,8 +60,8 @@ export default function MissionPage() {
       {loading ? (
         <LinearProgress />
       ) : (
-        <Grid container direction="row" justifyContent="center" spacing={4} marginTop={4}>
-          <Grid item>
+        <Grid container justifyContent="center" sx={{ marginTop: '70px' }}>
+          <Grid item xs={10}>
             <DataTable rows={missions} type="mission" getRowId={getRowId} />
           </Grid>
         </Grid>

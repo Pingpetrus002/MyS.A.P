@@ -5,6 +5,9 @@ import path from 'path';
 
 export default defineConfig({
     plugins: [react()],
+    optimizeDeps: {
+        include: ['date-fns']
+    },
     build: {
         outDir: 'templates',
         emptyOutDir: true,

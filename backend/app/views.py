@@ -432,14 +432,19 @@ def get_students():
             'id': student.id_user,
             'nom': student.nom,
             'prenom': student.prenom,
+            'prenom_nom': student.prenom + ' ' + student.nom,
             'statut': "Pas d'alternance" if student.statut == 0 else "Alternance en cours",
             'classe': student.classe,
-            'contrat': "Pas de contrat" if student.statut == 0 else (
-                Contrat.query.get(student.id_user).libelle if Contrat.query.get(student.id_user) else "Pas de contrat"
-            ),            # Nom de l'entreprise si l'étudiant est en alternance
-            'entreprise': "Aucune entreprise" if student.statut == 0 else (
-                entreprise.raison_sociale if (entreprise := Entreprise.query.get(student.id_entreprise)) else "Aucune entreprise"
-            ),        } for student in students]
+            'contrat': Contrat.query.get(student.id_user).libelle if student.statut == 1 else "Pas de contrat",
+            'entreprise': Entreprise.query.get(student.id_entreprise).raison_sociale,
+            'nom_tuteur': Utilisateur.query.get(student.id_user_2).nom if student.id_user_2 else 'Pas de tuteur',
+            'prenom_tuteur': Utilisateur.query.get(student.id_user_2).prenom if student.id_user_2 else 'Pas de tuteur',
+            'tuteur': Utilisateur.query.get(student.id_user_1).prenom + ' ' + Utilisateur.query.get(student.id_user_1).nom if student.id_user_1 else 'Pas de tuteur',
+            'suiveur': Utilisateur.query.get(student.id_user_2).prenom + ' ' + Utilisateur.query.get(student.id_user_2).nom if student.id_user_2 else 'Pas de suiveur',
+            'ecole': Ecole.query.get(student.id_ecole).nom if student.id_ecole else 'Pas d\'école',
+            'rapports': [document_to_dict(rapport) for rapport in Document.query.filter_by(id_user=student.id_user).all() if rapport.type == 'rapport'],
+            'datecreation_rapport': max([rapport.datecreation for rapport in Document.query.filter_by(id_user=student.id_user, type='rapport').all()], default=None)
+        } for student in students]
 
         return jsonify({'students': students_dict}), 200
 

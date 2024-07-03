@@ -55,11 +55,11 @@ export default function Rapports() {
             {loading ? (
                 <LinearProgress />
             ) : (
-            <Grid container direction="row" justifyContent="center" spacing={4} marginTop={4}>
-                <Grid item>
-                    <DataTable rows={rapports} type="rapport" />
+                <Grid container justifyContent="center" sx={{ marginTop: '70px' }}>
+                    <Grid item xs={10}>
+                        <DataTable rows={rapports} type="rapport" />
+                    </Grid>
                 </Grid>
-            </Grid>
             )}
             {isMobile && <NavBar />}
         </>
