@@ -8,7 +8,7 @@ import UploadRapport from '../components/UploadRapport';
 
 async function getDatas() {
     let fetchWraper = new FetchWraper();
-    fetchWraper.url = "http://localhost:5000/auth/get_profil";
+    fetchWraper.url = "https://10.1.1.44:5001/auth/get_profil";
     fetchWraper.method = "GET";
     fetchWraper.headers.append("Content-Type", "application/json");
     fetchWraper.headers.append("Accept", "application/json");
@@ -21,7 +21,7 @@ async function getDatas() {
 
 async function getRapports() {
     let fetchWraper = new FetchWraper();
-    fetchWraper.url = "http://localhost:5000/auth/get_rapport_info";
+    fetchWraper.url = "https://10.1.1.44:5001/auth/get_rapport_info";
     fetchWraper.method = "GET";
     fetchWraper.headers.append("Content-Type", "application/json");
     fetchWraper.headers.append("Accept", "application/json");
