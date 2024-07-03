@@ -42,9 +42,9 @@ const EstablishmentsManagement = () => {
 
     const fetchEntities = async () => {
         try {
-            const responseEcoles = await axiosInstance.get('https://10.1.1.44:5001/auth/ecoles');
-            const responseClasses = await axiosInstance.get('https://10.1.1.44:5001/auth/classes');
-            const responseEntreprises = await axiosInstance.get('https://10.1.1.44:5001/auth/entreprises');
+            const responseEcoles = await axiosInstance.get('http://localhost:5000/auth/ecoles');
+            const responseClasses = await axiosInstance.get('http://localhost:5000/auth/classes');
+            const responseEntreprises = await axiosInstance.get('http://localhost:5000/auth/entreprises');
 
             setEntities({
                 ecoles: responseEcoles.data,
@@ -319,7 +319,7 @@ const EstablishmentsManagement = () => {
                         Annuler
                     </Button>
                     <Button
-                        onClick={() => handleDelete(`https://10.1.1.44:5001/auth/delete_${dialogData.type}/${dialogData.id}`, dialogData.id, dialogData.type)}
+                        onClick={() => handleDelete(`http://localhost:5000/auth/delete_${dialogData.type}/${dialogData.id}`, dialogData.id, dialogData.type)}
                         color="error"
                         disabled={loading}
                     >

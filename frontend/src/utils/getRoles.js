@@ -2,7 +2,7 @@ import FetchWraper from "./FetchWraper";
 
 export default async function getRoles() {
     let fetchWraper = new FetchWraper();
-    fetchWraper.url = "https://10.1.1.44:5001/auth/roles/list";
+    fetchWraper.url = "http://localhost:5000/auth/roles/list";
     fetchWraper.method = "GET";
     fetchWraper.headers.append("Content-Type", "application/json");
     fetchWraper.headers.append("Accept", "application/json");

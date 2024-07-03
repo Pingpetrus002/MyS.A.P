@@ -8,7 +8,7 @@ import NavBar from '../components/Navbar.jsx';
 async function getRapports() {
     // Appel à l'API pour récupérer les rapports de l'utilisateur
     let fetchWraper = new FetchWraper();
-    fetchWraper.url = "https://10.1.1.44:5001/auth/get_rapport_info";
+    fetchWraper.url = "http://localhost:5000/auth/get_rapport_info";
     fetchWraper.method = "GET";
     fetchWraper.headers.append("Content-Type", "application/json");
     fetchWraper.headers.append("Accept", "application/json");

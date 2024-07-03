@@ -33,7 +33,7 @@ const pages = {
 
 async function IsConnected() {
     let fetchWraper = new FetchWraper();
-    fetchWraper.url = "https://10.1.1.44:5001/auth/protected";
+    fetchWraper.url = "http://localhost:5000/auth/protected";
     fetchWraper.method = "GET";
     fetchWraper.headers.append("Content-Type", "application/json");
     fetchWraper.headers.append("Accept", "application/json");
@@ -111,7 +111,7 @@ const Navbar = () => {
 
     async function SubmitLogout() {
         let fetchWraper = new FetchWraper();
-        fetchWraper.url = "https://10.1.1.44:5001/auth/logout";
+        fetchWraper.url = "http://localhost:5000/auth/logout";
         fetchWraper.method = "GET";
         fetchWraper.headers.append("Content-Type", "application/json");
         fetchWraper.headers.append("Accept", "application/json");

@@ -50,7 +50,7 @@ export default function AlertModal({ alert, open, onClose }) {
     const updateAlertStatus = async (alertId) => {
         try {
             const fetchWrapper = new FetchWraper();
-            fetchWrapper.url = `https://10.1.1.44:5001/auth/disable_alert/${alertId}`;
+            fetchWrapper.url = `http://localhost:5000/auth/disable_alert/${alertId}`;
             fetchWrapper.method = 'GET'; // Adjust the method as per your API endpoint requirements
 
             const response = await fetchWrapper.fetchw();
