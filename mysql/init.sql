@@ -122,6 +122,12 @@ CREATE TABLE IF NOT EXISTS conflit(
    FOREIGN KEY(id_user) REFERENCES utilisateur(id_user)
 );
 
+CREATE TABLE IF NOT EXISTS classe(
+   id INTEGER NOT NULL AUTO_INCREMENT,
+   libelle VARCHAR(50),
+);
+
+
 CREATE TABLE IF NOT EXISTS programme(
    id_programme INTEGER NOT NULL AUTO_INCREMENT,
    diplome VARCHAR(50),

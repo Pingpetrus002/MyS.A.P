@@ -4,7 +4,7 @@ from flask import Blueprint, request, jsonify, render_template, make_response
 from flask_mail import Message, Mail
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity, set_access_cookies, unset_jwt_cookies
 from werkzeug.security import generate_password_hash, check_password_hash
-from .models import Utilisateur, db, Document, Entreprise, Alert, Mission, Role, Contrat, Ecole, Planning
+from .models import Utilisateur, db, Document, Entreprise, Alert, Mission, Role, Contrat, Ecole, Planning, Classe
 
 import locale
 import re
@@ -432,11 +432,22 @@ def get_students():
             'id': student.id_user,
             'nom': student.nom,
             'prenom': student.prenom,
+            'prenom_nom': student.prenom + ' ' + student.nom,
             'statut': "Pas d'alternance" if student.statut == 0 else "Alternance en cours",
             'classe': student.classe,
-            'contrat': Contrat.query.get(student.id_user).libelle if student.statut == 1 else "Pas de contrat",
-            # Nom de l'entreprise si l'étudiant est en alternance
-            'entreprise': "Aucune entreprise" if student.statut == 0 else Entreprise.query.get(student.id_entreprise).raison_sociale,
+                        'contrat': "Pas de contrat" if student.statut == 0 else (
+                contrat.libelle if (contrat := Contrat.query.get(student.id_user)) else "Pas de contrat"
+            ),
+            'entreprise': "Aucune entreprise" if student.statut == 0 else (
+            	"Aucune entreprise" if not (entreprise := Entreprise.query.get(student.id_entreprise)) else entreprise.raison_sociale
+            ),
+            'nom_tuteur': Utilisateur.query.get(student.id_user_2).nom if student.id_user_2 else 'Pas de tuteur',
+            'prenom_tuteur': Utilisateur.query.get(student.id_user_2).prenom if student.id_user_2 else 'Pas de tuteur',
+            'tuteur': Utilisateur.query.get(student.id_user_1).prenom + ' ' + Utilisateur.query.get(student.id_user_1).nom if student.id_user_1 else 'Pas de tuteur',
+            'suiveur': Utilisateur.query.get(student.id_user_2).prenom + ' ' + Utilisateur.query.get(student.id_user_2).nom if student.id_user_2 else 'Pas de suiveur',
+            'ecole': Ecole.query.get(student.id_ecole).nom if student.id_ecole else 'Pas d\'école',
+            'rapports': [document_to_dict(rapport) for rapport in Document.query.filter_by(id_user=student.id_user).all() if rapport.type == 'rapport'],
+            'datecreation_rapport': max([rapport.datecreation for rapport in Document.query.filter_by(id_user=student.id_user, type='rapport').all()], default=None)
         } for student in students]
 
         return jsonify({'students': students_dict}), 200
@@ -821,3 +832,153 @@ def get_info(nom):
             return jsonify({"plannings":planning_list}), 200
         else:
             return jsonify({'message': 'Nom invalide'}), 400
+
+
+@auth.route('/add_ecole', methods=['POST'])
+@jwt_required()
+def add_ecole():
+    data = request.json
+    current_user = get_jwt_identity()
+    user = Utilisateur.query.get(current_user)
+
+    if not check_role(user, 1) or check_role(user, 2):
+        return jsonify({'Unauthorized': 'Not access'}), 403
+
+
+    new_ecole = Ecole(raison_sociale=data['raison_sociale'], adresse=data['adresse'])
+    db.session.add(new_ecole)
+    db.session.commit()
+    return jsonify({'message': 'Ecole added successfully'}), 201
+
+@auth.route('/add_classe', methods=['POST'])
+@jwt_required()
+def add_classe():
+    data = request.json
+    current_user = get_jwt_identity()
+    user = Utilisateur.query.get(current_user)
+
+    if not check_role(user, 1) or  check_role(user, 2):
+        return jsonify({'Unauthorized': 'Not access'}), 403
+
+    if not data:
+        return jsonify({'message': 'No data provided'}), 400
+
+    new_classe = Classe(libelle=data['libelle'])
+    db.session.add(new_classe)
+    db.session.commit()
+    return jsonify({'message': 'Classe added successfully'}), 201
+
+@auth.route('/add_entreprise', methods=['POST'])
+@jwt_required()
+def add_entreprise():
+    data = request.json
+    current_user = get_jwt_identity()
+    user = Utilisateur.query.get(current_user)
+
+    if not check_role(user, 1) or check_role(user, 2):
+        return jsonify({'Unauthorized': 'Not access'}), 403
+
+    if not data:
+        return jsonify({'message': 'No data provided'}), 400
+
+    new_entreprise = Entreprise(
+        raison_sociale=data['raison_sociale'],
+        adresse=data['adresse'],
+        id_ecole=data['id_ecole']
+    )
+    db.session.add(new_entreprise)
+    db.session.commit()
+    return jsonify({'message': 'Entreprise added successfully'}), 201
+
+@auth.route('/ecoles', methods=['GET'])
+def get_ecoles():
+    ecoles = Ecole.query.all()
+    ecoles_list = []
+    for ecole in ecoles:
+        ecoles_list.append({
+            'id': ecole.id_ecole,
+            'raison_sociale': ecole.raison_sociale,
+            'adresse': ecole.adresse,
+            'type':'ecole'
+        })
+    return jsonify(ecoles_list), 200
+
+@auth.route('/delete_ecole/<int:ecole_id>', methods=['DELETE'])
+@jwt_required()
+def delete_ecole(ecole_id):
+    current_user = get_jwt_identity()
+    user = Utilisateur.query.get(current_user)
+
+    if not check_role(user, 1) and not check_role(user, 2):
+        return jsonify({'error': 'Unauthorized access'}), 403
+
+    ecole = Ecole.query.get(ecole_id)
+    if not ecole:
+        return jsonify({'error': 'Ecole not found'}), 404
+
+    db.session.delete(ecole)
+    db.session.commit()
+    return jsonify({'message': 'Ecole deleted successfully'}), 200
+
+
+@auth.route('/classes', methods=['GET'])
+def get_classes():
+    classes = Classe.query.all()
+    classes_list = []
+    for classe in classes:
+        classes_list.append({
+            'id': classe.id,
+            'libelle': classe.libelle,
+            'type':'classe'
+        })
+    return jsonify(classes_list), 200
+
+@auth.route('/delete_classe/<int:classe_id>', methods=['DELETE'])
+@jwt_required()
+def delete_classe(classe_id):
+    current_user = get_jwt_identity()
+    user = Utilisateur.query.get(current_user)
+
+    if not check_role(user, 1) and not check_role(user, 2):
+        return jsonify({'error': 'Unauthorized access'}), 403
+
+    classe = Classe.query.get(classe_id)
+    if not classe:
+        return jsonify({'error': 'Classe not found'}), 404
+
+    db.session.delete(classe)
+    db.session.commit()
+    return jsonify({'message': 'Classe deleted successfully'}), 200
+
+from .models import Entreprise  # Import your Entreprise model
+
+@auth.route('/entreprises', methods=['GET'])
+def get_entreprises():
+    entreprises = Entreprise.query.all()
+    entreprises_list = []
+    for entreprise in entreprises:
+        entreprises_list.append({
+            'id': entreprise.id_entreprise,
+            'raison_sociale': entreprise.raison_sociale,
+            'adresse': entreprise.adresse,
+            'id_ecole': entreprise.id_ecole,
+            'type':'entreprise'
+        })
+    return jsonify(entreprises_list), 200
+
+@auth.route('/delete_entreprise/<int:entreprise_id>', methods=['DELETE'])
+@jwt_required()
+def delete_entreprise(entreprise_id):
+    current_user = get_jwt_identity()
+    user = Utilisateur.query.get(current_user)
+
+    if not check_role(user, 1) and not check_role(user, 2):
+        return jsonify({'error': 'Unauthorized access'}), 403
+
+    entreprise = Entreprise.query.get(entreprise_id)
+    if not entreprise:
+        return jsonify({'error': 'Entreprise not found'}), 404
+
+    db.session.delete(entreprise)
+    db.session.commit()
+    return jsonify({'message': 'Entreprise deleted successfully'}), 200
