@@ -491,6 +491,42 @@ def get_rapport(md5):
 
     return response
 
+# Route pour récupérer tous les rapports
+@auth.route('/get_all_rapports', methods=['GET'])
+@jwt_required()
+def get_all_rapports():
+    current_user = get_jwt_identity()
+    user = Utilisateur.query.get(current_user)
+
+    # Récupération de tous les rapports de type 'rapport' pour les administrateurs et RRE
+    if check_role(user, 1) or check_role(user, 2):
+        rapports = Document.query.filter_by(type='rapport').all()
+
+        print(base64.b64decode(rapports[0].rapport))
+
+
+        autre = Document.query.filter_by(id_user=current_user, type='autre').all()
+
+        # Get column names from the first document in the list
+        if rapports:
+            column_names = rapports[0].__dict__.keys()
+
+        # Create CSV header from column names
+        header = ','.join(column_names)
+
+        # Create CSV rows from documents
+        rapports_dict = [document_to_dict(rapport) for rapport in rapports]
+        autre_dict = [document_to_dict(rapport) for rapport in autre]
+
+        # Combine header and rows
+        csv_data = [header] + rapports_dict + autre_dict
+
+        return jsonify({'rapports': csv_data}), 200
+
+    # Récupération des rapports de type 'autre' de l'utilisateur actuel, quel que soit le rôle
+    else:
+        return jsonify({'message': 'Unauthorized'}), 403
+
 
 # Route pour get l'url Calendly
 @auth.route('/get_calendly', methods=['GET'])

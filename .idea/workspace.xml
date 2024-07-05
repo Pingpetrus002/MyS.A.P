@@ -5,14 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9615a97c-2444-4472-8fa0-f51bb0b75613" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/frontend/src/components/UploadEtudiants.jsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/app/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/app/views.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/App.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/App.jsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/src/components/DataTable.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/DataTable.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/Navbar.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/Navbar.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/pages/AjoutEtudiants.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/AjoutEtudiants.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/pages/Etudiants.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/Etudiants.jsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -54,7 +49,7 @@
 }</component>
   <component name="GithubPullRequestsUISettings">{
   &quot;selectedUrlAndAccountId&quot;: {
-    &quot;url&quot;: &quot;https://github.com/Pingpetrus002/S.A.P&quot;,
+    &quot;url&quot;: &quot;https://github.com/Pingpetrus002/MyS.A.P.git&quot;,
     &quot;accountId&quot;: &quot;0416c997-f196-4ed7-a838-5ccffde08eca&quot;
   }
 }</component>
@@ -74,7 +69,7 @@
     &quot;ASKED_ADD_EXTERNAL_FILES&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;page-ajout-etudiant&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
     &quot;last_opened_file_path&quot;: &quot;C:/Users/damie/Documents/Cours/b2/S2/projet_annuel/projet/S.A.P/frontend/src/components&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
@@ -151,6 +146,14 @@
       <workItem from="1719333943541" duration="5428000" />
       <workItem from="1719421067046" duration="14220000" />
       <workItem from="1719438492374" duration="93000" />
+      <workItem from="1719559298583" duration="976000" />
+      <workItem from="1719572174652" duration="35000" />
+      <workItem from="1719578753342" duration="613000" />
+      <workItem from="1719677917724" duration="54000" />
+      <workItem from="1719677989937" duration="1674000" />
+      <workItem from="1719703728296" duration="776000" />
+      <workItem from="1719763041013" duration="3836000" />
+      <workItem from="1719851284158" duration="8971000" />
     </task>
     <servers />
   </component>
