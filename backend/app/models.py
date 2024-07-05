@@ -110,3 +110,8 @@ class Alert(db.Model):
     id_user_cible = db.Column(db.Integer, db.ForeignKey('utilisateur.id_user'))
     id_user_source = db.Column(db.Integer, db.ForeignKey('utilisateur.id_user'))
     id_entreprise = db.Column(db.Integer, db.ForeignKey('entreprise.id_entreprise'))
+
+class Classe(db.Model):
+    __tablename__ = 'classe'
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    libelle = db.Column(db.String(50))

@@ -60,8 +60,8 @@ export default function Alerts() {
     return (
         <>
             {!isMobile && <Navbar />}
-            <Grid container direction="row" justifyContent="center" spacing={4} marginTop={4}>
-                <Grid item>
+            <Grid container justifyContent="center" sx={{ marginTop: '70px' }}>
+                <Grid item xs={10}>
                     <DataTable
                         rows={alerts}
                         type="alerte"

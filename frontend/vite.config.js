@@ -5,6 +5,9 @@ import path from 'path';
 
 export default defineConfig({
     plugins: [react()],
+    optimizeDeps: {
+        include: ['date-fns']
+    },
     build: {
         outDir: 'templates',
         emptyOutDir: true,
@@ -35,10 +38,10 @@ export default defineConfig({
             usePolling: true,
             interval: 500,
         },
-        // https: {
-        //     key: fs.readFileSync(path.resolve(__dirname, '/app/keys/selfsigned.key')),
-        //     cert: fs.readFileSync(path.resolve(__dirname, '/app/keys/selfsigned.crt')),
-        //   },
+        https: {
+            key: fs.readFileSync(path.resolve(__dirname, '/app/keys/selfsigned.key')),
+            cert: fs.readFileSync(path.resolve(__dirname, '/app/keys/selfsigned.crt')),
+          },
         host: '0.0.0.0', // Utiliser l'adresse IP
     },
 });
