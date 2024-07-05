@@ -42,9 +42,9 @@ const EstablishmentsManagement = () => {
 
     const fetchEntities = async () => {
         try {
-            const responseEcoles = await axiosInstance.get('http://localhost:5000/auth/ecoles');
-            const responseClasses = await axiosInstance.get('http://localhost:5000/auth/classes');
-            const responseEntreprises = await axiosInstance.get('http://localhost:5000/auth/entreprises');
+            const responseEcoles = await axiosInstance.get('https://localhost:5001/auth/ecoles');
+            const responseClasses = await axiosInstance.get('https://localhost:5001/auth/classes');
+            const responseEntreprises = await axiosInstance.get('https://localhost:5001/auth/entreprises');
 
             setEntities({
                 ecoles: responseEcoles.data,
@@ -136,7 +136,7 @@ const EstablishmentsManagement = () => {
                             <Button
                                 variant="contained"
                                 color="primary"
-                                onClick={() => handleSubmit('/auth/add_ecole', ecole)}
+                                onClick={() => handleSubmit('https://localhost:5001/auth/add_ecole', ecole)}
                                 sx={{
                                     backgroundColor: '#FDD47C',
                                     color: 'black',
@@ -170,7 +170,7 @@ const EstablishmentsManagement = () => {
                             <Button
                                 variant="contained"
                                 color="primary"
-                                onClick={() => handleSubmit('/auth/add_classe', classe)}
+                                onClick={() => handleSubmit('https://localhost:5001/auth/add_classe', classe)}
                                 sx={{
                                     backgroundColor: '#FDD47C',
                                     color: 'black',
@@ -220,7 +220,7 @@ const EstablishmentsManagement = () => {
                             <Button
                                 variant="contained"
                                 color="primary"
-                                onClick={() => handleSubmit('/auth/add_entreprise', entreprise)}
+                                onClick={() => handleSubmit('https://localhost:5001/auth/add_entreprise', entreprise)}
                                 sx={{
                                     backgroundColor: '#FDD47C',
                                     color: 'black',
@@ -319,7 +319,7 @@ const EstablishmentsManagement = () => {
                         Annuler
                     </Button>
                     <Button
-                        onClick={() => handleDelete(`http://localhost:5000/auth/delete_${dialogData.type}/${dialogData.id}`, dialogData.id, dialogData.type)}
+                        onClick={() => handleDelete(`https://localhost:5001/auth/delete_${dialogData.type}/${dialogData.id}`, dialogData.id, dialogData.type)}
                         color="error"
                         disabled={loading}
                     >
