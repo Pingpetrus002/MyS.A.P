@@ -14,7 +14,7 @@ CREATE TABLE IF NOT EXISTS planning(
 
 CREATE TABLE IF NOT EXISTS ecole(
    id_ecole INTEGER NOT NULL AUTO_INCREMENT,
-   raison_sociale VARCHAR(200),
+   nom VARCHAR(200),
    adresse VARCHAR(200),
    PRIMARY KEY(id_ecole)
 );

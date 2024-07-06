@@ -14,7 +14,7 @@ class Planning(db.Model):
 class Ecole(db.Model):
     __tablename__ = 'ecole'
     id_ecole = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    raison_sociale = db.Column(db.String(200))
+    nom = db.Column(db.String(200))
     adresse = db.Column(db.String(200))
 
 class Role(db.Model):
