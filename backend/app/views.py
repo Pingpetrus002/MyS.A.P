@@ -378,7 +378,7 @@ def set_rapport():
 
     #Ajout du rapport
 
-    new_rapport = Document(nom=sujet, id_user=id_user, id_user_1=id_suiveur, rapport_json=rapport_json.encode('utf-8'), datecreation=date, md5=MD5, type=typeOfDoc)
+    new_rapport = Document(nom=sujet, id_user=id_user, id_user_1=id_suiveur, rapport_json=rapport_json, datecreation=date, md5=MD5, type=typeOfDoc)
     db.session.add(new_rapport)
 
     db.session.commit()
@@ -484,7 +484,6 @@ def get_rapport(md5):
     if not rapport:
         return jsonify({'message': 'Report not found'}), 404
 
-    rapport_data = base64.b64decode(rapport.rapport)
 
     # Vérifiez les droits d'accès selon le rôle de l'utilisateur
     if check_role(user, 1) or check_role(user, 2):  # Admin ou RRE
@@ -496,11 +495,7 @@ def get_rapport(md5):
     else:
         return jsonify({'message': 'Unauthorized'}), 403
 
-    response = make_response(rapport_data)
-    response.headers['Content-Type'] = 'application/pdf'
-    response.headers['Content-Disposition'] = f'attachment; filename=report{md5}.pdf'
-
-    return response
+    return jsonify(rapport.rapport_json), 200
 
 
 # Route pour get l'url Calendly
