@@ -2,9 +2,18 @@ import {defineConfig} from 'vite';
 import react from '@vitejs/plugin-react';
 import fs from 'fs';
 import path from 'path';
+import copy from 'rollup-plugin-copy';
 
 export default defineConfig({
-    plugins: [react()],
+    plugins: [
+        react(),
+        copy({
+            targets: [
+              { src: 'templates/assets/img/logoFull.svg', dest: 'templates/assets' }
+            ],
+            hook: 'writeBundle' // Use the `writeBundle` hook to copy after the file has been generated
+          })
+    ],
     optimizeDeps: {
         include: ['date-fns']
     },

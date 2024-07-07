@@ -41,7 +41,7 @@ export default function HeaderProfile({ Nom, Prenom, Mail, Classe, Role }) {
                 <Grid container spacing={4}>
                     <Grid item margin="0px 0px 0px 2rem">
                         <Avatar 
-                            src="../assets/logoFull.svg" 
+                            src="../assets/logoFull.svg" // TODO: probablement à changer
                             alt="description-de-l-image" 
                             sx={{ width: 140, height: 140 }} 
                         />
