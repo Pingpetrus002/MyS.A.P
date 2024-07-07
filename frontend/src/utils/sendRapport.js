@@ -1,5 +1,6 @@
 import FetchWraper from "./FetchWraper";
 import JObject from "./JObject";
+import AlertCreator from '../utils/AlertCreator';
 
 export const sendRapport = async (props) => {
 
@@ -35,7 +36,9 @@ export const sendRapport = async (props) => {
         if (!response.ok) {
             throw new Error('Erreur lors de l\'envoi du rapport');
         }
-        console.log('Rapport envoyé avec succès');
+        //console.log('Rapport envoyé avec succès');
+        let alertCreator = new AlertCreator(props);
+        alertCreator.checkForAlert();
         return true;
     } catch (error) {
         console.error('Erreur:', error);

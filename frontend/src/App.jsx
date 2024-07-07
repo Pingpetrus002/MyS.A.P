@@ -1,8 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { GetUrlArgs } from './utils/Utilities';
 import PageComposer from './pages/PageComposer';
 import './App.css';
-import Navbar from "./components/Navbar.jsx";
 
 
 function App() {

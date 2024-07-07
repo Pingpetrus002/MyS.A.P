@@ -7,9 +7,6 @@ function ButtonSap(args) {
     const [buttonStyle, setButtonStyle] = useState({ variant: "contained" });
 
 
-
-
-
     useEffect(() => {
         if (loading) {
             setButtonStyle({ variant: "outlined" });
@@ -24,7 +21,7 @@ function ButtonSap(args) {
             //execute the callback function
             await args.callback(args.props);
         } catch (error) {
-            console.error("Error calling SAP:", error);
+            console.error("Error calling ButtonSap callback:", error);
         }
         setLoading(false);
     };

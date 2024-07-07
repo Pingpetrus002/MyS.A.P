@@ -19,9 +19,9 @@ function getLocalFile(event) {
 }
 
 async function sendFile(body) {
-    throw new Error(" TODO: Implement this function with new API.");
-    /*let fetchWraper = new FetchWraper();
-    fetchWraper.url = "https://localhost:5001/auth/set_rapport"; // currently invalid
+    //throw new Error(" TODO: Implement this function with new API.");
+    let fetchWraper = new FetchWraper();
+    fetchWraper.url = "https://localhost:5001/auth/set_document";
     fetchWraper.method = "POST";
     fetchWraper.headers.append("Content-Type", "application/json");
     fetchWraper.headers.append("Accept", "application/json");
@@ -36,7 +36,7 @@ async function sendFile(body) {
         default:
             console.log("Error uploading file:", result.status);
             return false;
-    }*/
+    }
 }
 
 export default function UploadRapport(params) {

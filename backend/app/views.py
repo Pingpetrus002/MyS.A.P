@@ -385,6 +385,57 @@ def set_rapport():
 
     return jsonify({'message': 'Rapport set'}), 200
 
+
+@auth.route('/set_document', methods=['POST'])
+@jwt_required()
+def set_document():
+
+    current_user = get_jwt_identity()
+    data: dict = request.get_json()
+
+    fields = ['id_user', 'sujet', 'rapport', 'type']
+    if check_fields(data, fields) != 0:
+        return check_fields(data, fields)
+    
+    id_suiveur = Utilisateur.query.get(current_user).id_user
+
+    id_user = data.get('id_user')
+    sujet = data.get('sujet')
+    rapport:str = data.get('rapport')
+    typeOfDoc = data.get('type')
+    date = datetime.datetime.now()
+    
+    #Recup de hash MD5 du rapport
+
+    # Calcul de la somme de contrôle MD5
+    data_to_hash = f"{id_user}{id_suiveur}{date}".encode('utf-8')
+    MD5 = hashlib.md5(data_to_hash).hexdigest()
+
+
+    #Verification des roles
+    user = Utilisateur.query.get(current_user)
+
+    # check_role 1 et 2 = Admin et RRE
+    if not check_role(user, 1) and not check_role(user, 2):
+        return jsonify({'message': f"Unauthorized"}), 403
+
+
+    # check file type
+    if typeOfDoc != 'autre':
+        return jsonify({'message': 'Type de document non valide, \'autre\' attendu'}), 400
+
+    
+
+    #Ajout du rapport
+
+    new_rapport = Document(nom=sujet, id_user=id_user, id_user_1=id_suiveur, rapport=rapport.encode('utf-8'), datecreation=date, md5=MD5, type=typeOfDoc)
+    db.session.add(new_rapport)
+
+    db.session.commit()
+
+    return jsonify({'message': 'Document set'}), 200
+
+
 # Route pour récupérer les infos des rapports
 @auth.route('/get_rapport_info', methods=['GET'])
 @jwt_required()
@@ -496,6 +547,38 @@ def get_rapport(md5):
         return jsonify({'message': 'Unauthorized'}), 403
 
     return jsonify(rapport.rapport_json), 200
+
+
+# Route pour récupérer les document (dupliqué de get_rapport)
+@auth.route('/get_document/<string:md5>', methods=['GET'])
+@jwt_required()
+def get_document(md5):
+    current_user = get_jwt_identity()
+    user = Utilisateur.query.get(current_user)
+
+    rapport = Document.query.filter_by(md5=md5).first()
+
+    if not rapport:
+        return jsonify({'message': 'Report not found'}), 404
+    
+    rapport_data = base64.b64decode(rapport.rapport)
+
+
+    # Vérifiez les droits d'accès selon le rôle de l'utilisateur
+    if check_role(user, 1) or check_role(user, 2):  # Admin ou RRE
+        pass
+    elif check_role(user, 3) and rapport.id_user_1 == current_user:  # Suiveur
+        pass
+    elif check_role(user, 4) and rapport.id_user == current_user:  # Étudiant
+        pass
+    else:
+        return jsonify({'message': 'Unauthorized'}), 403
+
+    response = make_response(rapport_data)
+    response.headers['Content-Type'] = 'application/pdf'
+    response.headers['Content-Disposition'] = f'attachment; filename=report{md5}.pdf'
+
+    return response
 
 
 # Route pour get l'url Calendly
