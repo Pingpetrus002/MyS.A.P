@@ -28,8 +28,8 @@ import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFnsV3';
 import { fr } from 'date-fns/locale/fr';
 import { useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
-import AddIcon from '@mui/icons-material/Add';
-import PdfGenerator from './PDFGenerator';
+import ButtonSap from './sap/ButtonSap';
+import { sendRapport } from '../utils/sendRapport';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
@@ -878,34 +878,45 @@ function SyntheseSuiviTuteur({ student, open, onClose }) {
 
                         <Grid container justifyContent="center">
                             <Grid item>
-                                <PdfGenerator
-                                    nomRapport={textFieldNomRapport}
-                                    idEtudiant={textFieldIdEtudiant}
-                                    formation={selectFieldFormation}
-                                    nomEtudiant={textFieldNomEtudiant}
-                                    prenomEtudiant={textFieldPrenomEtudiant}
-                                    nomEntreprise={textFieldNomEntreprise}
-                                    nomTuteurEntreprise={textFieldNomTuteurEntreprise}
-                                    prenomTuteurEntreprise={textFieldPrenomTuteurEntreprise}
-                                    posteEtudiant={textFieldPosteEtudiant}
-                                    missions={textFieldMissions}
-                                    commentaireTuteur={textFieldCommentaireTuteur}
-                                    savoirEtre={radioFields}
-                                    projetsSecondSemestre={textFieldProjetsSecondSemestre}
-                                    axesAmelioration={textFieldAxesAmelioration}
-                                    pointsFort={textFieldPointsFort}
-                                    sujetMemoire={textFieldSujetMemoire}
-                                    alerteRE={isREOtherChecked ? reOtherText : null}
-                                    alerteSP={isPedagogiqueOtherChecked ? PedagogiqueOtherText : null}
-                                    commentaireEntretienSuivi={textFieldCommentaireEntretienSuivi}
-                                    nomSuiveur={textFieldNomSuiveur}
-                                    dateEntretien={dateFieldEntretien}
-                                    formatSuivi={radioFieldFormatSuivi}
-                                    presence={checkboxFieldPresence}
-                                    presenceText={presentText}
-                                    recrutement={radioFieldRecrutement}
-                                    poursuiteEtudes={radioFieldPoursuiteEtudes}
+                                <ButtonSap
+                                    props={{
+                                        nomRapport: textFieldNomRapport,
+                                        idEtudiant: textFieldIdEtudiant,
+                                        formation: selectFieldFormation,
+                                        nomEtudiant: textFieldNomEtudiant,
+                                        prenomEtudiant: textFieldPrenomEtudiant,
+                                        nomEntreprise: textFieldNomEntreprise,
+                                        nomTuteurEntreprise: textFieldNomTuteurEntreprise,
+                                        prenomTuteurEntreprise: textFieldPrenomTuteurEntreprise,
+                                        posteEtudiant: textFieldPosteEtudiant,
+                                        missions: textFieldMissions,
+                                        commentaireTuteur: textFieldCommentaireTuteur,
+                                        savoirEtre: radioFields,
+                                        projetsSecondSemestre: textFieldProjetsSecondSemestre,
+                                        axesAmelioration: textFieldAxesAmelioration,
+                                        pointsFort: textFieldPointsFort,
+                                        sujetMemoire: textFieldSujetMemoire,
+                                        alerteRE: isREOtherChecked ? reOtherText : null,
+                                        alerteSP: isPedagogiqueOtherChecked ? PedagogiqueOtherText : null,
+                                        commentaireEntretienSuivi: textFieldCommentaireEntretienSuivi,
+                                        nomSuiveur: textFieldNomSuiveur,
+                                        dateEntretien: dateFieldEntretien,
+                                        formatSuivi: radioFieldFormatSuivi,
+                                        presence: checkboxFieldPresence,
+                                        presenceText: presentText,
+                                        recrutement: radioFieldRecrutement,
+                                        poursuiteEtudes: radioFieldPoursuiteEtudes
+                                    }}
+                                    callback={async (e) => {
+                                        sendRapport(e).then((res) => {
+                                            if (res) {
+                                                onClose();
+                                                handleReset();
+                                            }
+                                        })
+                                    }}
                                 />
+
                             </Grid>
                             <Grid item>
                                 <Button

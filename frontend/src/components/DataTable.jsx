@@ -18,10 +18,12 @@ import SyntheseSuiviTuteur from './FormRapport';
 import StudentModal from './EtudiantModal';
 import AlertModal from './AlertModal';
 import AddMissionModal from './ButtonMissions';
+import JObject from '../utils/JObject';
+import GenPDF from '../utils/GenPDF';
 
 
 const handleDownload = async (md5) => {
-  const url = `http://localhost:5000/auth/get_rapport/${md5}`;
+  const url = `https://localhost:5001/auth/get_rapport/${md5}`;
 
   const fetchWraper = new FetchWraper();
   fetchWraper.url = url;
@@ -34,8 +36,10 @@ const handleDownload = async (md5) => {
   try {
     let result = await fetchWraper.fetchw();
     if (result.ok) {
-      const blob = await result.blob();
-      saveAs(blob, `report_${md5}.pdf`);
+      let jobj = new JObject();
+      jobj.fromJSON(await result.json());
+      //console.log(jobj);
+      GenPDF(jobj.data);
     } else {
       console.error('Failed to download the file.');
     }

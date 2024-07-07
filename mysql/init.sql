@@ -14,7 +14,7 @@ CREATE TABLE IF NOT EXISTS planning(
 
 CREATE TABLE IF NOT EXISTS ecole(
    id_ecole INTEGER NOT NULL AUTO_INCREMENT,
-   raison_sociale VARCHAR(200),
+   nom VARCHAR(200),
    adresse VARCHAR(200),
    PRIMARY KEY(id_ecole)
 );
@@ -91,6 +91,7 @@ CREATE TABLE IF NOT EXISTS document_(
    nom VARCHAR(50),
    md5 VARCHAR(50),
    rapport LONGBLOB,
+   rapport_json JSON,
    type VARCHAR(50),
    datecreation DATE,
    datesuppression DATE,
@@ -124,6 +125,7 @@ CREATE TABLE IF NOT EXISTS conflit(
 CREATE TABLE IF NOT EXISTS classe(
    id INTEGER NOT NULL AUTO_INCREMENT,
    libelle VARCHAR(50),
+   PRIMARY KEY(id)
 );
 
 
@@ -159,7 +161,7 @@ INSERT INTO planning (diplome, annee, classe) VALUES
 ('Business', '2024', 'B1');
 
 -- Insert data into ecole
-INSERT INTO ecole (raison_sociale, adresse) VALUES
+INSERT INTO ecole (nom, adresse) VALUES
 ('Ecole Polytechnique', '123 Rue de l\'École, Paris'),
 ('Université de Technologie', '456 Avenue de l\'Université, Lyon');
 
