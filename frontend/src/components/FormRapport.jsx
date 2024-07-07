@@ -28,12 +28,8 @@ import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFnsV3';
 import { fr } from 'date-fns/locale/fr';
 import { useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
-import AddIcon from '@mui/icons-material/Add';
-//import PdfGenerator from './PDFGenerator';
 import ButtonSap from './sap/ButtonSap';
-import GenPDF from '../utils/GenPDF';
 import { sendRapport } from '../utils/sendRapport';
-import Etudiants from '../pages/Etudiants';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
@@ -915,7 +911,7 @@ function SyntheseSuiviTuteur({ student, open, onClose }) {
                                         sendRapport(e).then((res) => {
                                             if (res) {
                                                 onClose();
-                                                //console.log(Etudiants);
+                                                handleReset();
                                             }
                                         })
                                     }}
