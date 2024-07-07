@@ -161,7 +161,7 @@ INSERT INTO planning (diplome, annee, classe) VALUES
 ('Business', '2024', 'B1');
 
 -- Insert data into ecole
-INSERT INTO ecole (raison_sociale, adresse) VALUES
+INSERT INTO ecole (nom, adresse) VALUES
 ('Ecole Polytechnique', '123 Rue de l\'École, Paris'),
 ('Université de Technologie', '456 Avenue de l\'Université, Lyon');
 
