@@ -45,7 +45,7 @@ export default function Etudiants() {
         };
 
         fetchData();
-    }, []);
+    }, [modalOpen]);
 
     // Fonction pour obtenir l'ID d'une ligne d'étudiant
     const getRowId = (student) => student.id;

@@ -2,6 +2,7 @@ flask
 flask_cors
 flask_jwt_extended
 flask_sqlalchemy
+sqlalchemy
 flask_mail
 pymysql
 cryptography

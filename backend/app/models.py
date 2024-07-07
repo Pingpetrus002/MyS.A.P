@@ -1,4 +1,5 @@
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import JSON
 from datetime import datetime
 
 db = SQLAlchemy()
@@ -13,7 +14,7 @@ class Planning(db.Model):
 class Ecole(db.Model):
     __tablename__ = 'ecole'
     id_ecole = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    raison_sociale = db.Column(db.String(200))
+    nom = db.Column(db.String(200))
     adresse = db.Column(db.String(200))
 
 class Role(db.Model):
@@ -69,7 +70,8 @@ class Document(db.Model):
     __tablename__ = 'document_'
     id_doc = db.Column(db.Integer, primary_key=True, autoincrement=True)
     nom = db.Column(db.String(50))
-    rapport = db.Column(db.LargeBinary)
+    rapport = db.Column(db.LargeBinary)    
+    rapport_json = db.Column(JSON)
     md5 = db.Column(db.String(50))
     type = db.Column(db.String(50))
     datecreation = db.Column(db.Date)

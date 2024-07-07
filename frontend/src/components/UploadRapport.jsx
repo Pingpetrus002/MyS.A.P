@@ -19,6 +19,7 @@ function getLocalFile(event) {
 }
 
 async function sendFile(body) {
+    //throw new Error(" TODO: Implement this function with new API.");
     let fetchWraper = new FetchWraper();
     fetchWraper.url = "https://10.1.1.44:5001/auth/set_rapport";
     fetchWraper.method = "POST";
