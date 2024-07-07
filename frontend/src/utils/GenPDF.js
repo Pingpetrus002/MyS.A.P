@@ -1,11 +1,8 @@
 import jsPDF from 'jspdf';
-import AlertCreator from '../utils/AlertCreator';
 
 const GenPDF = async (props) => {
     //setLoading(true); // Définir l'état de chargement à true
     const doc = new jsPDF();
-    let alertCreator = new AlertCreator(props);
-    alertCreator.checkForAlert();
 
     const fontStyles = {
         title: { fontSize: 22, fontStyle: 'bold', align: 'center', margin: 20 },
@@ -88,7 +85,6 @@ const GenPDF = async (props) => {
     }
     addText(finalText, 10, currentY + 100, fontStyles.text);
 
-    const pdfContent = doc.output('datauristring').split(',')[1];
 
     // save the pdf to the client's computer
     doc.save(`${props.nomRapport}.pdf`);
