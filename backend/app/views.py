@@ -12,6 +12,7 @@ import random
 import string
 import datetime
 import hashlib
+import json
 
 # Création d'un blueprint pour les routes d'authentification
 auth = Blueprint('auth', __name__)
@@ -591,27 +592,24 @@ def get_all_rapports():
     if not check_role(user, 1) and not check_role(user, 2):
         return jsonify({'message': 'Unauthorized'}), 403
 
-    # Retrieve all 'rapport' and 'autre' documents for the current user
+    # Retrieve all 'rapport' documents for the current user
     rapports = Document.query.filter_by(type='rapport').all()
-    autre = Document.query.filter_by(id_user=current_user, type='autre').all()
 
-    # Initialize CSV data list
-    csv_data = []
+    liste_rapports_json = []
+    # Decode and parse the JSON data for each document
+    for rapport in rapports:
+        encoded_rapport_json = rapport.rapport_json
+        try:
+            rapport_data = json.loads(encoded_rapport_json)
+            liste_rapports_json.append(rapport_data)
+        except json.JSONDecodeError as e:
+            return jsonify({'message': f"Error parsing JSON: {e}"}), 400
 
-    # Process documents to extract CSV headers from the first document
-    if rapports or autre:
-        first_document = rapports[0] if rapports else autre[0]
-        decoded_json = json.loads(base64.b64decode(first_document.rapport_json).decode('utf-8'))
-        headers = list(decoded_json.keys())
-        csv_data.append(','.join(headers))
-
-        # Process each document to extract values
-        for document in rapports + autre:
-            decoded_json = json.loads(base64.b64decode(document.rapport_json).decode('utf-8'))
-            row = [str(decoded_json.get(header, '')) for header in headers]
-            csv_data.append(','.join(row))
-
-    return jsonify({'rapports': '\n'.join(csv_data)}), 200
+    print(liste_rapports_json)
+    if liste_rapports_json:
+        return jsonify({'rapports': liste_rapports_json}), 200
+    else:
+        return jsonify({'message': 'No reports found'}), 404
 
 
 # Route pour get l'url Calendly

@@ -23,7 +23,7 @@ import GenPDF from '../utils/GenPDF';
 
 
 const handleDownload = async (md5) => {
-  const url = `https://localhost:5001/auth/get_rapport/${md5}`;
+    const url = `https://localhost:5001/auth/get_rapport/${md5}`;
 
     const fetchWraper = new FetchWraper();
     fetchWraper.url = url;
@@ -33,19 +33,19 @@ const handleDownload = async (md5) => {
     fetchWraper.headers.append("Access-Control-Allow-Origin", window.location.origin);
     fetchWraper.headers.append("Access-Control-Allow-Credentials", "true");
 
-  try {
-    let result = await fetchWraper.fetchw();
-    if (result.ok) {
-      let jobj = new JObject();
-      jobj.fromJSON(await result.json());
-      //console.log(jobj);
-      GenPDF(jobj.data);
-    } else {
-      console.error('Failed to download the file.');
+    try {
+        let result = await fetchWraper.fetchw();
+        if (result.ok) {
+            let jobj = new JObject();
+            jobj.fromJSON(await result.json());
+            //console.log(jobj);
+            GenPDF(jobj.data);
+        } else {
+            console.error('Failed to download the file.');
+        }
+    } catch (error) {
+        console.error('Error downloading the file:', error);
     }
-  } catch (error) {
-    console.error('Error downloading the file:', error);
-  }
 };
 
 const CustomButton = styled(Button)({
@@ -104,199 +104,201 @@ const adjustColumns = (columns, isLargeScreen) => {
     });
 };
 
-function getColumns(type, isLargeScreen, onButtonClick = () => { }, onRowButtonClick) {
+function getColumns(type, isLargeScreen, onButtonClick = () => {
+}, onRowButtonClick) {
 
-  const isRecentReport = (datecreation) => {
-    if (!datecreation) return false;
-    const reportDate = moment(datecreation);
-    const now = moment();
-    return now.diff(reportDate, 'months') < 11;
-  };
+    const isRecentReport = (datecreation) => {
+        if (!datecreation) return false;
+        const reportDate = moment(datecreation);
+        const now = moment();
+        return now.diff(reportDate, 'months') < 11;
+    };
 
-  const columns = {
-    rapport: [
-      { field: 'id_user', headerName: 'Étudiant', width: 180, minWidth: 180, maxWidth: 300 },
-      { field: 'nom', headerName: 'Sujet', width: 180, minWidth: 180, maxWidth: 300 },
-      { field: 'concernes', headerName: 'Concernés', width: 220, minWidth: 220, maxWidth: 300 },
-      { field: 'id_user_1', headerName: 'Suiveur', width: 180, minWidth: 180, maxWidth: 300 },
-      {
-        field: 'télécharger',
-        headerName: 'Télécharger',
-        width: 150,
-        minWidth: 150,
-        maxWidth: 150,
-        renderCell: (params) => (
-          <Tooltip title="Télécharger" placement="right">
-            <CustomButton variant="contained" onClick={() => handleDownload(params.row.md5)}>
-              <PictureAsPdfIcon />
-            </CustomButton>
-          </Tooltip>
-        ),
-      },
-    ],
-    mes_rapports: [
-      { field: 'nom', headerName: 'Sujet', width: 180, minWidth: 180, maxWidth: 300 },
-      { field: 'id_user', headerName: 'Concernés', width: 220, minWidth: 220, maxWidth: 300 },
-      { field: 'id_user_1', headerName: 'Suiveur', width: 180, minWidth: 180, maxWidth: 300 },
-      {
-        field: 'télécharger',
-        headerName: 'Télécharger',
-        width: 150,
-        maxWidth: 150,
-        minWidth: 150,
-        renderCell: (params) => (
-          <Tooltip title="Télécharger" placement="right">
-            <CustomButton variant="contained" onClick={() => handleDownload(params.row.md5)}>
-              <PictureAsPdfIcon />
-            </CustomButton>
-          </Tooltip>
-        ),
-      },
-    ],
-    mes_documents: [
-      { field: 'nom', headerName: 'Nom', width: 180, minWidth: 180, maxWidth: 300 },
-      { field: 'datecreation', headerName: 'Date d\'ajout', width: 220, minWidth: 220, maxWidth: 300 },
-      {
-        field: 'télécharger',
-        headerName: 'Télécharger',
-        width: 150,
-        maxWidth: 150,
-        minWidth: 150,
-        renderCell: (params) => (
-          <Tooltip title="Télécharger" placement="right">
-            <CustomButton variant="contained" onClick={() => handleDownload(params.row.md5)}>
-              <PictureAsPdfIcon />
-            </CustomButton>
-          </Tooltip>
-        ),
-      },
-    ],
-    etudiant: [
-      { field: 'prenom_nom', headerName: 'Prénom Nom', width: 180, minWidth: 180, maxWidth: 300 },
-      { field: 'classe', headerName: 'Classe', width: 300, minWidth: 300, maxWidth: 400 },
-      { field: 'statut', headerName: 'Statut', width: 180, minWidth: 180, maxWidth: 300 },
-      { field: 'contrat', headerName: 'Contrat', width: 180, minWidth: 180, maxWidth: 300 },
-      {
-        field: 'suivi',
-        headerName: 'Suivi',
-        width: 120,
-        minWidth: 120,
-        maxWidth: 120,
-        renderCell: (params) => {
-          const { rapports, datecreation_rapport } = params.row;
-          const hasReport = rapports && rapports.length > 0;
-          const recentReport = isRecentReport(datecreation_rapport);
+    const columns = {
+        rapport: [
+            {field: 'id_user', headerName: 'Étudiant', width: 180, minWidth: 180, maxWidth: 300},
+            {field: 'nom', headerName: 'Sujet', width: 180, minWidth: 180, maxWidth: 300},
+            {field: 'concernes', headerName: 'Concernés', width: 220, minWidth: 220, maxWidth: 300},
+            {field: 'id_user_1', headerName: 'Suiveur', width: 180, minWidth: 180, maxWidth: 300},
+            {
+                field: 'télécharger',
+                headerName: 'Télécharger',
+                width: 150,
+                minWidth: 150,
+                maxWidth: 150,
+                renderCell: (params) => (
+                    <Tooltip title="Télécharger" placement="right">
+                        <CustomButton variant="contained" onClick={() => handleDownload(params.row.md5)}>
+                            <PictureAsPdfIcon/>
+                        </CustomButton>
+                    </Tooltip>
+                ),
+            },
+        ],
+        mes_rapports: [
+            {field: 'nom', headerName: 'Sujet', width: 180, minWidth: 180, maxWidth: 300},
+            {field: 'id_user', headerName: 'Concernés', width: 220, minWidth: 220, maxWidth: 300},
+            {field: 'id_user_1', headerName: 'Suiveur', width: 180, minWidth: 180, maxWidth: 300},
+            {
+                field: 'télécharger',
+                headerName: 'Télécharger',
+                width: 150,
+                maxWidth: 150,
+                minWidth: 150,
+                renderCell: (params) => (
+                    <Tooltip title="Télécharger" placement="right">
+                        <CustomButton variant="contained" onClick={() => handleDownload(params.row.md5)}>
+                            <PictureAsPdfIcon/>
+                        </CustomButton>
+                    </Tooltip>
+                ),
+            },
+        ],
+        mes_documents: [
+            {field: 'nom', headerName: 'Nom', width: 180, minWidth: 180, maxWidth: 300},
+            {field: 'datecreation', headerName: 'Date d\'ajout', width: 220, minWidth: 220, maxWidth: 300},
+            {
+                field: 'télécharger',
+                headerName: 'Télécharger',
+                width: 150,
+                maxWidth: 150,
+                minWidth: 150,
+                renderCell: (params) => (
+                    <Tooltip title="Télécharger" placement="right">
+                        <CustomButton variant="contained" onClick={() => handleDownload(params.row.md5)}>
+                            <PictureAsPdfIcon/>
+                        </CustomButton>
+                    </Tooltip>
+                ),
+            },
+        ],
+        etudiant: [
+            {field: 'prenom_nom', headerName: 'Prénom Nom', width: 180, minWidth: 180, maxWidth: 300},
+            {field: 'classe', headerName: 'Classe', width: 300, minWidth: 300, maxWidth: 400},
+            {field: 'statut', headerName: 'Statut', width: 180, minWidth: 180, maxWidth: 300},
+            {field: 'contrat', headerName: 'Contrat', width: 180, minWidth: 180, maxWidth: 300},
+            {
+                field: 'suivi',
+                headerName: 'Suivi',
+                width: 120,
+                minWidth: 120,
+                maxWidth: 120,
+                renderCell: (params) => {
+                    const {rapports, datecreation_rapport} = params.row;
+                    const hasReport = rapports && rapports.length > 0;
+                    const recentReport = isRecentReport(datecreation_rapport);
 
-          if (!hasReport) {
-            return 'À faire';
-          } else if (recentReport) {
-            return 'Fait';
-          } else {
-            return 'Rapport trop ancien';
-          }
-        }
-      },
-      {
-        field: 'rapport',
-        headerName: 'Rapport',
-        width: 120,
-        minWidth: 120,
-        maxWidth: 120,
-        renderCell: (params) => {
-          const { rapports, datecreation_rapport } = params.row;
-          const hasReport = rapports && rapports.length > 0;
-          const recentReport = isRecentReport(datecreation_rapport);
+                    if (!hasReport) {
+                        return 'À faire';
+                    } else if (recentReport) {
+                        return 'Fait';
+                    } else {
+                        return 'Rapport trop ancien';
+                    }
+                }
+            },
+            {
+                field: 'rapport',
+                headerName: 'Rapport',
+                width: 120,
+                minWidth: 120,
+                maxWidth: 120,
+                renderCell: (params) => {
+                    const {rapports, datecreation_rapport} = params.row;
+                    const hasReport = rapports && rapports.length > 0;
+                    const recentReport = isRecentReport(datecreation_rapport);
 
-          if (!hasReport) {
-            return (
-              <CustomButton
-                onClick={() => onButtonClick(params.row)}
-                style={{ backgroundColor: 'purple', color: 'white' }}
-              >
-                Créer
-              </CustomButton>
-            );
-          } else if (recentReport) {
-            return (
-              <CustomButton
-                onClick={() => onButtonClick(console.log('Modifier'))}
-                style={{ backgroundColor: 'green', color: 'white' }}
-              >
-                Modifier
-              </CustomButton>
-            );
-          } else {
-            return null;
-          }
-        }
-      },
-    ],
-    alerte: [
-      { field: 'commentaires', headerName: 'Commentaire', width: 400, minWidth: 220, maxWidth: 900 },
-      { field: 'user_source', headerName: 'Utilisateur source', width: 180, minWidth: 180, maxWidth: 300 },
-      { field: 'raison_social', headerName: 'Entreprise', width: 180, minWidth: 180, maxWidth: 300 },
-      { field: 'date', headerName: 'Date', width: 180, minWidth: 180, maxWidth: 300 },
-      {
-        field: 'voir',
-        headerName: 'Voir',
-        width: 120,
-        minWidth: 120,
-        maxWidth: 120,
-        renderCell: (params) => (
-          <CustomButton onClick={() => onRowButtonClick(params.row)} style={{ backgroundColor: '#1976d2', color: 'white' }}>
-            Voir
-          </CustomButton>
-        ),
-      },
-    ],
-    // Définir les colonnes pour le type Mission
-    mission: [
-      { field: 'libelle', headerName: 'Libellé', width: 200 },
-      { field: 'description', headerName: 'Description', width: 200 },
-      { field: 'datedebut', headerName: 'Date début', width: 150 },
-      { field: 'datefin', headerName: 'Date fin', width: 150 },
-      { field: 'id_user', headerName: 'Utilisateur', width: 150 },
-    ],
-    users_management: [
-      { field: 'id', headerName: 'ID', width: 90 },
-      { field: 'status', headerName: 'Active', width: 100 },
-      { field: 'mail', headerName: 'Email', width: 150 },
-      { field: 'role', headerName: 'Role', width: 150 },
-      { field: 'nom', headerName: 'Prénom', width: 150 },
-      { field: 'prenom', headerName: 'Nom', width: 150 },
-      { field: 'date_naissance_formatted', headerName: 'Date de naissance', width: 250 },
-      {
-        field: 'actions',
-        headerName: 'Actions',
-        width: 150,
-        renderCell: (params) => (
-          <strong>
-            <Button
-              sx={{
-                marginTop: 1.8,
-                marginLeft: 4,
-                color: '#000000',
-                borderColor: '#F0C975',
-                backgroundColor: '#FDD47C',
-                mb: 1,
-                '&:hover': {
-                  backgroundColor: '#FFC039',
-                  borderColor: '#FFC039',
-                },
-              }}
-              variant="contained"
-              color="primary"
-              size="small"
-              style={{ marginLeft: 16 }}
-              onClick={() => onButtonClick(params.row)}
-            >
-              Action
-            </Button>
-          </strong>
-        ),
-      },
-    ]
-  };
+                    if (!hasReport) {
+                        return (
+                            <CustomButton
+                                onClick={() => onButtonClick(params.row)}
+                                style={{backgroundColor: 'purple', color: 'white'}}
+                            >
+                                Créer
+                            </CustomButton>
+                        );
+                    } else if (recentReport) {
+                        return (
+                            <CustomButton
+                                onClick={() => onButtonClick(console.log('Modifier'))}
+                                style={{backgroundColor: 'green', color: 'white'}}
+                            >
+                                Modifier
+                            </CustomButton>
+                        );
+                    } else {
+                        return null;
+                    }
+                }
+            },
+        ],
+        alerte: [
+            {field: 'commentaires', headerName: 'Commentaire', width: 400, minWidth: 220, maxWidth: 900},
+            {field: 'user_source', headerName: 'Utilisateur source', width: 180, minWidth: 180, maxWidth: 300},
+            {field: 'raison_social', headerName: 'Entreprise', width: 180, minWidth: 180, maxWidth: 300},
+            {field: 'date', headerName: 'Date', width: 180, minWidth: 180, maxWidth: 300},
+            {
+                field: 'voir',
+                headerName: 'Voir',
+                width: 120,
+                minWidth: 120,
+                maxWidth: 120,
+                renderCell: (params) => (
+                    <CustomButton onClick={() => onRowButtonClick(params.row)}
+                                  style={{backgroundColor: '#1976d2', color: 'white'}}>
+                        Voir
+                    </CustomButton>
+                ),
+            },
+        ],
+        // Définir les colonnes pour le type Mission
+        mission: [
+            {field: 'libelle', headerName: 'Libellé', width: 200},
+            {field: 'description', headerName: 'Description', width: 200},
+            {field: 'datedebut', headerName: 'Date début', width: 150},
+            {field: 'datefin', headerName: 'Date fin', width: 150},
+            {field: 'id_user', headerName: 'Utilisateur', width: 150},
+        ],
+        users_management: [
+            {field: 'id', headerName: 'ID', width: 90},
+            {field: 'status', headerName: 'Active', width: 100},
+            {field: 'mail', headerName: 'Email', width: 150},
+            {field: 'role', headerName: 'Role', width: 150},
+            {field: 'nom', headerName: 'Prénom', width: 150},
+            {field: 'prenom', headerName: 'Nom', width: 150},
+            {field: 'date_naissance_formatted', headerName: 'Date de naissance', width: 250},
+            {
+                field: 'actions',
+                headerName: 'Actions',
+                width: 150,
+                renderCell: (params) => (
+                    <strong>
+                        <Button
+                            sx={{
+                                marginTop: 1.8,
+                                marginLeft: 4,
+                                color: '#000000',
+                                borderColor: '#F0C975',
+                                backgroundColor: '#FDD47C',
+                                mb: 1,
+                                '&:hover': {
+                                    backgroundColor: '#FFC039',
+                                    borderColor: '#FFC039',
+                                },
+                            }}
+                            variant="contained"
+                            color="primary"
+                            size="small"
+                            style={{marginLeft: 16}}
+                            onClick={() => onButtonClick(params.row)}
+                        >
+                            Action
+                        </Button>
+                    </strong>
+                ),
+            },
+        ]
+    };
 
     return adjustColumns(columns[type] || [], isLargeScreen);
 }
@@ -350,71 +352,148 @@ export default function DataTable({
         setOpenModal(false);
     };
 
+    // Récupère tous les rapports
     const handleDataRapport = async () => {
         const url = `https://localhost:5001/auth/get_all_rapports`;
 
         const fetchWraper = new FetchWraper();
         fetchWraper.url = url;
         fetchWraper.method = "GET";
-        fetchWraper.headers.append("Content-Type", "application/pdf");
-        fetchWraper.headers.append("Accept", "application/pdf");
+        fetchWraper.headers.append("Content-Type", "application/json");
+        fetchWraper.headers.append("Accept", "application/json");
         fetchWraper.headers.append("Access-Control-Allow-Origin", window.location.origin);
         fetchWraper.headers.append("Access-Control-Allow-Credentials", "true");
+
         let result = await fetchWraper.fetchw();
         return await result.json();
     };
 
+    // Fonction pour applatir un JSON
+    // Exemple: { savoirEtre: { 'Capacité d\'intégration': 'Très bonne' } }
+    const flattenJSON = (obj) => {
+        const flattened = {};
+
+        Object.keys(obj).forEach(key => {
+            if (typeof obj[key] === 'object' && obj[key] !== null) {
+                // Flatten nested objects except for arrays
+                if (!Array.isArray(obj[key])) {
+                    Object.keys(obj[key]).forEach(subKey => {
+                        flattened[`${key} - ${subKey}`] = obj[key][subKey];
+                    });
+                } else {
+                    flattened[key] = JSON.stringify(obj[key]); // Handle arrays as JSON strings
+                }
+            } else {
+                flattened[key] = obj[key];
+            }
+        });
+
+        return flattened;
+    };
+
+    // Fonction pour transformer l'en-tête en format lisible
+    const transformHeader = (header) => {
+        return header
+            .replace(/([A-Z])/g, ' $1') // Add space before each uppercase letter
+            .toLowerCase() // Convert the entire string to lowercase
+            .split(' ') // Split by space
+            .map(word => word.charAt(0).toUpperCase() + word.slice(1)) // Capitalize the first letter of each word
+            .join(' '); // Join the words back with a space
+    };
+
+    // Fonction pour exporter les données en CSV
     const handleExportCSV = async () => {
         if (type === "rapport") {
             try {
-                let data = await handleDataRapport().then((data) => data.rapports);
-                console.log(data);
+                let data = await handleDataRapport();
+                let rapports = data.rapports;
 
-                // Split the first element of the array to get the column names
-                const header = data[0].split(',');
+                if (rapports.length > 0) {
+                    // Flatten the JSON data and extract headers
+                    const flattenedRapports = rapports.map(rapport => flattenJSON(rapport));
+                    const keys = Object.keys(flattenedRapports[0]).map(transformHeader);
 
-                // Convert JSON data to CSV
-                const replacer = (key, value) => value === null ? '' : value;
-                const csv = [
-                    header.join(','),
-                    // Map over the rest of the array to get the rows of data
-                    ...data.slice(1).map(row => header.map(fieldName => JSON.stringify(row[fieldName], replacer)).join(','))
-                ].join('\r\n');
+                    // Convert JSON data to CSV rows
+                    const csvRows = flattenedRapports.map(flattenedReport => {
+                        // Initialize an array to hold values for this row
+                        const rowValues = [];
 
-                // Create a blob from the CSV data
-                const csvBlob = new Blob([csv], {type: 'text/csv;charset=utf-8;'});
+                        // Loop over entries of flattenedReport to ensure correct order
+                        for (const [key, value] of Object.entries(flattenedReport)) {
+                            let formattedValue = value !== undefined ? value : ''; // Default to empty string if value is undefined
 
-                // Get current date
-                const date = new Date();
+                            // Handle nested fields like "savoirEtre - Capacité d'intégration"
+                            if (key.includes(' - ')) {
+                                const nestedKeys = key.split(' - ');
+                                let nestedValue = flattenedReport;
+                                for (const nestedKey of nestedKeys) {
+                                    nestedValue = nestedValue[nestedKey];
+                                    if (!nestedValue) break;
+                                }
+                                formattedValue = nestedValue || '';
+                            }
 
-                // Format date as dd/mm/yyyy
-                const dateString = new Intl.DateTimeFormat('fr-FR').format(date);
+                            // Push the formatted value to rowValues
+                            rowValues.push(formattedValue);
+                        }
 
-                // Use FileSaver to save the blob as a CSV file with the current date in the filename
-                saveAs(csvBlob, `rapports_${dateString}.csv`);
+                        // Join rowValues with commas to form the CSV row
+                        return rowValues.join(',');
+                    });
+
+                    // Create CSV content with header row and rows of data
+                    const csvContent = [
+                        keys.join(','), // Header row
+                        ...csvRows
+                    ].join('\r\n');
+
+                    console.log(csvContent);
+
+                    // Create a blob from the CSV content
+                    const csvBlob = new Blob([csvContent], {type: 'text/csv;charset=utf-8;'});
+
+                    // Get current date and time
+                    const now = new Date();
+
+                    // Format date and time as dd/mm/yyyy, HH:MM
+                    const dateTimeFormatOptions = {
+                        year: 'numeric',
+                        month: '2-digit',
+                        day: '2-digit',
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        hour12: false
+                    };
+                    const formattedDateTime = new Intl.DateTimeFormat('fr-FR', dateTimeFormatOptions).format(now).replaceAll(/[\/,: ]/g, (match) => match === '/' ? '-' : match === ':' ? '-' : '_');
+
+                    // Use FileSaver to save the blob as a CSV file with the current date and time in the filename
+                    saveAs(csvBlob, `rapports_${formattedDateTime}.csv`);
+                } else {
+                    console.error('Aucun rapports trouvé');
+                }
             } catch (error) {
                 console.error('Error downloading the file:', error);
             }
         } else {
-            // Récupérer les colonnes
+            // Retrieve columns for other types
             const columns = getColumns(type, isLargeScreen, callback);
 
-            // Créer l'en-tête CSV à partir des noms de colonne
+            // Create the CSV header from column names
             const header = columns.map(col => col.headerName).join(',') + '\n';
 
-            // Créer les lignes CSV à partir des données
+            // Create the CSV rows from the data
             const csv = rows.map(row => {
                 return columns.map(col => {
                     const cell = row[col.field];
-                    // Si la cellule contient une virgule, la placer entre guillemets
+                    // If the cell contains a comma, place it in quotes
                     return typeof cell === 'string' && cell.includes(',') ? `"${cell}"` : cell;
                 }).join(',');
             }).join('\n');
 
-            // Concaténer l'en-tête et les lignes pour former le contenu CSV complet
+            // Concatenate the header and rows to form the complete CSV content
             const csvData = header + csv;
 
-            // Convertir en Blob et enregistrer en tant que fichier CSV
+            // Convert to Blob and save as a CSV file
             const blob = new Blob([csvData], {type: 'text/csv;charset=utf-8;'});
             saveAs(blob, `${getTitle(type)}.csv`);
         }
@@ -456,42 +535,42 @@ export default function DataTable({
                     ) : null}
                 </Button>
 
-        {type === 'etudiant' && (
-          <Tooltip title="Ajouter un étudiant" placement="top">
-            <Button
-              variant="outlined"
-              href='/?page=ajout_etudiants'
-              sx={{
-                color: '#000000',
-                borderColor: '#F0C975',
-                backgroundColor: '#FDD47C',
-                mb: 1,
-                '&:hover': {
-                  backgroundColor: '#FFC039',
-                  borderColor: '#FFC039',
-                  color: '#000000',
-                }
-              }}
-            >
-              <AddIcon />
-            </Button>
-          </Tooltip>
-        )}
-        {type === 'mission' && <AddMissionModal />}
-        {type === 'rapport' && <SyntheseSuiviTuteur />}
-      </div>
-      <CustomDataGrid
-        autoHeight
-        rows={rows}
-        columns={getColumns(type, isLargeScreen, callback, handleRowButtonClick)}
-        pageSizeOptions={[5, 10, 25]}
-        initialState={{
-          pagination: {
-            paginationModel: { page: 0, pageSize: 5 },
-          },
-        }}
-        isSmallScreen={isSmallScreen}
-      />
+                {type === 'etudiant' && (
+                    <Tooltip title="Ajouter un étudiant" placement="top">
+                        <Button
+                            variant="outlined"
+                            href='/?page=ajout_etudiants'
+                            sx={{
+                                color: '#000000',
+                                borderColor: '#F0C975',
+                                backgroundColor: '#FDD47C',
+                                mb: 1,
+                                '&:hover': {
+                                    backgroundColor: '#FFC039',
+                                    borderColor: '#FFC039',
+                                    color: '#000000',
+                                }
+                            }}
+                        >
+                            <AddIcon/>
+                        </Button>
+                    </Tooltip>
+                )}
+                {type === 'mission' && <AddMissionModal/>}
+                {type === 'rapport' && <SyntheseSuiviTuteur/>}
+            </div>
+            <CustomDataGrid
+                autoHeight
+                rows={rows}
+                columns={getColumns(type, isLargeScreen, callback, handleRowButtonClick)}
+                pageSizeOptions={[5, 10, 25]}
+                initialState={{
+                    pagination: {
+                        paginationModel: {page: 0, pageSize: 5},
+                    },
+                }}
+                isSmallScreen={isSmallScreen}
+            />
 
             <Button
                 variant="outlined"
