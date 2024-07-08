@@ -171,7 +171,8 @@ INSERT INTO role (id_role, nom) VALUES
 (2, 'RRE'),
 (3, 'Suiveur'),
 (4, 'Etudiant'),
-(5, 'Tuteur');
+(5, 'Tuteur'),
+(6, 'RP');
 
 -- Insert data into entreprise
 INSERT INTO entreprise (raison_sociale, adresse, id_ecole) VALUES

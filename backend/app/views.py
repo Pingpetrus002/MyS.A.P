@@ -23,6 +23,7 @@ ROLES_ACCESS = {
     3: ['dashboard', 'profil', 'rapports', 'etudiants'],  # Suiveur has access to profile and their reports
     4: ['profil', 'rdv'],  # Etudiant has access to profile and concerned reports
     5: ['profil', 'rdv'],  # Tuteur has access to profile, their students, and their students' reports
+    6: ['profil', 'rdv'],  # Tuteur has access to profile, their students, and their students' reports
 }
 
 
@@ -444,7 +445,7 @@ def get_rapport_info():
     user = Utilisateur.query.get(current_user)
 
     # Récupération de tous les rapports de type 'rapport' pour les administrateurs et RRE
-    if check_role(user, 1) or check_role(user, 2):
+    if check_role(user, 1) or check_role(user, 2) or check_role(user, 6):
         rapports = Document.query.filter_by(type='rapport').all()
         autre = Document.query.filter_by(id_user=current_user, type='autre').all()
         rapports_dict = [document_to_dict(rapport) for rapport in rapports]
@@ -476,7 +477,7 @@ def get_students():
     user = Utilisateur.query.get(current_user)
 
     # Cas Admin et RRE - Recupération de tous les étudiants
-    if check_role(user, 1) or check_role(user, 2):
+    if check_role(user, 1) or check_role(user, 2) or check_role(user, 6):
         #Recupération des étudiants
         students = Utilisateur.query.filter_by(id_role=4).all()
         students_dict = [{
@@ -537,7 +538,7 @@ def get_rapport(md5):
 
 
     # Vérifiez les droits d'accès selon le rôle de l'utilisateur
-    if check_role(user, 1) or check_role(user, 2):  # Admin ou RRE
+    if check_role(user, 1) or check_role(user, 2) or check_role(user, 6):  # Admin ou RRE
         pass
     elif check_role(user, 3) and rapport.id_user_1 == current_user:  # Suiveur
         pass
@@ -565,7 +566,7 @@ def get_document(md5):
 
 
     # Vérifiez les droits d'accès selon le rôle de l'utilisateur
-    if check_role(user, 1) or check_role(user, 2):  # Admin ou RRE
+    if check_role(user, 1) or check_role(user, 2) or check_role(user, 6):  # Admin ou RRE
         pass
     elif check_role(user, 3) and rapport.id_user_1 == current_user:  # Suiveur
         pass
@@ -591,7 +592,7 @@ def get_calendly():
         return jsonify({'message': 'User not found'}), 404
 
     # Vérification du rôle de l'utilisateur RRE ou Suiveur
-    if check_role(user, 1) or check_role(user, 2) or check_role(user, 3):
+    if check_role(user, 1) or check_role(user, 2) or check_role(user, 3) or check_role(user, 6):
         # Récupération de l'URL Calendly de l'utilisateur
         url_calendly = user.url_calendly
         return jsonify({'url_calendly': url_calendly}), 200
@@ -692,7 +693,7 @@ def get_missions():
     # Recherche de toutes les missions
 
     # Check des roles
-    if check_role(Utilisateur.query.get(get_jwt_identity()), 1) or check_role(Utilisateur.query.get(get_jwt_identity()), 2):
+    if check_role(Utilisateur.query.get(get_jwt_identity()), 1) or check_role(Utilisateur.query.get(get_jwt_identity()), 2) or check_role(Utilisateur.query.get(get_jwt_identity()), 6):
         missions = Mission.query.all()
 
     elif check_role(Utilisateur.query.get(get_jwt_identity()), 3):
@@ -861,7 +862,7 @@ def get_info(nom):
         return jsonify({'message': 'User not found'}), 404
 
     # Cas Admin et RRE - Recupération de tous les infos suivant le nom donné
-    if check_role(user, 1) or check_role(user, 2):
+    if check_role(user, 1) or check_role(user, 2) or check_role(user, 6):
         if nom == "entreprise":
             result = Entreprise.query.all()
 
