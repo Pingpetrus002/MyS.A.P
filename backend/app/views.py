@@ -509,34 +509,31 @@ def get_all_rapports():
     current_user = get_jwt_identity()
     user = Utilisateur.query.get(current_user)
 
-    # Récupération de tous les rapports de type 'rapport' pour les administrateurs et RRE
-    if check_role(user, 1) or check_role(user, 2):
-        rapports = Document.query.filter_by(type='rapport').all()
-
-        print(base64.b64decode(rapports[0].rapport))
-
-
-        autre = Document.query.filter_by(id_user=current_user, type='autre').all()
-
-        # Get column names from the first document in the list
-        if rapports:
-            column_names = rapports[0].__dict__.keys()
-
-        # Create CSV header from column names
-        header = ','.join(column_names)
-
-        # Create CSV rows from documents
-        rapports_dict = [document_to_dict(rapport) for rapport in rapports]
-        autre_dict = [document_to_dict(rapport) for rapport in autre]
-
-        # Combine header and rows
-        csv_data = [header] + rapports_dict + autre_dict
-
-        return jsonify({'rapports': csv_data}), 200
-
-    # Récupération des rapports de type 'autre' de l'utilisateur actuel, quel que soit le rôle
-    else:
+    # Check if the user has the right role
+    if not check_role(user, 1) and not check_role(user, 2):
         return jsonify({'message': 'Unauthorized'}), 403
+
+    # Retrieve all 'rapport' and 'autre' documents for the current user
+    rapports = Document.query.filter_by(type='rapport').all()
+    autre = Document.query.filter_by(id_user=current_user, type='autre').all()
+
+    # Initialize CSV data list
+    csv_data = []
+
+    # Process documents to extract CSV headers from the first document
+    if rapports or autre:
+        first_document = rapports[0] if rapports else autre[0]
+        decoded_json = json.loads(base64.b64decode(first_document.rapport_json).decode('utf-8'))
+        headers = list(decoded_json.keys())
+        csv_data.append(','.join(headers))
+
+        # Process each document to extract values
+        for document in rapports + autre:
+            decoded_json = json.loads(base64.b64decode(document.rapport_json).decode('utf-8'))
+            row = [str(decoded_json.get(header, '')) for header in headers]
+            csv_data.append(','.join(row))
+
+    return jsonify({'rapports': '\n'.join(csv_data)}), 200
 
 
 # Route pour get l'url Calendly

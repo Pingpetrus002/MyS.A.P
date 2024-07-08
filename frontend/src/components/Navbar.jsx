@@ -15,7 +15,7 @@ import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import { Badge, Box, Container, Toolbar, IconButton, Menu, Avatar, Tooltip, MenuItem, Divider, Link } from "@mui/material";
 import MenuIcon from '@mui/icons-material/Menu';
-import * as Icons from '@mui/icons-material';
+import Notifications from '@mui/icons-material/Notifications';
 import EastIcon from '@mui/icons-material/East';
 import { useMediaQuery, useTheme } from '@mui/material';
 import '@fontsource/inter/400.css';
@@ -33,7 +33,7 @@ const pages = {
 
 async function IsConnected() {
     let fetchWraper = new FetchWraper();
-    fetchWraper.url = "http://localhost:5000/auth/protected";
+    fetchWraper.url = "https://localhost:5001/auth/protected";
     fetchWraper.method = "GET";
     fetchWraper.headers.append("Content-Type", "application/json");
     fetchWraper.headers.append("Accept", "application/json");
@@ -111,7 +111,7 @@ const Navbar = () => {
 
     async function SubmitLogout() {
         let fetchWraper = new FetchWraper();
-        fetchWraper.url = "http://localhost:5000/auth/logout";
+        fetchWraper.url = "https://localhost:5001/auth/logout";
         fetchWraper.method = "GET";
         fetchWraper.headers.append("Content-Type", "application/json");
         fetchWraper.headers.append("Accept", "application/json");
@@ -292,7 +292,7 @@ const Navbar = () => {
                 <IconButton size='large' aria-label="show new notifications" color="black"
                             onClick={handleOpenNotificationMenu}>
                     <Badge badgeContent={alerts.length} color="error">
-                        <Icons.Notifications />
+                        <Notifications />
                     </Badge>
                 </IconButton>
                 <Menu

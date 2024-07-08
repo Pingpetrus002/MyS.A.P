@@ -15,14 +15,13 @@ import moment from 'moment';
 
 import FetchWraper from '../utils/FetchWraper';
 import SyntheseSuiviTuteur from './FormRapport';
-import ButtonRapports from './ButtonRapports';
 import StudentModal from './EtudiantModal';
 import AlertModal from './AlertModal';
 import AddMissionModal from './ButtonMissions';
 
 
 const handleDownload = async (md5) => {
-    const url = `http://localhost:5000/auth/get_rapport/${md5}`;
+    const url = `https://localhost:5000/auth/get_rapport/${md5}`;
 
     const fetchWraper = new FetchWraper();
     fetchWraper.url = url;
@@ -348,7 +347,7 @@ export default function DataTable({
     };
 
     const handleDataRapport = async () => {
-        const url = `http://localhost:5000/auth/get_all_rapports`;
+        const url = `https://localhost:5001/auth/get_all_rapports`;
 
         const fetchWraper = new FetchWraper();
         fetchWraper.url = url;

@@ -91,6 +91,7 @@ CREATE TABLE IF NOT EXISTS document_(
    nom VARCHAR(50),
    md5 VARCHAR(50),
    rapport LONGBLOB,
+   rapport_json JSON,
    type VARCHAR(50),
    datecreation DATE,
    datesuppression DATE,
@@ -124,6 +125,7 @@ CREATE TABLE IF NOT EXISTS conflit(
 CREATE TABLE IF NOT EXISTS classe(
    id INTEGER NOT NULL AUTO_INCREMENT,
    libelle VARCHAR(50),
+   PRIMARY KEY(id)
 );
 
 

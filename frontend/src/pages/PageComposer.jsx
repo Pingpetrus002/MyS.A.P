@@ -29,7 +29,7 @@ const Pages = {
 
 async function IsConnected() {
     let fetchWraper = new FetchWraper();
-    fetchWraper.url = "http://localhost:5000/auth/protected";
+    fetchWraper.url = "https://localhost:5001/auth/protected";
     fetchWraper.method = "GET";
     fetchWraper.headers.append("Content-Type", "application/json");
     fetchWraper.headers.append("Accept", "application/json");

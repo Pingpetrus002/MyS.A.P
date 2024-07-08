@@ -45,7 +45,7 @@ function AddUserModal({
         }
 
         let fetchWraper = new FetchWraper();
-        fetchWraper.url = "http://localhost:5000/auth/register";
+        fetchWraper.url = "https://localhost:5001/auth/register";
         fetchWraper.method = "POST";
         fetchWraper.headers.append("Content-Type", "application/json");
         fetchWraper.headers.append("Accept", "application/json");
@@ -193,7 +193,7 @@ function ActionModal({
 
     const handleSubmit = async () => {
         let fetchWraper = new FetchWraper();
-        fetchWraper.url = "http://localhost:5000/auth/users/edit";
+        fetchWraper.url = "https://localhost:5001/auth/users/edit";
         fetchWraper.method = "POST";
         fetchWraper.headers.append("Content-Type", "application/json");
         fetchWraper.headers.append("Accept", "application/json");
@@ -353,7 +353,7 @@ ActionModal.propTypes = {
 
 async function getUsers() {
     let fetchWraper = new FetchWraper();
-    fetchWraper.url = "http://localhost:5000/auth/users/list";
+    fetchWraper.url = "https://localhost:5001/auth/users/list";
     fetchWraper.method = "GET";
     fetchWraper.headers.append("Content-Type", "application/json");
     fetchWraper.headers.append("Accept", "application/json");

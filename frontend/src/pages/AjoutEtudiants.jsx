@@ -42,7 +42,7 @@ async function SubmitFormAjout() {
     }
 
     let fetchWraper = new FetchWraper();
-    fetchWraper.url = "http://localhost:5000/auth/ajout_etudiants";
+    fetchWraper.url = "https://localhost:5001/auth/ajout_etudiants";
     fetchWraper.method = "POST";
     fetchWraper.headers.set("Content-Type", "application/json");
     fetchWraper.headers.set("Accept", "application/json");
@@ -64,7 +64,7 @@ async function SubmitFormAjout() {
 
 async function getFieldsDataUtilisateurs(role) {
     let fetchWraper = new FetchWraper();
-    fetchWraper.url = "http://localhost:5000/auth/get_users/" + role;
+    fetchWraper.url = "https://localhost:5001/auth/get_users/" + role;
     fetchWraper.method = "GET";
     fetchWraper.headers.append("Content-Type", "application/json");
     fetchWraper.headers.append("Accept", "application/json");
@@ -75,7 +75,7 @@ async function getFieldsDataUtilisateurs(role) {
 
 async function getFieldsInfo(nom) {
     let fetchWraper = new FetchWraper();
-    fetchWraper.url = "http://localhost:5000/auth/get_info/" + nom;
+    fetchWraper.url = "https://localhost:5001/auth/get_info/" + nom;
     fetchWraper.method = "GET";
     fetchWraper.headers.append("Content-Type", "application/json");
     fetchWraper.headers.append("Accept", "application/json");
