@@ -29,6 +29,7 @@ const pages = {
     3: ['Accueil', 'Rapports', 'Étudiants', 'Rendez-Vous', 'Missions'],
     4: ['Missions', 'Rendez-Vous'],
     5: ['Missions', 'Rendez-Vous'],
+    6: ['Accueil', 'Rapports', 'Étudiants', 'Rendez-Vous', 'Missions'],
 };
 
 async function IsConnected() {
