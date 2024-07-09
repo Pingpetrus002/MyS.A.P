@@ -81,7 +81,7 @@ const Navbar = () => {
         };
 
         fetchRole();
-    }, []);
+    }, [open]);
 
     const getPage = () => {
         if (role) {
@@ -156,7 +156,7 @@ const Navbar = () => {
         }
 
         fetchAlerts();
-    }, []);
+    }, [open]);
 
     const handleOpenNotificationMenu = (event) => {
         setAnchorElNotification(event.currentTarget);
