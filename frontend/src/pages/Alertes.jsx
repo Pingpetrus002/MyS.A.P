@@ -19,7 +19,7 @@ export default function Alerts() {
                 const allAlerts = await getAlerts();
                 const alertsWithId = allAlerts.map((alert, index) => ({
                     ...alert,
-                    id: index + 1 // Utilisation d'un index pour créer un identifiant unique
+                    id: alert.id // Utilisation d'un index pour créer un identifiant unique
                 }));
                 setAlerts(alertsWithId);
                 setLoading(false);
@@ -30,7 +30,7 @@ export default function Alerts() {
         }
 
         fetchData();
-    }, []);
+    }, [modalOpen]);
 
     const getRowId = (alert) => alert.id;
 
