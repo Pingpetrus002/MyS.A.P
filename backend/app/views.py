@@ -12,6 +12,7 @@ import random
 import string
 import datetime
 import hashlib
+import json
 
 # Création d'un blueprint pour les routes d'authentification
 auth = Blueprint('auth', __name__)
@@ -580,6 +581,36 @@ def get_document(md5):
     response.headers['Content-Disposition'] = f'attachment; filename=report{md5}.pdf'
 
     return response
+
+# Route pour récupérer tous les rapports
+@auth.route('/get_all_rapports', methods=['GET'])
+@jwt_required()
+def get_all_rapports():
+    current_user = get_jwt_identity()
+    user = Utilisateur.query.get(current_user)
+
+    # Check if the user has the right role
+    if not check_role(user, 1) and not check_role(user, 2):
+        return jsonify({'message': 'Unauthorized'}), 403
+
+    # Retrieve all 'rapport' documents for the current user
+    rapports = Document.query.filter_by(type='rapport').all()
+
+    liste_rapports_json = []
+    # Decode and parse the JSON data for each document
+    for rapport in rapports:
+        encoded_rapport_json = rapport.rapport_json
+        try:
+            rapport_data = json.loads(encoded_rapport_json)
+            liste_rapports_json.append(rapport_data)
+        except json.JSONDecodeError as e:
+            return jsonify({'message': f"Error parsing JSON: {e}"}), 400
+
+    print(liste_rapports_json)
+    if liste_rapports_json:
+        return jsonify({'rapports': liste_rapports_json}), 200
+    else:
+        return jsonify({'message': 'No reports found'}), 404
 
 
 # Route pour get l'url Calendly
