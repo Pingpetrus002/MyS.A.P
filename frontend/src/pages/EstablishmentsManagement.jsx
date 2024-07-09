@@ -136,7 +136,7 @@ const EstablishmentsManagement = () => {
                             <Button
                                 variant="contained"
                                 color="primary"
-                                onClick={() => handleSubmit('https://localhost:5001/auth/add_ecole', ecole)}
+                                onClick={() => handleSubmit('https://10.1.1.44:5001/auth/add_ecole', ecole)}
                                 sx={{
                                     backgroundColor: '#FDD47C',
                                     color: 'black',
@@ -170,7 +170,7 @@ const EstablishmentsManagement = () => {
                             <Button
                                 variant="contained"
                                 color="primary"
-                                onClick={() => handleSubmit('https://localhost:5001/auth/add_classe', classe)}
+                                onClick={() => handleSubmit('https://10.1.1.44:5001/auth/add_classe', classe)}
                                 sx={{
                                     backgroundColor: '#FDD47C',
                                     color: 'black',
@@ -220,7 +220,7 @@ const EstablishmentsManagement = () => {
                             <Button
                                 variant="contained"
                                 color="primary"
-                                onClick={() => handleSubmit('https://localhost:5001/auth/add_entreprise', entreprise)}
+                                onClick={() => handleSubmit('https://10.1.1.44:5001/auth/add_entreprise', entreprise)}
                                 sx={{
                                     backgroundColor: '#FDD47C',
                                     color: 'black',
