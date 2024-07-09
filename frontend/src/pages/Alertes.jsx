@@ -37,10 +37,11 @@ export default function Alerts() {
     const handleRowClick = (alert) => {
         setSelectedAlert(alert);
         setModalOpen(true);
+        console.log('etat modale open', modalOpen);
     };
 
     const handleCloseModal = () => {
-        setModalOpen(false);
+        setModalOpen(!modalOpen);
     };
 
     if (loading) {
@@ -67,6 +68,7 @@ export default function Alerts() {
                         type="alerte"
                         onRowButtonClick={handleRowClick}
                         getRowId={getRowId}
+                        callFunction={handleCloseModal}
                     />
                 </Grid>
             </Grid>
