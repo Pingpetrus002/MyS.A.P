@@ -684,7 +684,7 @@ def create_alert():
 @auth.route('/get_alerts', methods=['GET'])
 @jwt_required()
 def get_alerts():
-    alerts = Alert.query.filter_by(etat=1).all()  # Filtrer les alertes par leur état actif (1)
+    alerts = Alert.query.filter_by(etat=True).all()  # Filtrer les alertes par leur état actif (1)
 
     alerts_dict = [
         {
