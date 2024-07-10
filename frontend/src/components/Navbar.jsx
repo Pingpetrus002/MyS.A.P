@@ -10,6 +10,7 @@ import profil from '../assets/images/Profil.svg';
 import profilSelect from '../assets/images/ProfilSelect.svg';
 import rapport from '../assets/images/Rapport.svg';
 import rapportSelect from '../assets/images/RapportSelect.svg';
+import AlertModal from './AlertModal';
 
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
@@ -53,6 +54,17 @@ const settings = [
 
 const Navbar = () => {
     const [role, setRole] = useState(null);
+    const [selectedAlert, setSelectedAlert] = useState(null);
+    const [open, setModalOpen] = useState(false);
+
+    const handleOpen = (alert) => {
+        setSelectedAlert(alert);
+        setModalOpen(true);
+    };
+
+    const handleClose = () => {
+        setModalOpen(false);
+    };
 
     useEffect(() => {
         const fetchRole = async () => {
@@ -69,7 +81,7 @@ const Navbar = () => {
         };
 
         fetchRole();
-    }, []);
+    }, [open]);
 
     const getPage = () => {
         if (role) {
@@ -144,7 +156,7 @@ const Navbar = () => {
         }
 
         fetchAlerts();
-    }, []);
+    }, [open]);
 
     const handleOpenNotificationMenu = (event) => {
         setAnchorElNotification(event.currentTarget);
@@ -346,7 +358,7 @@ const Navbar = () => {
                         return (
                             <MenuItem
                                 key={alert.id_alerte}
-                                onClick={handleCloseNotificationMenu}
+                                onClick={() => handleOpen(alert)}
                                 sx={{
                                     backgroundColor,
                                     padding: '0.5rem',
@@ -532,6 +544,9 @@ const Navbar = () => {
                         />
                     </Box>
                 </Box>
+            )}            
+            {selectedAlert && (
+                <AlertModal alert={selectedAlert} open={open} onClose={handleClose}/>
             )}
         </>
     );
