@@ -1,42 +1,48 @@
 import { useEffect, useState } from 'react';
 import { LinearProgress, Grid, useMediaQuery } from '@mui/material';
-
-// Importations personnalisées
 import FetchWraper from '../utils/FetchWraper';
 import DataTable from '../components/DataTable';
 import NavBar from '../components/Navbar';
-import SyntheseSuiviTuteur from '../components/FormRapport';  // Importation du composant SyntheseSuiviTuteur
+import SyntheseSuiviTuteur from '../components/FormRapport';
 
-// Fonction asynchrone pour récupérer les données des étudiants
 async function getDatas() {
-  let fetchWraper = new FetchWraper();
-  fetchWraper.url = "https://localhost:5001/auth/get_students";
-  fetchWraper.method = "GET";
-  fetchWraper.headers.append("Content-Type", "application/json");
-  fetchWraper.headers.append("Accept", "application/json");
-  fetchWraper.headers.append("Access-Control-Allow-Origin", window.location.origin);
-  fetchWraper.headers.append("Access-Control-Allow-Credentials", "true");
-  let result = await fetchWraper.fetchw();
+    let fetchWraper = new FetchWraper();
+    fetchWraper.url = "https://localhost:5001/auth/get_students";
+    fetchWraper.method = "GET";
+    fetchWraper.headers.append("Content-Type", "application/json");
+    fetchWraper.headers.append("Accept", "application/json");
+    fetchWraper.headers.append("Access-Control-Allow-Origin", window.location.origin);
+    fetchWraper.headers.append("Access-Control-Allow-Credentials", "true");
 
-    let data = await result.json();
-    console.log(data);
-    return data;
+    try {
+        let result = await fetchWraper.fetchw();
+
+        if (!result.ok) {
+            throw new Error(`HTTP error! Status: ${result.status}`);
+        }
+
+        let data = await result.json();
+        console.log(data);
+        return data;
+    } catch (error) {
+        console.error('Error fetching data:', error);
+        throw error;
+    }
 }
 
+
 export default function Etudiants() {
-    // État local pour stocker les étudiants, le chargement, l'étudiant sélectionné et l'état modal
     const [students, setStudents] = useState([]);
     const [loading, setLoading] = useState(true);
     const [selectedStudent, setSelectedStudent] = useState(null);
     const [modalOpen, setModalOpen] = useState(false);
     const isMobile = useMediaQuery('(max-width:600px)');
 
-    // Effet pour charger les données des étudiants au chargement du composant
     useEffect(() => {
         const fetchData = async () => {
             try {
                 const data = await getDatas();
-                setStudents(data.students); // Assuming data.students is an array of students
+                setStudents(data.students);
                 setLoading(false);
             } catch (error) {
                 console.error('Error:', error);
@@ -47,21 +53,23 @@ export default function Etudiants() {
         fetchData();
     }, [modalOpen]);
 
-    // Fonction pour obtenir l'ID d'une ligne d'étudiant
     const getRowId = (student) => student.id;
 
-    // Gestionnaire pour ouvrir le modal lors du clic sur une ligne d'étudiant
     const handleRowClick = (student) => {
         setSelectedStudent(student);
         setModalOpen(true);
     };
 
-    // Gestionnaire pour fermer le modal
     const handleCloseModal = () => {
         setModalOpen(false);
+        setSelectedStudent(null);
     };
 
-    // Rendu du composant
+    const onButtonClick = (student) => {
+        setSelectedStudent(student);
+        setModalOpen(true);
+    };
+
     return (
         <>
             {!isMobile && <NavBar />}
@@ -77,12 +85,18 @@ export default function Etudiants() {
                                 rows={students}
                                 type="etudiant"
                                 callback={handleRowClick}
+                                onButtonClick={onButtonClick}
                             />
                         )}
                     </Grid>
                     <Grid item xs={10}>
                         {selectedStudent && (
-                            <SyntheseSuiviTuteur student={selectedStudent} open={modalOpen} onClose={handleCloseModal} />
+                            <SyntheseSuiviTuteur
+                                student={selectedStudent}
+                                open={modalOpen}
+                                onClose={handleCloseModal}
+                                rapportData={selectedStudent.rapports}
+                            />
                         )}
                     </Grid>
                 </Grid>
