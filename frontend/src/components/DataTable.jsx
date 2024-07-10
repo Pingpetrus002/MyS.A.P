@@ -10,6 +10,7 @@ import {Tooltip, useMediaQuery} from '@mui/material';
 import EastIcon from '@mui/icons-material/East';
 import WestIcon from '@mui/icons-material/West';
 import AddIcon from '@mui/icons-material/Add';
+import ConnectWithoutContactIcon from '@mui/icons-material/ConnectWithoutContact';
 
 import moment from 'moment';
 
@@ -173,10 +174,11 @@ function getColumns(type, isLargeScreen, onButtonClick = () => {
             },
         ],
         etudiant: [
-            {field: 'prenom_nom', headerName: 'Prénom Nom', width: 180, minWidth: 180, maxWidth: 300},
-            {field: 'classe', headerName: 'Classe', width: 300, minWidth: 300, maxWidth: 400},
-            {field: 'statut', headerName: 'Statut', width: 180, minWidth: 180, maxWidth: 300},
-            {field: 'contrat', headerName: 'Contrat', width: 180, minWidth: 180, maxWidth: 300},
+            { field: 'prenom_nom', headerName: 'Prénom Nom', width: 180, minWidth: 180, maxWidth: 300 },
+            { field: 'classe', headerName: 'Classe', width: 300, minWidth: 300, maxWidth: 400 },
+            { field: 'suiveur', headerName: 'Suiveur', width: 300, minWidth: 300, maxWidth: 400 },
+            { field: 'statut', headerName: 'Statut', width: 180, minWidth: 180, maxWidth: 300 },
+            { field: 'contrat', headerName: 'Contrat', width: 180, minWidth: 180, maxWidth: 300 },
             {
                 field: 'suivi',
                 headerName: 'Suivi',
@@ -334,6 +336,8 @@ export default function DataTable({
 
     const isLargeScreen = useMediaQuery('(min-width: 1024px)');
     const isSmallScreen = useMediaQuery('(max-width: 768px)');
+
+    const [selectedUsers, setSelectedUsers] = useState([]);
 
     const handleRowButtonClick = (row) => {
         setSelectedAlert(row);
@@ -536,25 +540,46 @@ export default function DataTable({
                 </Button>
 
                 {type === 'etudiant' && (
-                    <Tooltip title="Ajouter un étudiant" placement="top">
-                        <Button
-                            variant="outlined"
-                            href='/?page=ajout_etudiants'
-                            sx={{
-                                color: '#000000',
-                                borderColor: '#F0C975',
-                                backgroundColor: '#FDD47C',
-                                mb: 1,
-                                '&:hover': {
-                                    backgroundColor: '#FFC039',
-                                    borderColor: '#FFC039',
+                    <>
+                        <Tooltip title="Assigner un suiveur" placement="top">
+                            <Button
+                                variant="outlined"
+                                onClick={() => callback(selectedUsers)}
+                                sx={{
                                     color: '#000000',
-                                }
-                            }}
-                        >
-                            <AddIcon/>
-                        </Button>
-                    </Tooltip>
+                                    borderColor: '#F0C975',
+                                    backgroundColor: '#FDD47C',
+                                    mb: 1,
+                                    '&:hover': {
+                                        backgroundColor: '#FFC039',
+                                        borderColor: '#FFC039',
+                                        color: '#000000',
+                                    }
+                                }}
+                            >
+                                <ConnectWithoutContactIcon />
+                            </Button>
+                        </Tooltip>
+                        <Tooltip title="Ajouter un étudiant" placement="top">
+                            <Button
+                                variant="outlined"
+                                href='/?page=ajout_etudiants'
+                                sx={{
+                                    color: '#000000',
+                                    borderColor: '#F0C975',
+                                    backgroundColor: '#FDD47C',
+                                    mb: 1,
+                                    '&:hover': {
+                                        backgroundColor: '#FFC039',
+                                        borderColor: '#FFC039',
+                                        color: '#000000',
+                                    }
+                                }}
+                            >
+                                <AddIcon />
+                            </Button>
+                        </Tooltip>
+                    </>
                 )}
                 {type === 'mission' && <AddMissionModal/>}
                 {type === 'rapport' && <SyntheseSuiviTuteur/>}
@@ -570,6 +595,14 @@ export default function DataTable({
                     },
                 }}
                 isSmallScreen={isSmallScreen}
+                checkboxSelection
+                disableRowSelectionOnClick
+                onRowSelectionModelChange={(ids) => {
+                    const selectedId = new Set(ids);
+                    const selectedRow = rows.filter((row) => selectedId.has(row.id));
+                    setSelectedUsers(selectedRow);
+                }}
+                {...console.log(selectedUsers)}
             />
 
             <Button
