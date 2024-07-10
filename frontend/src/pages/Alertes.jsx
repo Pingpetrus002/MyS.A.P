@@ -19,7 +19,7 @@ export default function Alerts() {
                 const allAlerts = await getAlerts();
                 const alertsWithId = allAlerts.map((alert, index) => ({
                     ...alert,
-                    id: index + 1 // Utilisation d'un index pour créer un identifiant unique
+                    id: alert.id // Utilisation d'un index pour créer un identifiant unique
                 }));
                 setAlerts(alertsWithId);
                 setLoading(false);
@@ -30,17 +30,18 @@ export default function Alerts() {
         }
 
         fetchData();
-    }, []);
+    }, [modalOpen]);
 
     const getRowId = (alert) => alert.id;
 
     const handleRowClick = (alert) => {
         setSelectedAlert(alert);
         setModalOpen(true);
+        console.log('etat modale open', modalOpen);
     };
 
     const handleCloseModal = () => {
-        setModalOpen(false);
+        setModalOpen(!modalOpen);
     };
 
     if (loading) {
@@ -67,6 +68,7 @@ export default function Alerts() {
                         type="alerte"
                         onRowButtonClick={handleRowClick}
                         getRowId={getRowId}
+                        callFunction={handleCloseModal}
                     />
                 </Grid>
             </Grid>
