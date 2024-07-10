@@ -354,7 +354,7 @@ export default function DataTable({
 
     // Récupère tous les rapports
     const handleDataRapport = async () => {
-        const url = `https://localhost:5001/auth/get_all_rapports`;
+        const url = `https://10.1.1.44:5001/auth/get_all_rapports`;
 
         const fetchWraper = new FetchWraper();
         fetchWraper.url = url;
