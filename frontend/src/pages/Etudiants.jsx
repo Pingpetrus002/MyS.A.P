@@ -32,7 +32,6 @@ async function getDatas() {
     }
 }
 
-
 export default function Etudiants() {
     const [students, setStudents] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -61,7 +60,7 @@ export default function Etudiants() {
     const getRowId = (student) => student.id;
 
     // Gestionnaire pour ouvrir le modal lors du clic sur une ligne d'étudiant
-    const handleRowClick = (student) => {        
+    const handleRowClick = (student) => {
         if (student.constructor === Array) {
             setStudentsSelected(student);
             setOpenAction(true);
@@ -162,7 +161,7 @@ export default function Etudiants() {
                                     sx={{ textAlign: 'center', width: '100%' }}
                                     name="suiveur"
                                     inputProps={{ 'aria-label': 'Without label' }}
-                                    onChange={(e) => setSuiveurSelected({[e.target.name]: e.target.value})}
+                                    onChange={(e) => setSuiveurSelected({ [e.target.name]: e.target.value })}
                                 >
                                     {suiveurs.map(suiveur => (
                                         <MenuItem key={suiveur.id} value={suiveur.id} disabled={suiveur.id === 0}>{suiveur.nom + " " + suiveur.prenom}</MenuItem>
@@ -181,9 +180,6 @@ export default function Etudiants() {
                                 Appliqer
                             </Button>
                         </Grid>
-
-
-
                     </Grid>
 
                 </Box>
