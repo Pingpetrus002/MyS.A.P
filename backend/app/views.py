@@ -387,6 +387,41 @@ def set_rapport():
 
     return jsonify({'message': 'Rapport set'}), 200
 
+# Route pour modifier un rapport
+@auth.route('/edit_rapport/<int:rapport_id>', methods=['POST'])
+@jwt_required()
+def edit_rapport(rapport_id):
+    current_user_id = get_jwt_identity()
+    data = request.get_json()
+
+    fields = ['sujet', 'rapport_json', 'type']
+    missing_field = check_fields(data, fields)
+    if missing_field:
+        return missing_field
+
+    rapport = Document.query.get(rapport_id)
+
+    if not rapport:
+        return jsonify({'message': 'Rapport non trouvé'}), 404
+
+    # Vérifie si l'utilisateur a les permissions nécessaires pour éditer ce rapport
+    if current_user_id != rapport.id_user and current_user_id != rapport.id_user_1:
+        return jsonify({'message': 'Unauthorized'}), 403
+
+    # Met à jour les champs du rapport
+    rapport.nom = data.get('sujet', rapport.nom)
+    rapport.rapport_json = data.get('rapport_json', rapport.rapport_json)
+    rapport.type = data.get('type', rapport.type)
+    rapport.date_modification = datetime.datetime.now()
+
+    # Mise à jour du hash MD5 du rapport
+    data_to_hash = f"{rapport.id_user}{rapport.id_user_1}{rapport.date_modification}".encode('utf-8')
+    rapport.md5 = hashlib.md5(data_to_hash).hexdigest()
+
+    db.session.commit()
+
+    return jsonify({'message': 'Rapport modifié'}), 200
+
 
 @auth.route('/set_document', methods=['POST'])
 @jwt_required()
@@ -499,7 +534,8 @@ def get_students():
             'tuteur': Utilisateur.query.get(student.id_user_1).prenom + ' ' + Utilisateur.query.get(student.id_user_1).nom if student.id_user_1 else 'Pas de tuteur',
             'suiveur': Utilisateur.query.get(student.id_user_2).prenom + ' ' + Utilisateur.query.get(student.id_user_2).nom if student.id_user_2 else 'Pas de suiveur',
             'ecole': Ecole.query.get(student.id_ecole).nom if student.id_ecole else 'Pas d\'école',
-            'rapports': [document_to_dict(rapport) for rapport in Document.query.filter_by(id_user=student.id_user).all() if rapport.type == 'rapport'],
+            'rapports': [rapport_json.rapport_json for rapport_json in Document.query.with_entities(Document.rapport_json).filter_by(id_user=student.id_user, type='rapport').all()],
+            'id_rapport': [rapport.id_doc for rapport in Document.query.filter_by(id_user=student.id_user, type='rapport').all()],
             'datecreation_rapport': max([rapport.datecreation for rapport in Document.query.filter_by(id_user=student.id_user, type='rapport').all()], default=None)
         } for student in students]
 
@@ -523,6 +559,8 @@ def get_students():
     # Cas Etudiant - Recupération de ses informations
     elif check_role(user, 4):
         return jsonify({'Unauthorized': 'Unauthorized'}), 403
+    
+
 
 
 # Route pour récupérer les rapports
