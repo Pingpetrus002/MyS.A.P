@@ -321,26 +321,52 @@ def get_profil():
 def update_profil():
     current_user_id = get_jwt_identity()
     data = request.get_json()
-    user = Utilisateur.query.get(data.get('id'))
 
-    if not user:
-        return jsonify({'message': 'Utilisateur non trouvé'}), 404
-
-    # Filtrer les données pour ne prendre en compte que les champs modifiables
-    allowed_fields = ['nom', 'prenom', 'classe', 'statut', 'entreprise']
-    # Si statut = Alternance en cours alors status = 1 sinon 0
-    if 'statut' in data:
-        if data['statut'] == "Alternance en cours":
-            data['statut'] = 1
-        else:
-            data['statut'] = 0
-    for field in allowed_fields:
-        if field in data:
-            setattr(user, field, data[field])
-
-    db.session.commit()
+    if not isinstance(data, list):     
     
-    return jsonify({'message': 'Profil mis à jour avec succès'}), 200
+        user = Utilisateur.query.get(data.get('id'))
+
+        if not user:
+            return jsonify({'message': 'Utilisateur non trouvé'}), 404
+
+        # Filtrer les données pour ne prendre en compte que les champs modifiables
+        allowed_fields = ['nom', 'prenom', 'classe', 'statut', 'entreprise', 'id_user_1']
+        # Si statut = Alternance en cours alors status = 1 sinon 0
+        if 'statut' in data:
+            if data['statut'] == "Alternance en cours":
+                data['statut'] = 1
+            else:
+                data['statut'] = 0
+        for field in allowed_fields:
+            if field in data:
+                setattr(user, field, data[field])
+
+        db.session.commit()
+        
+        return jsonify({'message': 'Profil mis à jour avec succès'}), 200
+    
+    else :
+        for user_data in data:
+            user = Utilisateur.query.get(user_data.get('id'))
+
+            if not user:
+                return jsonify({'message': 'Utilisateur non trouvé'}), 404
+
+            # Filtrer les données pour ne prendre en compte que les champs modifiables
+            allowed_fields = ['nom', 'prenom', 'classe', 'statut', 'entreprise', 'id_user_1']
+            # Si statut = Alternance en cours alors status = 1 sinon 0
+            if 'statut' in user_data:
+                if user_data['statut'] == "Alternance en cours":
+                    user_data['statut'] = 1
+                else:
+                    user_data['statut'] = 0
+            for field in allowed_fields:
+                if field in user_data:
+                    setattr(user, field, user_data[field])
+
+            db.session.commit()
+        
+        return jsonify({'message': 'Profil mis à jour avec succès'}), 200
 
 #Route pour set un rapport
 @auth.route('/set_rapport', methods=['POST'])
@@ -496,8 +522,8 @@ def get_students():
             ),
             'nom_tuteur': Utilisateur.query.get(student.id_user_2).nom if student.id_user_2 else 'Pas de tuteur',
             'prenom_tuteur': Utilisateur.query.get(student.id_user_2).prenom if student.id_user_2 else 'Pas de tuteur',
-            'tuteur': Utilisateur.query.get(student.id_user_1).prenom + ' ' + Utilisateur.query.get(student.id_user_1).nom if student.id_user_1 else 'Pas de tuteur',
-            'suiveur': Utilisateur.query.get(student.id_user_2).prenom + ' ' + Utilisateur.query.get(student.id_user_2).nom if student.id_user_2 else 'Pas de suiveur',
+            'tuteur': Utilisateur.query.get(student.id_user_2).prenom + ' ' + Utilisateur.query.get(student.id_user_2).nom if student.id_user_2 else 'Pas de tuteur',
+            'suiveur': Utilisateur.query.get(student.id_user_1).prenom + ' ' + Utilisateur.query.get(student.id_user_1).nom if student.id_user_1 else 'Pas de suiveur',
             'ecole': Ecole.query.get(student.id_ecole).nom if student.id_ecole else 'Pas d\'école',
             'rapports': [document_to_dict(rapport) for rapport in Document.query.filter_by(id_user=student.id_user).all() if rapport.type == 'rapport'],
             'datecreation_rapport': max([rapport.datecreation for rapport in Document.query.filter_by(id_user=student.id_user, type='rapport').all()], default=None)
@@ -658,7 +684,7 @@ def create_alert():
 @auth.route('/get_alerts', methods=['GET'])
 @jwt_required()
 def get_alerts():
-    alerts = Alert.query.filter_by(etat=1).all()  # Filtrer les alertes par leur état actif (1)
+    alerts = Alert.query.filter_by(etat=True).all()  # Filtrer les alertes par leur état actif (1)
 
     alerts_dict = [
         {

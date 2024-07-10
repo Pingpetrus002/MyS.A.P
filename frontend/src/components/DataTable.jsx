@@ -1,15 +1,16 @@
-import {useState} from 'react';
-import {DataGrid} from '@mui/x-data-grid';
-import {styled} from '@mui/material/styles';
+import { useState } from 'react';
+import { DataGrid } from '@mui/x-data-grid';
+import { styled } from '@mui/material/styles';
 import Button from '@mui/material/Button';
 import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
 import Typography from '@mui/material/Typography';
 import PropTypes from 'prop-types';
-import {saveAs} from 'file-saver';
-import {Tooltip, useMediaQuery} from '@mui/material';
+import { saveAs } from 'file-saver';
+import { Tooltip, useMediaQuery } from '@mui/material';
 import EastIcon from '@mui/icons-material/East';
 import WestIcon from '@mui/icons-material/West';
 import AddIcon from '@mui/icons-material/Add';
+import ConnectWithoutContactIcon from '@mui/icons-material/ConnectWithoutContact';
 
 import moment from 'moment';
 
@@ -55,7 +56,7 @@ const CustomButton = styled(Button)({
     },
 });
 
-const CustomDataGrid = styled(DataGrid)(({theme, isSmallScreen}) => ({
+const CustomDataGrid = styled(DataGrid)(({ theme, isSmallScreen }) => ({
     '& .MuiDataGrid-filler': {
         backgroundColor: '#FDD47C',
     },
@@ -97,7 +98,7 @@ const CustomDataGrid = styled(DataGrid)(({theme, isSmallScreen}) => ({
 const adjustColumns = (columns, isLargeScreen) => {
     return columns.map(col => {
         if (!isLargeScreen) {
-            const {width, minWidth, ...rest} = col;
+            const { width, minWidth, ...rest } = col;
             return rest;
         }
         return col;
@@ -116,10 +117,10 @@ function getColumns(type, isLargeScreen, onButtonClick = () => {
 
     const columns = {
         rapport: [
-            {field: 'id_user', headerName: 'Étudiant', width: 180, minWidth: 180, maxWidth: 300},
-            {field: 'nom', headerName: 'Sujet', width: 180, minWidth: 180, maxWidth: 300},
-            {field: 'concernes', headerName: 'Concernés', width: 220, minWidth: 220, maxWidth: 300},
-            {field: 'id_user_1', headerName: 'Suiveur', width: 180, minWidth: 180, maxWidth: 300},
+            { field: 'id_user', headerName: 'Étudiant', width: 180, minWidth: 180, maxWidth: 300 },
+            { field: 'nom', headerName: 'Sujet', width: 180, minWidth: 180, maxWidth: 300 },
+            { field: 'concernes', headerName: 'Concernés', width: 220, minWidth: 220, maxWidth: 300 },
+            { field: 'id_user_1', headerName: 'Suiveur', width: 180, minWidth: 180, maxWidth: 300 },
             {
                 field: 'télécharger',
                 headerName: 'Télécharger',
@@ -129,16 +130,16 @@ function getColumns(type, isLargeScreen, onButtonClick = () => {
                 renderCell: (params) => (
                     <Tooltip title="Télécharger" placement="right">
                         <CustomButton variant="contained" onClick={() => handleDownload(params.row.md5)}>
-                            <PictureAsPdfIcon/>
+                            <PictureAsPdfIcon />
                         </CustomButton>
                     </Tooltip>
                 ),
             },
         ],
         mes_rapports: [
-            {field: 'nom', headerName: 'Sujet', width: 180, minWidth: 180, maxWidth: 300},
-            {field: 'id_user', headerName: 'Concernés', width: 220, minWidth: 220, maxWidth: 300},
-            {field: 'id_user_1', headerName: 'Suiveur', width: 180, minWidth: 180, maxWidth: 300},
+            { field: 'nom', headerName: 'Sujet', width: 180, minWidth: 180, maxWidth: 300 },
+            { field: 'id_user', headerName: 'Concernés', width: 220, minWidth: 220, maxWidth: 300 },
+            { field: 'id_user_1', headerName: 'Suiveur', width: 180, minWidth: 180, maxWidth: 300 },
             {
                 field: 'télécharger',
                 headerName: 'Télécharger',
@@ -148,15 +149,15 @@ function getColumns(type, isLargeScreen, onButtonClick = () => {
                 renderCell: (params) => (
                     <Tooltip title="Télécharger" placement="right">
                         <CustomButton variant="contained" onClick={() => handleDownload(params.row.md5)}>
-                            <PictureAsPdfIcon/>
+                            <PictureAsPdfIcon />
                         </CustomButton>
                     </Tooltip>
                 ),
             },
         ],
         mes_documents: [
-            {field: 'nom', headerName: 'Nom', width: 180, minWidth: 180, maxWidth: 300},
-            {field: 'datecreation', headerName: 'Date d\'ajout', width: 220, minWidth: 220, maxWidth: 300},
+            { field: 'nom', headerName: 'Nom', width: 180, minWidth: 180, maxWidth: 300 },
+            { field: 'datecreation', headerName: 'Date d\'ajout', width: 220, minWidth: 220, maxWidth: 300 },
             {
                 field: 'télécharger',
                 headerName: 'Télécharger',
@@ -166,17 +167,18 @@ function getColumns(type, isLargeScreen, onButtonClick = () => {
                 renderCell: (params) => (
                     <Tooltip title="Télécharger" placement="right">
                         <CustomButton variant="contained" onClick={() => handleDownload(params.row.md5)}>
-                            <PictureAsPdfIcon/>
+                            <PictureAsPdfIcon />
                         </CustomButton>
                     </Tooltip>
                 ),
             },
         ],
         etudiant: [
-            {field: 'prenom_nom', headerName: 'Prénom Nom', width: 180, minWidth: 180, maxWidth: 300},
-            {field: 'classe', headerName: 'Classe', width: 300, minWidth: 300, maxWidth: 400},
-            {field: 'statut', headerName: 'Statut', width: 180, minWidth: 180, maxWidth: 300},
-            {field: 'contrat', headerName: 'Contrat', width: 180, minWidth: 180, maxWidth: 300},
+            { field: 'prenom_nom', headerName: 'Prénom Nom', width: 180, minWidth: 180, maxWidth: 300 },
+            { field: 'classe', headerName: 'Classe', width: 300, minWidth: 300, maxWidth: 400 },
+            { field: 'suiveur', headerName: 'Suiveur', width: 300, minWidth: 300, maxWidth: 400 },
+            { field: 'statut', headerName: 'Statut', width: 180, minWidth: 180, maxWidth: 300 },
+            { field: 'contrat', headerName: 'Contrat', width: 180, minWidth: 180, maxWidth: 300 },
             {
                 field: 'suivi',
                 headerName: 'Suivi',
@@ -184,7 +186,7 @@ function getColumns(type, isLargeScreen, onButtonClick = () => {
                 minWidth: 120,
                 maxWidth: 120,
                 renderCell: (params) => {
-                    const {rapports, datecreation_rapport} = params.row;
+                    const { rapports, datecreation_rapport } = params.row;
                     const hasReport = rapports && rapports.length > 0;
                     const recentReport = isRecentReport(datecreation_rapport);
 
@@ -204,7 +206,7 @@ function getColumns(type, isLargeScreen, onButtonClick = () => {
                 minWidth: 120,
                 maxWidth: 120,
                 renderCell: (params) => {
-                    const {rapports, datecreation_rapport} = params.row;
+                    const { rapports, datecreation_rapport } = params.row;
                     const hasReport = rapports && rapports.length > 0;
                     const recentReport = isRecentReport(datecreation_rapport);
 
@@ -212,7 +214,7 @@ function getColumns(type, isLargeScreen, onButtonClick = () => {
                         return (
                             <CustomButton
                                 onClick={() => onButtonClick(params.row)}
-                                style={{backgroundColor: 'purple', color: 'white'}}
+                                style={{ backgroundColor: 'purple', color: 'white' }}
                             >
                                 Créer
                             </CustomButton>
@@ -221,7 +223,7 @@ function getColumns(type, isLargeScreen, onButtonClick = () => {
                         return (
                             <CustomButton
                                 onClick={() => onButtonClick(console.log('Modifier'))}
-                                style={{backgroundColor: 'green', color: 'white'}}
+                                style={{ backgroundColor: 'green', color: 'white' }}
                             >
                                 Modifier
                             </CustomButton>
@@ -233,10 +235,10 @@ function getColumns(type, isLargeScreen, onButtonClick = () => {
             },
         ],
         alerte: [
-            {field: 'commentaires', headerName: 'Commentaire', width: 400, minWidth: 220, maxWidth: 900},
-            {field: 'user_source', headerName: 'Utilisateur source', width: 180, minWidth: 180, maxWidth: 300},
-            {field: 'raison_social', headerName: 'Entreprise', width: 180, minWidth: 180, maxWidth: 300},
-            {field: 'date', headerName: 'Date', width: 180, minWidth: 180, maxWidth: 300},
+            { field: 'commentaires', headerName: 'Commentaire', width: 400, minWidth: 220, maxWidth: 900 },
+            { field: 'user_source', headerName: 'Utilisateur source', width: 180, minWidth: 180, maxWidth: 300 },
+            { field: 'raison_social', headerName: 'Entreprise', width: 180, minWidth: 180, maxWidth: 300 },
+            { field: 'date', headerName: 'Date', width: 180, minWidth: 180, maxWidth: 300 },
             {
                 field: 'voir',
                 headerName: 'Voir',
@@ -245,7 +247,7 @@ function getColumns(type, isLargeScreen, onButtonClick = () => {
                 maxWidth: 120,
                 renderCell: (params) => (
                     <CustomButton onClick={() => onRowButtonClick(params.row)}
-                                  style={{backgroundColor: '#1976d2', color: 'white'}}>
+                        style={{ backgroundColor: '#1976d2', color: 'white' }}>
                         Voir
                     </CustomButton>
                 ),
@@ -253,20 +255,20 @@ function getColumns(type, isLargeScreen, onButtonClick = () => {
         ],
         // Définir les colonnes pour le type Mission
         mission: [
-            {field: 'libelle', headerName: 'Libellé', width: 200},
-            {field: 'description', headerName: 'Description', width: 200},
-            {field: 'datedebut', headerName: 'Date début', width: 150},
-            {field: 'datefin', headerName: 'Date fin', width: 150},
-            {field: 'id_user', headerName: 'Utilisateur', width: 150},
+            { field: 'libelle', headerName: 'Libellé', width: 200 },
+            { field: 'description', headerName: 'Description', width: 200 },
+            { field: 'datedebut', headerName: 'Date début', width: 150 },
+            { field: 'datefin', headerName: 'Date fin', width: 150 },
+            { field: 'id_user', headerName: 'Utilisateur', width: 150 },
         ],
         users_management: [
-            {field: 'id', headerName: 'ID', width: 90},
-            {field: 'status', headerName: 'Active', width: 100},
-            {field: 'mail', headerName: 'Email', width: 150},
-            {field: 'role', headerName: 'Role', width: 150},
-            {field: 'nom', headerName: 'Prénom', width: 150},
-            {field: 'prenom', headerName: 'Nom', width: 150},
-            {field: 'date_naissance_formatted', headerName: 'Date de naissance', width: 250},
+            { field: 'id', headerName: 'ID', width: 90 },
+            { field: 'status', headerName: 'Active', width: 100 },
+            { field: 'mail', headerName: 'Email', width: 150 },
+            { field: 'role', headerName: 'Role', width: 150 },
+            { field: 'nom', headerName: 'Prénom', width: 150 },
+            { field: 'prenom', headerName: 'Nom', width: 150 },
+            { field: 'date_naissance_formatted', headerName: 'Date de naissance', width: 250 },
             {
                 field: 'actions',
                 headerName: 'Actions',
@@ -289,7 +291,7 @@ function getColumns(type, isLargeScreen, onButtonClick = () => {
                             variant="contained"
                             color="primary"
                             size="small"
-                            style={{marginLeft: 16}}
+                            style={{ marginLeft: 16 }}
                             onClick={() => onButtonClick(params.row)}
                         >
                             Action
@@ -325,15 +327,17 @@ function getTitle(type) {
 }
 
 export default function DataTable({
-                                      rows, type, handleToggleTable, callback = () => {
-    }, onRowButtonClick
-                                  }) {
+    rows, type, handleToggleTable, callback = () => {
+    }, onRowButtonClick, callFunction
+}) {
     const [openModal, setOpenModal] = useState(false);
     const [selectedAlert, setSelectedAlert] = useState(null);
     const [modalOpen, setModalOpen] = useState(false);
 
     const isLargeScreen = useMediaQuery('(min-width: 1024px)');
     const isSmallScreen = useMediaQuery('(max-width: 768px)');
+
+    const [selectedUsers, setSelectedUsers] = useState([]);
 
     const handleRowButtonClick = (row) => {
         setSelectedAlert(row);
@@ -342,6 +346,7 @@ export default function DataTable({
 
     const handleCloseModal = () => {
         setModalOpen(false);
+        callFunction();
     };
 
     const handleOpen = () => {
@@ -450,7 +455,7 @@ export default function DataTable({
                     console.log(csvContent);
 
                     // Create a blob from the CSV content
-                    const csvBlob = new Blob([csvContent], {type: 'text/csv;charset=utf-8;'});
+                    const csvBlob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
 
                     // Get current date and time
                     const now = new Date();
@@ -494,15 +499,15 @@ export default function DataTable({
             const csvData = header + csv;
 
             // Convert to Blob and save as a CSV file
-            const blob = new Blob([csvData], {type: 'text/csv;charset=utf-8;'});
+            const blob = new Blob([csvData], { type: 'text/csv;charset=utf-8;' });
             saveAs(blob, `${getTitle(type)}.csv`);
         }
     };
 
     return (
         <>
-            <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between'}}>
-                <Typography variant="h4" gutterBottom style={{textAlign: 'left'}}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <Typography variant="h4" gutterBottom style={{ textAlign: 'left' }}>
                     {getTitle(type)}
                 </Typography>
                 {type === 'mes_rapports'}
@@ -528,36 +533,57 @@ export default function DataTable({
                     </Typography>
                     {type === "mes_rapports" ? (
                         <EastIcon fontSize="medium" className="icon-hover"
-                                  sx={{transition: 'transform 0.3s ease', ml: '0.3em'}}/>
+                            sx={{ transition: 'transform 0.3s ease', ml: '0.3em' }} />
                     ) : type === "mes_documents" ? (
                         <WestIcon fontSize="medium" className="icon-hover"
-                                  sx={{transition: 'transform 0.3s ease', ml: '0.3em'}}/>
+                            sx={{ transition: 'transform 0.3s ease', ml: '0.3em' }} />
                     ) : null}
                 </Button>
 
                 {type === 'etudiant' && (
-                    <Tooltip title="Ajouter un étudiant" placement="top">
-                        <Button
-                            variant="outlined"
-                            href='/?page=ajout_etudiants'
-                            sx={{
-                                color: '#000000',
-                                borderColor: '#F0C975',
-                                backgroundColor: '#FDD47C',
-                                mb: 1,
-                                '&:hover': {
-                                    backgroundColor: '#FFC039',
-                                    borderColor: '#FFC039',
+                    <>
+                        <Tooltip title="Assigner un suiveur" placement="top">
+                            <Button
+                                variant="outlined"
+                                onClick={() => callback(selectedUsers)}
+                                sx={{
                                     color: '#000000',
-                                }
-                            }}
-                        >
-                            <AddIcon/>
-                        </Button>
-                    </Tooltip>
+                                    borderColor: '#F0C975',
+                                    backgroundColor: '#FDD47C',
+                                    mb: 1,
+                                    '&:hover': {
+                                        backgroundColor: '#FFC039',
+                                        borderColor: '#FFC039',
+                                        color: '#000000',
+                                    }
+                                }}
+                            >
+                                <ConnectWithoutContactIcon />
+                            </Button>
+                        </Tooltip>
+                        <Tooltip title="Ajouter un étudiant" placement="top">
+                            <Button
+                                variant="outlined"
+                                href='/?page=ajout_etudiants'
+                                sx={{
+                                    color: '#000000',
+                                    borderColor: '#F0C975',
+                                    backgroundColor: '#FDD47C',
+                                    mb: 1,
+                                    '&:hover': {
+                                        backgroundColor: '#FFC039',
+                                        borderColor: '#FFC039',
+                                        color: '#000000',
+                                    }
+                                }}
+                            >
+                                <AddIcon />
+                            </Button>
+                        </Tooltip>
+                    </>
                 )}
-                {type === 'mission' && <AddMissionModal/>}
-                {type === 'rapport' && <SyntheseSuiviTuteur/>}
+                {type === 'mission' && <AddMissionModal />}
+                {type === 'rapport' && <SyntheseSuiviTuteur />}
             </div>
             <CustomDataGrid
                 autoHeight
@@ -566,10 +592,18 @@ export default function DataTable({
                 pageSizeOptions={[5, 10, 25]}
                 initialState={{
                     pagination: {
-                        paginationModel: {page: 0, pageSize: 5},
+                        paginationModel: { page: 0, pageSize: 5 },
                     },
                 }}
                 isSmallScreen={isSmallScreen}
+                checkboxSelection
+                disableRowSelectionOnClick
+                onRowSelectionModelChange={(ids) => {
+                    const selectedId = new Set(ids);
+                    const selectedRow = rows.filter((row) => selectedId.has(row.id));
+                    setSelectedUsers(selectedRow);
+                }}
+                {...console.log(selectedUsers)}
             />
 
             <Button
@@ -590,9 +624,9 @@ export default function DataTable({
             >
                 Exporter en CSV
             </Button>
-            <StudentModal open={openModal} onClose={handleClose}/>
+            <StudentModal open={openModal} onClose={handleClose} />
             {selectedAlert && (
-                <AlertModal alert={selectedAlert} open={modalOpen} onClose={handleCloseModal}/>
+                <AlertModal alert={selectedAlert} open={modalOpen} onClose={handleCloseModal} />
             )}
         </>
     );
