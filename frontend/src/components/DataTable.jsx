@@ -222,7 +222,7 @@ function getColumns(type, isLargeScreen, onButtonClick = () => {
                     } else if (recentReport) {
                         return (
                             <CustomButton
-                                onClick={() => onButtonClick(console.log('Modifier'))}
+                                onClick={() => onButtonClick(params.row)}
                                 style={{ backgroundColor: 'green', color: 'white' }}
                             >
                                 Modifier
@@ -232,7 +232,7 @@ function getColumns(type, isLargeScreen, onButtonClick = () => {
                         return null;
                     }
                 }
-            },
+            }
         ],
         alerte: [
             { field: 'commentaires', headerName: 'Commentaire', width: 400, minWidth: 220, maxWidth: 900 },
@@ -469,7 +469,7 @@ export default function DataTable({
                         minute: '2-digit',
                         hour12: false
                     };
-                    const formattedDateTime = new Intl.DateTimeFormat('fr-FR', dateTimeFormatOptions).format(now).replaceAll(/[\/,: ]/g, (match) => match === '/' ? '-' : match === ':' ? '-' : '_');
+                    const formattedDateTime = new Intl.DateTimeFormat('fr-FR', dateTimeFormatOptions).format(now).replaceAll(/[/,: ]/g, (match) => match === '/' ? '-' : match === ':' ? '-' : '_');
 
                     // Use FileSaver to save the blob as a CSV file with the current date and time in the filename
                     saveAs(csvBlob, `rapports_${formattedDateTime}.csv`);

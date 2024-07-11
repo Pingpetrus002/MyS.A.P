@@ -1,11 +1,9 @@
 import { useState, useEffect } from "react";
 import { Button, CircularProgress } from "@mui/material";
 
-
 function ButtonSap(args) {
     const [loading, setLoading] = useState(false);
     const [buttonStyle, setButtonStyle] = useState({ variant: "contained" });
-
 
     useEffect(() => {
         if (loading) {
@@ -25,6 +23,8 @@ function ButtonSap(args) {
         }
         setLoading(false);
     };
+
+    const { isEditMode } = args;
 
     return (
         <Button
@@ -53,12 +53,10 @@ function ButtonSap(args) {
             {loading ? (
                 <CircularProgress alt="Chargement..." style={{ width: "24px", height: "24px", color: "black" }} />
             ) : (
-                "Envoyer"
+                isEditMode ? "Modifier" : "Envoyer"
             )}
         </Button>
     );
-
 }
 
 export default ButtonSap;
-
