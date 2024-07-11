@@ -37,6 +37,13 @@ const EstablishmentsManagement = () => {
     // Création d'une instance Axios avec gestion des cookies
     const axiosInstance = axios.create({
         withCredentials: true,  // Inclure les cookies dans les requêtes sortantes
+        headers: {
+            'Content-Type': 'application/json', // ou autre type de contenu approprié
+            'Access-Control-Allow-Origin': '*',  // Permettre à toutes les origines d'accéder à la ressource
+            'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS', // Méthodes HTTP autorisées
+            'Access-Control-Allow-Headers': 'Content-Type, Authorization', // En-têtes autorisés
+            'Access-Control-Allow-Credentials': 'true'  // Inclure les informations d'identification (cookies, etc.)
+        }
     });
 
 
