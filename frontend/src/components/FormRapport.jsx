@@ -1,5 +1,5 @@
 import React from 'react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
     TextField,
     Button,
@@ -30,16 +30,18 @@ import { useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import ButtonSap from './sap/ButtonSap';
 import { sendRapport } from '../utils/sendRapport';
+import { sendModifiedRapport } from '../utils/sendModifiedRapport';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
 });
 
-function SyntheseSuiviTuteur({ student, open, onClose }) {
+function SyntheseSuiviTuteur({ student, rapportData, open, onClose }) {
     const theme = useTheme();
     const [modalOpen, setModalOpen] = useState(false); // État pour contrôler l'ouverture/fermeture du modal
     const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
     const [eraseOpen, setEraseOpen] = useState(false); // État pour contrôler l'ouverture/fermeture du modal de confirmation
+    const [isEditMode, setIsEditMode] = useState(false);
 
     // Fonctions pour ouvrir et fermer le modal
     const handleEraseOpen = () => {
@@ -229,7 +231,7 @@ function SyntheseSuiviTuteur({ student, open, onClose }) {
     };
 
     // Mettre à jour les champs lorsque le student change
-    React.useEffect(() => {
+    useEffect(() => {
         if (student) {
             setTextFieldIdEtudiant(student.id || '');
             setSelectFieldFormation(student.classe || '');
@@ -240,6 +242,63 @@ function SyntheseSuiviTuteur({ student, open, onClose }) {
             setTextFieldPrenomTuteurEntreprise(student.prenom_tuteur || '');
         }
     }, [student]);
+
+    console.log('test:', rapportData);
+
+    // Pre-fill fields with rapport data
+    useEffect(() => {
+        if (Array.isArray(rapportData) && rapportData.length > 0) {
+            setIsEditMode(true);
+            try {
+                const rapport = JSON.parse(rapportData);
+                setTextFieldNomRapport(rapport.nomRapport || '');
+                setTextFieldIdEtudiant(rapport.idEtudiant || '');
+                setSelectFieldFormation(rapport.formation || '');
+                setTextFieldNomEtudiant(rapport.nomEtudiant || '');
+                setTextFieldPrenomEtudiant(rapport.prenomEtudiant || '');
+                setTextFieldNomEntreprise(rapport.nomEntreprise || '');
+                setTextFieldNomTuteurEntreprise(rapport.nomTuteurEntreprise || '');
+                setTextFieldPrenomTuteurEntreprise(rapport.prenomTuteurEntreprise || '');
+                setTextFieldPosteEtudiant(rapport.posteEtudiant || '');
+                setTextFieldMissions(rapport.missions || '');
+                setTextFieldCommentaireTuteur(rapport.commentaireTuteur || '');
+                setTextFieldProjetsSecondSemestre(rapport.projetsSecondSemestre || '');
+                setTextFieldAxesAmelioration(rapport.axesAmelioration || '');
+                setTextFieldPointsFort(rapport.pointsFort || '');
+                setTextFieldSujetMemoire(rapport.sujetMemoire || '');
+                setTextFieldCommentaireEntretienSuivi(rapport.commentaireEntretienSuivi || '');
+                setTextFieldNomSuiveur(rapport.nomSuiveur || '');
+                setDateFieldEntretien(new Date(rapport.dateEntretien || new Date()));
+                setRadioFieldFormatSuivi(rapport.formatSuivi || '');
+                setCheckboxFieldPresence(rapport.presence || '');
+                setRadioFieldRecrutement(rapport.recrutement || '');
+                setRadioFieldPoursuiteEtudes(rapport.poursuiteEtudes || '');
+                setRadioFields(rapport.savoirEtre || {
+                    'Ponctualité': '',
+                    'Capacité d\'intégration': '',
+                    'Sens de l\'organisation': '',
+                    'Sens de la communication': '',
+                    'Travail en équipe': '',
+                    'Réactivité': '',
+                    'Persévérance': '',
+                    'Force de proposition': ''
+                });
+                setIsRENonRASChecked(rapport.alerteRE === 'NON - RAS');
+                setIsREOtherChecked(rapport.alerteRE === 'Autre');
+                setREOtherText(rapport.alerteRE === 'Autre' ? rapport.reOtherText : '');
+                setIsPedagogiqueNonRASChecked(rapport.alerteSP === 'NON - RAS');
+                setIsPedagogiqueOtherChecked(rapport.alerteSP === 'Autre');
+                setPedagogiqueOtherText(rapport.alerteSP === 'Autre' ? rapport.pedagogiqueOtherText : '');
+                setIsNonChecked(rapport.presence === 'NON');
+                setIsOuiChecked(rapport.presence === 'OUI');
+                setPresentText(rapport.presenceText || '');
+            } catch (error) {
+                console.error('Error parsing rapportData JSON:', error);
+            }
+        } else {
+            setIsEditMode(false);
+        }
+    }, [rapportData]);
 
     return (
         <>
@@ -880,6 +939,7 @@ function SyntheseSuiviTuteur({ student, open, onClose }) {
                             <Grid item>
                                 <ButtonSap
                                     props={{
+                                        rapportId: student.id_rapport,
                                         nomRapport: textFieldNomRapport,
                                         idEtudiant: textFieldIdEtudiant,
                                         formation: selectFieldFormation,
@@ -907,13 +967,25 @@ function SyntheseSuiviTuteur({ student, open, onClose }) {
                                         recrutement: radioFieldRecrutement,
                                         poursuiteEtudes: radioFieldPoursuiteEtudes
                                     }}
+                                    isEditMode={isEditMode}
                                     callback={async (e) => {
-                                        sendRapport(e).then((res) => {
-                                            if (res) {
-                                                onClose();
-                                                handleReset();
-                                            }
-                                        })
+                                        if (isEditMode) {
+                                            // Mode "Modifier"
+                                            sendModifiedRapport(e).then((res) => {
+                                                if (res) {
+                                                    onClose();
+                                                    handleReset();
+                                                }
+                                            });
+                                        } else {
+                                            // Mode "Créer" (utilisation de la route d'envoi)
+                                            sendRapport(e).then((res) => {
+                                                if (res) {
+                                                    onClose();
+                                                    handleReset();
+                                                }
+                                            });
+                                        }
                                     }}
                                 />
 

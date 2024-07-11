@@ -1,7 +1,5 @@
 import { useEffect, useState } from 'react';
 import { LinearProgress, Grid, useMediaQuery, Modal, Box, Select, MenuItem, Button } from '@mui/material';
-
-// Importations personnalisées
 import FetchWraper from '../utils/FetchWraper';
 import DataTable from '../components/DataTable';
 import NavBar from '../components/Navbar';
@@ -9,7 +7,6 @@ import SyntheseSuiviTuteur from '../components/FormRapport';  // Importation du 
 import PropTypes from "prop-types";
 import getSuiveurs from "../utils/getSuiveurs";
 
-// Fonction asynchrone pour récupérer les données des étudiants
 async function getDatas() {
   let fetchWraper = new FetchWraper();
   fetchWraper.url = "https://10.1.1.44:5001/auth/get_students";
@@ -20,13 +17,24 @@ async function getDatas() {
   fetchWraper.headers.append("Access-Control-Allow-Credentials", "true");
   let result = await fetchWraper.fetchw();
 
-    let data = await result.json();
-    console.log(data);
-    return data;
+
+    try {
+        let result = await fetchWraper.fetchw();
+
+        if (!result.ok) {
+            throw new Error(`HTTP error! Status: ${result.status}`);
+        }
+
+        let data = await result.json();
+        console.log(data);
+        return data;
+    } catch (error) {
+        console.error('Error fetching data:', error);
+        throw error;
+    }
 }
 
 export default function Etudiants() {
-    // État local pour stocker les étudiants, le chargement, l'étudiant sélectionné et l'état modal
     const [students, setStudents] = useState([]);
     const [loading, setLoading] = useState(true);
     const [selectedStudent, setSelectedStudent] = useState(null);
@@ -36,13 +44,11 @@ export default function Etudiants() {
     const [reload, setReload] = useState(false);
     const [studentsSelected, setStudentsSelected] = useState([]);
 
-    // Effet pour charger les données des étudiants au chargement du composant
     useEffect(() => {
         const fetchData = async () => {
             try {
                 const data = await getDatas();
-                console.log(data)
-                setStudents(data.students); // Assuming data.students is an array of students
+                setStudents(data.students);
                 setLoading(false);
             } catch (error) {
                 console.error('Error:', error);
@@ -53,11 +59,10 @@ export default function Etudiants() {
         fetchData();
     }, [modalOpen, reload]);
 
-    // Fonction pour obtenir l'ID d'une ligne d'étudiant
     const getRowId = (student) => student.id;
 
     // Gestionnaire pour ouvrir le modal lors du clic sur une ligne d'étudiant
-    const handleRowClick = (student) => {        
+    const handleRowClick = (student) => {
         if (student.constructor === Array) {
             setStudentsSelected(student);
             setOpenAction(true);
@@ -68,7 +73,6 @@ export default function Etudiants() {
         }
     };
 
-    // Gestionnaire pour fermer le modal
     const handleCloseModal = () => {
         setModalOpen(false);
     };
@@ -159,7 +163,7 @@ export default function Etudiants() {
                                     sx={{ textAlign: 'center', width: '100%' }}
                                     name="suiveur"
                                     inputProps={{ 'aria-label': 'Without label' }}
-                                    onChange={(e) => setSuiveurSelected({[e.target.name]: e.target.value})}
+                                    onChange={(e) => setSuiveurSelected({ [e.target.name]: e.target.value })}
                                 >
                                     {suiveurs.map(suiveur => (
                                         <MenuItem key={suiveur.id} value={suiveur.id} disabled={suiveur.id === 0}>{suiveur.nom + " " + suiveur.prenom}</MenuItem>
@@ -178,9 +182,6 @@ export default function Etudiants() {
                                 Appliqer
                             </Button>
                         </Grid>
-
-
-
                     </Grid>
 
                 </Box>
@@ -226,7 +227,12 @@ export default function Etudiants() {
                     </Grid>
                     <Grid item xs={10}>
                         {selectedStudent && (
-                            <SyntheseSuiviTuteur student={selectedStudent} open={modalOpen} onClose={handleCloseModal} />
+                            <SyntheseSuiviTuteur
+                                student={selectedStudent}
+                                open={modalOpen}
+                                onClose={handleCloseModal}
+                                rapportData={selectedStudent.rapports}
+                            />
                         )}
                     </Grid>
                 </Grid>
